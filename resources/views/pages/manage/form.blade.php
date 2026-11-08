@@ -3,7 +3,7 @@
 @section('title', $post ? 'Ubah Artikel' : 'Tulis Artikel')
 
 @section('content')
-    <x-page-hero>Tulis&nbsp;<em>Artikel</em></x-page-hero>
+    <x-page-hero>{{ $post ? 'Ubah' : 'Tulis' }}&nbsp;<em>Artikel</em></x-page-hero>
 
     <section class="section">
         <div class="container">
@@ -18,20 +18,6 @@
                 <x-form-field name="title" label="Judul Artikel" placeholder="Tulis judul artikel" :value="$post->title ?? ''" />
                 <x-form-field name="author" label="Nama Penulis" placeholder="Tulis namamu" :value="$post->author ?? ''" />
 
-                @isset($categories)
-                    <div class="form__row">
-                        <label for="category">Kategori</label>
-                        <select class="select" id="category" name="category">
-                            <option value="">Belum Ada</option>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category }}" @selected(old('category', $post->category ?? '') === $category)>{{ $category }}</option>
-                            @endforeach
-                        </select>
-                        @error('category')
-                            <p class="form__error">{{ $message }}</p>
-                        @enderror
-                    </div>
-                @endisset
 
                 <x-form-field name="body" label="Isi Artikel" placeholder="Tulis isi artikel di sini" multiline :value="$post->body ?? ''" />
 

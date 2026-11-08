@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class ArticleRequest extends FormRequest
 {
@@ -14,7 +12,6 @@ class ArticleRequest extends FormRequest
             'title' => ['required', 'string', 'max:150'],
             'author' => ['required', 'string', 'max:80'],
             'body' => ['required', 'string', 'max:20000'],
-            'category' => ['nullable', Rule::in(Post::CATEGORIES)],
         ];
     }
 

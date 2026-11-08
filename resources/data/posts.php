@@ -7,7 +7,6 @@ return [
         'slug' => 'kapan-sebaiknya-mencari-bantuan-profesional',
         'title' => 'Kapan Sebaiknya Mencari Bantuan Profesional',
         'author' => 'Dessica',
-        'category' => 'Bantuan',
         'published_at' => '2026-11-02',
         'excerpt' => 'Tanda-tanda bahwa ceritamu butuh lebih dari sekadar teman bicara, dan bagaimana memulainya.',
         'content' => [
@@ -23,7 +22,6 @@ return [
         'slug' => 'kenapa-bercerita-terasa-melegakan',
         'title' => 'Kenapa Bercerita Bisa Terasa Melegakan',
         'author' => 'Tim Ruang Pulang',
-        'category' => 'Bercerita',
         'published_at' => '2026-10-28',
         'excerpt' => 'Masalahnya belum selesai, tapi dada terasa lebih ringan. Ini yang terjadi saat kita memberi nama pada apa yang kita rasakan.',
         'content' => [
@@ -41,7 +39,6 @@ return [
         'slug' => 'belajar-menjadi-pendengar-yang-baik',
         'title' => 'Belajar Menjadi Pendengar yang Baik',
         'author' => 'Dessica',
-        'category' => 'Komunitas',
         'published_at' => '2026-09-30',
         'excerpt' => 'Mendengar tidak selalu berarti menjawab. Kadang cukup hadir sepenuhnya.',
         'content' => [
@@ -59,7 +56,6 @@ return [
         'slug' => 'cara-menenangkan-diri-sebelum-tidur',
         'title' => 'Cara Menenangkan Diri Sebelum Tidur',
         'author' => 'Dessica',
-        'category' => 'Healing',
         'published_at' => '2026-09-18',
         'excerpt' => 'Kebiasaan kecil di malam hari yang membantu pikiran berhenti berputar.',
         'content' => [
@@ -78,7 +74,6 @@ return [
         'slug' => 'healing-tidak-harus-liburan',
         'title' => 'Healing Tidak Harus Liburan',
         'author' => 'Tim Ruang Pulang',
-        'category' => 'Healing',
         'published_at' => '2026-09-16',
         'excerpt' => 'Liburan memang menyenangkan, tapi pemulihan yang bertahan lama biasanya datang dari kebiasaan kecil yang diulang.',
         'content' => [
@@ -96,7 +91,6 @@ return [
         'slug' => 'datang-sendirian-ke-komunitas-baru',
         'title' => 'Tips Datang Sendirian ke Komunitas Baru',
         'author' => 'Tim Ruang Pulang',
-        'category' => 'Komunitas',
         'published_at' => '2026-09-02',
         'excerpt' => 'Deg-degan itu wajar. Beberapa hal kecil yang bisa membuat kunjungan pertamamu terasa lebih mudah.',
         'content' => [

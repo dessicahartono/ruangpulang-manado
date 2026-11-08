@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ArticleRequest;
 use App\Repositories\CommunityRepository;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Arr;
 use Illuminate\View\View;
 
 class ArticleSubmissionController extends Controller
@@ -32,8 +31,7 @@ class ArticleSubmissionController extends Controller
             return to_route('articles.create')->with('notice', self::THANKS);
         }
 
-        // Kategori dari pengunjung diabaikan. Admin yang menentukannya.
-        $community->submitPost(Arr::except($request->validated(), 'category'));
+        $community->submitPost($request->validated());
 
         return to_route('articles.create')->with('notice', self::THANKS);
     }

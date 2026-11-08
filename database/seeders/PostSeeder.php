@@ -14,7 +14,6 @@ class PostSeeder extends Seeder
             Post::firstOrCreate(['slug' => $post['slug']], [
                 'title' => $post['title'],
                 'author' => $post['author'],
-                'category' => $post['category'],
                 'status' => Post::STATUS_PUBLISHED,
                 'excerpt' => $post['excerpt'],
                 'body' => implode("\n\n", $post['content']),

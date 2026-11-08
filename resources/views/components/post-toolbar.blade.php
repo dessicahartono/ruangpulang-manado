@@ -1,12 +1,8 @@
-@props(['action', 'search', 'sort', 'category' => null, 'compactSort' => false])
+@props(['action', 'search', 'sort', 'compactSort' => false])
 
 @php($sorts = App\Repositories\CommunityRepository::POST_SORTS)
 
 <form class="blog-toolbar" method="GET" action="{{ $action }}" role="search" data-post-toolbar>
-    @if ($category)
-        <input type="hidden" name="kategori" value="{{ $category }}">
-    @endif
-
     <label class="sr-only" for="cari">Cari Artikel</label>
     <div class="search-wrap">
         <input class="field field--search" id="cari" type="search" name="q" value="{{ $search }}" placeholder="Cari berdasarkan nama penulis, judul, atau isi">
@@ -38,11 +34,16 @@
             </div>
         </details>
     @else
-        <label class="sr-only" for="urut">Urutkan</label>
-        <select class="select" id="urut" name="urut" data-autosubmit>
-            @foreach ($sorts as $value => $label)
-                <option value="{{ $value }}" @selected($sort === $value)>{{ $label }}</option>
-            @endforeach
-        </select>
+        {{-- Di HP, select ini transparan di atas ikon. Di desktop, ikonnya disembunyikan. --}}
+        <label class="sr-only" for="urut">Urutkan Berdasarkan</label>
+        <div class="sort-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16"></path><path d="M3.5 7.5L7 4l3.5 3.5"></path><path d="M17 20V4"></path><path d="M13.5 16.5L17 20l3.5-3.5"></path></svg>
+            <select class="select" id="urut" name="urut" data-autosubmit>
+                <option value="" @selected(! request()->has('urut')) disabled>Urutkan Berdasarkan</option>
+                @foreach ($sorts as $value => $label)
+                    <option value="{{ $value }}" @selected(request()->has('urut') && $sort === $value)>{{ $label }}</option>
+                @endforeach
+            </select>
+        </div>
     @endif
 </form>

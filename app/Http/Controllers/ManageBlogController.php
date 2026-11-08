@@ -18,14 +18,9 @@ class ManageBlogController extends Controller
 
     public function index(PostListRequest $request): View
     {
-        $categories = collect(Post::CATEGORIES);
-        $category = $categories->contains($request->query('kategori')) ? $request->query('kategori') : null;
-
         return view('pages.manage.index', [
-            'posts' => $this->community->managedPosts($request->search(), $request->sort(), self::PER_PAGE, $category),
+            'posts' => $this->community->managedPosts($request->search(), $request->sort(), self::PER_PAGE),
             'pendingCount' => $this->community->pendingPostCount(),
-            'categories' => $categories,
-            'activeCategory' => $category,
             'search' => $request->search(),
             'sort' => $request->sort(),
         ]);
@@ -40,7 +35,6 @@ class ManageBlogController extends Controller
             'cancelUrl' => route('manage.index'),
             'submitLabel' => 'Terbitkan Artikel',
             'hint' => 'Slug dan tanggal publikasi dibuat otomatis oleh sistem saat artikel diterbitkan.',
-            'categories' => Post::CATEGORIES,
         ]);
     }
 
@@ -49,6 +43,11 @@ class ManageBlogController extends Controller
         $this->community->publishPost($request->validated());
 
         return to_route('manage.index')->with('notice', 'Artikel sudah diterbitkan.');
+    }
+
+    public function show(string $slug): View
+    {
+        return view('pages.manage.review', ['post' => $this->findOrFail($slug)]);
     }
 
     public function edit(string $slug): View
@@ -62,7 +61,6 @@ class ManageBlogController extends Controller
             'cancelUrl' => route('manage.index'),
             'submitLabel' => 'Simpan Perubahan',
             'hint' => 'Slug dan tanggal publikasi tidak berubah saat artikel disimpan.',
-            'categories' => Post::CATEGORIES,
         ]);
     }
 
@@ -70,14 +68,15 @@ class ManageBlogController extends Controller
     {
         $this->community->updatePost($this->findOrFail($slug), $request->validated());
 
-        return to_route('manage.index')->with('notice', 'Perubahan sudah disimpan.');
+        return to_route('manage.show', $slug)->with('notice', 'Perubahan sudah disimpan.');
     }
 
     public function approve(string $slug): RedirectResponse
     {
         $this->community->approvePost($this->findOrFail($slug));
 
-        return to_route('manage.index')->with('notice', 'Artikel disetujui dan sudah tampil di Blog.');
+        // Fragmen #terbit membuka popup "Artikel Telah Diterbitkan" di halaman Tinjau.
+        return to_route('manage.show', $slug)->withFragment('terbit')->with('published', true);
     }
 
     public function destroy(string $slug): RedirectResponse

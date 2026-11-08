@@ -12,9 +12,7 @@ class Post extends Model
 
     public const STATUS_PUBLISHED = 'published';
 
-    public const CATEGORIES = ['Bantuan', 'Bercerita', 'Healing', 'Komunitas'];
-
-    protected $fillable = ['slug', 'title', 'author', 'category', 'status', 'excerpt', 'body', 'published_at'];
+    protected $fillable = ['slug', 'title', 'author', 'status', 'excerpt', 'body', 'published_at'];
 
     protected function casts(): array
     {

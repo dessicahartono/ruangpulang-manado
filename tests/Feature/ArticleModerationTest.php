@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -41,13 +42,12 @@ class ArticleModerationTest extends TestCase
 
     public function test_visitor_cannot_publish_or_choose_a_status(): void
     {
-        $this->post('/tulis-artikel', [...self::ARTICLE, 'status' => 'published', 'published_at' => '2026-01-01', 'category' => 'Healing']);
+        $this->post('/tulis-artikel', [...self::ARTICLE, 'status' => 'published', 'published_at' => '2026-01-01']);
 
         $post = Post::firstWhere('title', 'Judul Baru');
 
         $this->assertTrue($post->isPending());
         $this->assertNull($post->published_at);
-        $this->assertNull($post->category);
     }
 
     public function test_article_form_validates_input(): void
@@ -115,6 +115,7 @@ class ArticleModerationTest extends TestCase
             'daftar' => ['GET', '/kelola'],
             'form tambah' => ['GET', '/kelola/tambah'],
             'simpan' => ['POST', '/kelola'],
+            'tinjau' => ['GET', "/kelola/{$slug}/tinjau"],
             'form ubah' => ['GET', "/kelola/{$slug}/ubah"],
             'ubah' => ['PUT', "/kelola/{$slug}"],
             'setujui' => ['POST', "/kelola/{$slug}/setujui"],
@@ -132,7 +133,7 @@ class ArticleModerationTest extends TestCase
         $this->assertNull(session('is_admin'));
 
         $this->post('/kelola/masuk', ['password' => 'kata-sandi-benar'])->assertRedirect('/kelola');
-        $this->get('/kelola')->assertOk()->assertSee('Tambah Artikel');
+        $this->get('/kelola')->assertOk()->assertSee('Tulis Artikel');
 
         $this->post('/kelola/keluar')->assertRedirect('/');
         $this->get('/kelola')->assertRedirect('/kelola/masuk');
@@ -157,29 +158,61 @@ class ArticleModerationTest extends TestCase
         $this->post('/kelola/masuk', ['password' => 'kata-sandi-benar'])->assertTooManyRequests();
     }
 
-    public function test_admin_can_approve_a_submission(): void
+    public function test_admin_list_shows_pending_first_with_review_button_only(): void
     {
         $this->post('/tulis-artikel', self::ARTICLE);
 
         $this->asAdmin()->get('/kelola')
-            ->assertSeeInOrder(['Judul Baru', 'Menunggu Persetujuan', 'Setujui', 'Kapan Sebaiknya'])
-            ->assertSee('(1 Menunggu Persetujuan)');
+            ->assertSeeInOrder(['Nama Penulis', 'Judul Baru', 'Penulis', 'Menunggu Persetujuan', 'Tinjau Artikel', 'Kapan Sebaiknya'])
+            ->assertSee('(1 Menunggu Persetujuan)')
+            ->assertSee('/kelola/judul-baru/tinjau')
+            ->assertDontSee('Setujui')
+            ->assertDontSee('Kategori');
+    }
 
-        $this->post('/kelola/judul-baru/setujui')->assertRedirect('/kelola');
+    public function test_admin_can_review_and_approve_a_submission(): void
+    {
+        $this->post('/tulis-artikel', self::ARTICLE);
 
+        $this->asAdmin()->get('/kelola/judul-baru/tinjau')
+            ->assertOk()
+            ->assertSee('Tinjau')
+            ->assertSee('Subjudul')
+            ->assertSee('Setujui Artikel')
+            ->assertDontSee('Artikel Telah Diterbitkan');
+
+        $this->post('/kelola/judul-baru/setujui')->assertRedirect('/kelola/judul-baru/tinjau#terbit');
+
+        $this->get('/kelola/judul-baru/tinjau')->assertSee('Artikel Telah Diterbitkan')->assertDontSee('Setujui Artikel');
         $this->assertNotNull(Post::firstWhere('slug', 'judul-baru')->published_at);
         $this->get('/blog')->assertSee('Judul Baru');
-        $this->get('/blog/judul-baru')->assertOk()->assertSee('Subjudul')->assertSee('Paragraf kedua.');
+        $this->get('/blog/judul-baru')->assertOk()->assertSee('Paragraf kedua.');
+    }
+
+    public function test_publication_date_follows_manado_time(): void
+    {
+        // 21.30 UTC tanggal 8 sudah pukul 05.30 WITA tanggal 9.
+        $this->travelTo(Carbon::parse('2026-11-08 21:30:00', 'UTC'));
+
+        $this->asAdmin()->post('/kelola', self::ARTICLE);
+
+        $this->get('/blog/judul-baru')->assertSee('9 November 2026');
+    }
+
+    public function test_approving_a_published_post_keeps_its_date(): void
+    {
+        $post = Post::firstWhere('slug', self::SLUG);
+
+        $this->asAdmin()->post('/kelola/'.self::SLUG.'/setujui')->assertRedirect();
+
+        $this->assertTrue($post->published_at->equalTo($post->fresh()->published_at));
     }
 
     public function test_admin_can_publish_directly(): void
     {
-        $this->asAdmin()->post('/kelola', [...self::ARTICLE, 'category' => 'Healing'])->assertRedirect('/kelola');
+        $this->asAdmin()->post('/kelola', self::ARTICLE)->assertRedirect('/kelola');
 
-        $post = Post::firstWhere('slug', 'judul-baru');
-
-        $this->assertFalse($post->isPending());
-        $this->assertSame('Healing', $post->category);
+        $this->assertFalse(Post::firstWhere('slug', 'judul-baru')->isPending());
         $this->get('/blog/judul-baru')->assertOk();
     }
 
@@ -187,41 +220,29 @@ class ArticleModerationTest extends TestCase
     {
         $before = Post::firstWhere('slug', self::SLUG);
 
-        $this->asAdmin()->get('/kelola/'.self::SLUG.'/ubah')->assertOk()->assertSee('Simpan Perubahan');
-        $this->put('/kelola/'.self::SLUG, ['title' => 'Judul Diubah', 'author' => 'Admin', 'body' => 'Isi baru.', 'category' => 'Bantuan'])
-            ->assertRedirect('/kelola');
+        $this->asAdmin()->get('/kelola/'.self::SLUG.'/ubah')->assertOk()->assertSee('Ubah')->assertSee('Simpan Perubahan');
+        $this->put('/kelola/'.self::SLUG, ['title' => 'Judul Diubah', 'author' => 'Admin', 'body' => 'Isi baru.'])
+            ->assertRedirect('/kelola/'.self::SLUG.'/tinjau');
 
         $after = $before->fresh();
 
         $this->assertSame('Judul Diubah', $after->title);
         $this->assertSame(self::SLUG, $after->slug);
-        $this->assertSame('Bantuan', $after->category);
         $this->assertTrue($before->published_at->equalTo($after->published_at));
     }
 
-    public function test_admin_can_delete_and_rejects_unknown_categories(): void
+    public function test_admin_can_delete(): void
     {
-        $this->asAdmin()->post('/kelola', [...self::ARTICLE, 'category' => 'Palsu'])->assertSessionHasErrors('category');
-
-        $this->delete('/kelola/'.self::SLUG)->assertRedirect('/kelola');
+        $this->asAdmin()->delete('/kelola/'.self::SLUG)->assertRedirect('/kelola');
 
         $this->assertDatabaseMissing('posts', ['slug' => self::SLUG]);
         $this->get('/blog/'.self::SLUG)->assertNotFound();
     }
 
-    public function test_manage_page_filters_by_category(): void
-    {
-        $this->asAdmin()->get('/kelola?kategori=Bantuan')
-            ->assertSee('/blog/kapan-sebaiknya-mencari-bantuan-profesional')
-            ->assertDontSee('/blog/healing-tidak-harus-liburan')
-            ->assertSee('Total 1 artikel');
-
-        $this->get('/kelola?kategori=tidak-ada')->assertOk()->assertSee('Total 6 artikel');
-    }
-
     public function test_managing_an_unknown_post_is_not_found(): void
     {
         $this->asAdmin()->get('/kelola/tidak-ada/ubah')->assertNotFound();
+        $this->get('/kelola/tidak-ada/tinjau')->assertNotFound();
         $this->delete('/kelola/tidak-ada')->assertNotFound();
         $this->post('/kelola/tidak-ada/setujui')->assertNotFound();
     }

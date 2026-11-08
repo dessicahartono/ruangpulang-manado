@@ -42,6 +42,7 @@ Route::prefix('kelola')->name('manage.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/tambah', 'create')->name('create');
         Route::post('/', 'store')->name('store');
+        Route::get('/{slug}/tinjau', 'show')->name('show');
         Route::get('/{slug}/ubah', 'edit')->name('edit');
         Route::put('/{slug}', 'update')->name('update');
         Route::post('/{slug}/setujui', 'approve')->name('approve');

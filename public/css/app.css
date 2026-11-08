@@ -56,9 +56,31 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 .mission-list { padding-left: 1.3em; list-style: decimal outside; }
 
 /* Kelola */
+.admin-row--head { font-family: var(--font-body); font-size: .95rem; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--ink); }
+.admin-row small { font-family: var(--font-body); font-size: .85rem; font-weight: 400; }
+.admin-meta { font-size: 1rem; }
+.admin-list { margin-top: 26px; }
+.sort-icon { display: contents; }
+.sort-icon svg { display: none; }
+.article__title { margin-bottom: 12px; }
+.article-meta--dark { margin-bottom: 24px; color: var(--ink-soft); }
+.review-actions { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line); }
+
+@media (min-width: 761px) {
+    .admin-row { grid-template-columns: minmax(0, 1fr) 150px 190px 150px; gap: 24px; }
+}
+
+@media (max-width: 760px) {
+    .blog-toolbar { flex-direction: row; flex-wrap: nowrap; gap: 10px; }
+    .blog-toolbar .search-wrap { flex: 1 1 auto; min-width: 0; }
+    .sort-icon { position: relative; display: grid; flex: 0 0 46px; place-items: center; width: 46px; height: 46px; border: 1.5px solid var(--sand-deep); border-radius: 12px; background: var(--white); color: var(--dusk); }
+    .sort-icon svg { display: block; }
+    .sort-icon .select { position: absolute; inset: 0; width: 100%; min-width: 0; height: 100%; padding: 0; cursor: pointer; opacity: 0; }
+}
+
 .admin-head__actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .admin-actions form { display: contents; }
-.form--login { max-width: 420px; }
+.form--login { max-width: 480px; }
 .field-trap { position: absolute; left: -9999px; }
 .admin-count { margin: 0; }
 .notice { max-width: 820px; margin-bottom: 22px; padding: 12px 16px; border-left: 4px solid var(--ember); border-radius: 0 12px 12px 0; background: #fbe6c6; font-size: .95rem; }

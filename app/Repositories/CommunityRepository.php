@@ -54,12 +54,11 @@ class CommunityRepository
     }
 
     /** Semua artikel untuk admin. Yang menunggu persetujuan selalu tampil paling atas. */
-    public function managedPosts(string $search, string $sort, int $perPage, ?string $category = null): LengthAwarePaginator
+    public function managedPosts(string $search, string $sort, int $perPage): LengthAwarePaginator
     {
         $query = Post::query()->orderByRaw('status = ? desc', [Post::STATUS_PENDING]);
 
         return $this->sorted($query, $sort)
-            ->when($category, fn (Builder $query) => $query->where('category', $category))
             ->when($search !== '', fn (Builder $query) => $this->applySearch($query, $search))
             ->paginate($perPage)
             ->withQueryString();
@@ -101,7 +100,6 @@ class CommunityRepository
         $post->update([
             'title' => $data['title'],
             'author' => $data['author'],
-            'category' => $data['category'] ?? null,
             'body' => $data['body'],
             'excerpt' => $this->excerptFrom($data['body']),
         ]);
@@ -109,7 +107,10 @@ class CommunityRepository
 
     public function approvePost(Post $post): void
     {
-        $post->update(['status' => Post::STATUS_PUBLISHED, 'published_at' => now()]);
+        // Artikel yang sudah terbit dilewati supaya tanggal publikasinya tidak berubah.
+        if ($post->isPending()) {
+            $post->update(['status' => Post::STATUS_PUBLISHED, 'published_at' => now()]);
+        }
     }
 
     public function deletePost(Post $post): void
@@ -138,7 +139,6 @@ class CommunityRepository
             'slug' => $this->uniqueSlug($data['title']),
             'title' => $data['title'],
             'author' => $data['author'],
-            'category' => $data['category'] ?? null,
             'body' => $data['body'],
             'excerpt' => $this->excerptFrom($data['body']),
         ];

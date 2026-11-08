@@ -11,7 +11,7 @@
                 @csrf
                 <div class="form__row">
                     <label for="password">Kata Sandi</label>
-                    <input class="field" id="password" name="password" type="password" autocomplete="current-password" required>
+                    <input class="field" id="password" name="password" type="password" autocomplete="current-password" placeholder="Masukkan kata sandi" required>
                     @error('password')
                         <p class="form__error">{{ $message }}</p>
                     @enderror

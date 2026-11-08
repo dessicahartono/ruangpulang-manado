@@ -17,15 +17,7 @@
     <section class="section">
         <div class="container">
             <article class="article">
-                <div class="prose">
-                    @foreach ($post->content as $block)
-                        @if (str_starts_with($block, '## '))
-                            <h2>{{ substr($block, 3) }}</h2>
-                        @else
-                            <p>{{ $block }}</p>
-                        @endif
-                    @endforeach
-                </div>
+                <x-article-body :post="$post" />
                 <div class="article__nav">
                     <a class="back-arrow" href="{{ route('blog.index') }}" aria-label="Kembali ke Blog">
                         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M11 6l-6 6 6 6"></path></svg>
