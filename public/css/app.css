@@ -70,3 +70,9 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 
 /* 404 */
 .not-found p { margin-bottom: 24px; }
+
+/* Footer: di bawah 960px logo mengisi satu baris penuh, jadi menu dibuat selebar kontainer dan menempel ke kanan */
+@media (max-width: 960px) {
+    .footer__grid nav { grid-column: 1 / -1; text-align: right; }
+    .footer__grid .footer__list { justify-items: end; }
+}
