@@ -9,8 +9,8 @@
     <section class="section section--sand">
         <div class="container">
             <div class="grid grid--3">
-                @foreach ($portfolios as $portfolio)
-                    <x-portfolio-card :portfolio="$portfolio" />
+                @foreach ($activities as $activity)
+                    <x-activity-card :activity="$activity" />
                 @endforeach
             </div>
         </div>

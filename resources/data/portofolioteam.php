@@ -1,6 +1,7 @@
 <?php
 
 // Orang-orang di balik Ruang Pulang, dikelompokkan per bidang.
+// Halaman ini memenuhi kebutuhan "Portfolio" pada tugas.
 $member = fn (string $name, ?string $photo = null, ?string $instagram = null, array $extra = []) => [
     'name' => $name,
     'photo' => $photo ? "images/pengurus/foto-{$photo}.jpg" : null,

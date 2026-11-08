@@ -10,7 +10,7 @@
                 <x-button variant="outline-light" class="btn--icon" :href="route('blog.index')">
                     <img src="{{ asset('images/blog-icon.png') }}" alt="" width="22" height="22">Blog
                 </x-button>
-                <x-button variant="outline-light" :href="route('team')">Orang-Orang di Balik Ruang Pulang</x-button>
+                <x-button variant="outline-light" :href="route('portofolioteam')">Orang-Orang di Balik Ruang Pulang</x-button>
             </div>
         </div>
         <x-sky />

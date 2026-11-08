@@ -10,8 +10,8 @@ Tidak ada akun pengguna, jadi pengunjung bisa langsung memakai seluruh halaman. 
 | --- | --- | --- |
 | `/` | Beranda | Home |
 | `/tentang` | Sejarah, tujuan, visi, dan misi | About |
-| `/kegiatan` | Delapan jenis kegiatan | Portfolio |
-| `/pengurus` | Lima pendiri dan seluruh pengurus | Tambahan |
+| `/kegiatan` | Delapan jenis kegiatan | Tambahan |
+| `/pengurus` | Lima pendiri dan seluruh pengurus | Portfolio |
 | `/blog` dan `/blog/{slug}` | Daftar artikel dengan pencarian, urutan, dan halaman, serta detail artikel | Blog |
 | `/kontak` | Media sosial dan informasi bantuan darurat. Menu dan footer membuka versi popup | Contact |
 | `/bergabung` | Ketentuan keanggotaan dan tautan grup WhatsApp | Tambahan |
@@ -69,7 +69,7 @@ Website ini memakai paket gratis, sehingga hanya cocok untuk tugas, demo, dan uj
 | View | `resources/views/pages` | Tampilan setiap halaman, terpisah dari logika |
 | Blade | seluruh `resources/views` | `{{ }}`, `@foreach`, `@forelse`, `@if`, `@isset`, `@class`, `@error`, dan `@csrf` |
 | Layout | `resources/views/layouts/app.blade.php` | Struktur utama dengan `@yield`, dipakai lewat `@extends` |
-| Components | `resources/views/components` | Antara lain `navbar`, `footer`, `page-hero`, `sky`, `chat-widget`, `contact-modal`, `portfolio-card`, `member-card`, `post-result`, `post-toolbar`, `pager`, dan `form-field` |
+| Components | `resources/views/components` | Antara lain `navbar`, `footer`, `page-hero`, `sky`, `chat-widget`, `contact-modal`, `activity-card`, `member-card`, `post-result`, `post-toolbar`, `pager`, dan `form-field` |
 
 ### Alur data
 
@@ -108,7 +108,7 @@ Website tidak menyimpan percakapan di database atau server dan tidak menulis isi
 Profil, kegiatan, dan pengurus memakai data asli dari pemilik proyek. Yang masih berupa contoh:
 
 - Isi artikel awal (`resources/data/posts.php`), yang ditandai "data contoh" di akhir artikel. Setelah masuk database, artikel ini bisa diubah atau dihapus dari `/kelola`
-- Foto beberapa pengurus yang belum tersedia, yang ditampilkan sebagai inisial (`resources/data/team.php`)
+- Foto beberapa pengurus yang belum tersedia, yang ditampilkan sebagai inisial (`resources/data/portofolioteam.php`)
 
 ## Penggunaan AI
 

@@ -25,14 +25,14 @@ class CommunityRepository
         'judul-za' => 'Judul Z sampai A',
     ];
 
-    public function portfolios(): Collection
+    public function activities(): Collection
     {
-        return $this->load('portfolios');
+        return $this->load('activities');
     }
 
-    public function teamGroups(): Collection
+    public function portofolioTeam(): Collection
     {
-        return $this->load('team')->map(function (object $group) {
+        return $this->load('portofolioteam')->map(function (object $group) {
             $group->members = collect($group->members)->map(fn (array $member) => (object) $member);
 
             return $group;

@@ -10,8 +10,8 @@
         <nav aria-label="Menu footer">
             <ul class="footer__list">
                 <li><a href="{{ route('about') }}">Tentang</a></li>
-                <li><a href="{{ route('portfolio.index') }}">Kegiatan</a></li>
-                <li><a href="{{ route('team') }}">Pengurus</a></li>
+                <li><a href="{{ route('activity') }}">Kegiatan</a></li>
+                <li><a href="{{ route('portofolioteam') }}">Pengurus</a></li>
                 <li><a href="{{ route('blog.index') }}">Blog</a></li>
                 <li><label class="contact-open" for="hubungi-chk" role="button" tabindex="0">Kontak</label></li>
             </ul>

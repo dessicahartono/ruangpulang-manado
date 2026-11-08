@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Repositories\CommunityRepository;
 use Illuminate\View\View;
 
-class PortfolioController extends Controller
+class ActivityController extends Controller
 {
     public function __invoke(CommunityRepository $community): View
     {
-        return view('pages.portfolio', ['portfolios' => $community->portfolios()]);
+        return view('pages.activity', ['activities' => $community->activities()]);
     }
 }

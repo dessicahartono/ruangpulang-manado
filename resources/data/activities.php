@@ -1,6 +1,6 @@
 <?php
 
-// Jenis kegiatan Ruang Pulang. Halaman ini memenuhi kebutuhan "Portfolio" pada tugas.
+// Jenis kegiatan Ruang Pulang.
 return [
     [
         'title' => 'Pertemuan Mingguan',

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AdminSessionController;
 use App\Http\Controllers\ArticleSubmissionController;
 use App\Http\Controllers\BlogController;
@@ -9,14 +10,13 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JoinController;
 use App\Http\Controllers\ManageBlogController;
-use App\Http\Controllers\PortfolioController;
-use App\Http\Controllers\TeamController;
+use App\Http\Controllers\PortofolioTeamController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('/tentang', AboutController::class)->name('about');
-Route::get('/kegiatan', PortfolioController::class)->name('portfolio.index');
-Route::get('/pengurus', TeamController::class)->name('team');
+Route::get('/kegiatan', ActivityController::class)->name('activity');
+Route::get('/pengurus', PortofolioTeamController::class)->name('portofolioteam');
 Route::get('/bergabung', JoinController::class)->name('join');
 Route::get('/kontak', ContactController::class)->name('contact');
 

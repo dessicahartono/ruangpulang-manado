@@ -56,7 +56,7 @@ class PagesTest extends TestCase
 
     public function test_team_page_shows_five_founders_and_every_group(): void
     {
-        $groups = require resource_path('data/team.php');
+        $groups = require resource_path('data/portofolioteam.php');
         $this->assertCount(5, $groups[0]['members']);
 
         $response = $this->get('/pengurus');
@@ -76,13 +76,13 @@ class PagesTest extends TestCase
 
     public function test_content_meets_minimum_data_and_images_exist(): void
     {
-        $portfolios = require resource_path('data/portfolios.php');
+        $activities = require resource_path('data/activities.php');
 
-        $this->assertGreaterThanOrEqual(3, count($portfolios));
+        $this->assertGreaterThanOrEqual(3, count(require resource_path('data/portofolioteam.php')));
         $this->assertGreaterThanOrEqual(5, count(require resource_path('data/posts.php')));
 
-        foreach ($portfolios as $portfolio) {
-            $this->assertFileExists(public_path($portfolio['image']));
+        foreach ($activities as $activity) {
+            $this->assertFileExists(public_path($activity['image']));
         }
     }
 
