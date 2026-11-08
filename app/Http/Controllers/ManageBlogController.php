@@ -14,13 +14,23 @@ class ManageBlogController extends Controller
 {
     private const PER_PAGE = 10;
 
+    private const PENDING_PREVIEW = 2;
+
     public function __construct(private CommunityRepository $community) {}
 
     public function index(PostListRequest $request): View
     {
+        $pendingPosts = $this->community->pendingPosts($request->search(), $request->pendingSort());
+
+        // Halaman 1 berisi 10 artikel: yang menunggu tampil dulu, sisanya yang sudah terbit.
+        $reserved = min(self::PENDING_PREVIEW, $pendingPosts->count());
+        $publishedPosts = $this->community->publishedPostsWithReservedSlots($request->search(), $request->sort(), self::PER_PAGE, $reserved);
+
         return view('pages.manage.index', [
-            'pendingPosts' => $this->community->pendingPosts($request->search(), $request->sort(), self::PER_PAGE),
-            'publishedPosts' => $this->community->publishedPosts($request->search(), $request->sort(), self::PER_PAGE),
+            'pendingPosts' => $pendingPosts,
+            'pendingPreview' => self::PENDING_PREVIEW,
+            'publishedPosts' => $publishedPosts,
+            'publishedCount' => $publishedPosts->total() - $reserved,
             'search' => $request->search(),
             'sort' => $request->sort(),
         ]);

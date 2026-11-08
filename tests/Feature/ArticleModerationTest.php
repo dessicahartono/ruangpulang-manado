@@ -191,17 +191,93 @@ class ArticleModerationTest extends TestCase
             ->assertDontSee('Kapan Sebaiknya');
     }
 
-    public function test_each_section_has_its_own_pagination(): void
+    private function createPosts(string $status, int $count): void
     {
-        foreach (range(1, 11) as $number) {
-            Post::create(['slug' => "antre-{$number}", 'title' => "Antre {$number}", 'author' => 'A', 'status' => Post::STATUS_PENDING, 'excerpt' => 'x', 'body' => 'x']);
+        foreach (range(1, $count) as $number) {
+            Post::create([
+                'slug' => "{$status}-{$number}",
+                'title' => "{$status} {$number}",
+                'author' => 'Penulis Tes',
+                'status' => $status,
+                'excerpt' => 'x',
+                'body' => 'x',
+                'published_at' => $status === Post::STATUS_PUBLISHED ? now()->subYears(2)->addMinutes($number) : null,
+            ]);
+        }
+    }
+
+    public function test_queue_starts_with_the_oldest_submission(): void
+    {
+        foreach (['Kiriman Tengah' => 2, 'Kiriman Terbaru' => 1, 'Kiriman Terlama' => 3] as $title => $daysAgo) {
+            $this->travelTo(now()->subDays($daysAgo));
+            $this->post('/tulis-artikel', [...self::ARTICLE, 'title' => $title]);
+            $this->travelBack();
         }
 
-        $this->asAdmin()->get('/kelola')->assertSee('menunggu=2', false)->assertSee('Sudah Diterbitkan (6)');
+        $this->asAdmin()->get('/kelola')->assertSeeInOrder(['Kiriman Terlama', 'Kiriman Tengah', 'Kiriman Terbaru']);
+        $this->get('/kelola?urut=terbaru')->assertSeeInOrder(['Kiriman Terbaru', 'Kiriman Tengah', 'Kiriman Terlama']);
+    }
 
-        $this->get('/kelola?menunggu=2')
-            ->assertSee('Menunggu Persetujuan (11)')
-            ->assertSee('Kapan Sebaiknya');
+    public function test_default_order_of_published_articles_stays_newest_first(): void
+    {
+        $this->asAdmin()->get('/kelola')->assertSeeInOrder(['Kapan Sebaiknya', 'Kenapa Bercerita']);
+        $this->get('/blog')->assertSeeInOrder(['Kapan Sebaiknya', 'Kenapa Bercerita']);
+    }
+
+    public function test_first_page_shows_two_pending_and_eight_published(): void
+    {
+        $this->createPosts(Post::STATUS_PENDING, 5);
+        $this->createPosts(Post::STATUS_PUBLISHED, 10);
+
+        $posts = $this->asAdmin()->get('/kelola')
+            ->assertSee('Total 21 artikel')
+            ->assertSee('Menunggu Persetujuan (5)')
+            ->assertSee('Sudah Diterbitkan (16)')
+            ->assertSee('Lihat Selengkapnya (3)')
+            ->assertSee('Berikutnya')
+            ->viewData('publishedPosts');
+
+        $this->assertCount(8, $posts);
+    }
+
+    public function test_later_pages_show_ten_published_without_pending(): void
+    {
+        $this->createPosts(Post::STATUS_PENDING, 5);
+        $this->createPosts(Post::STATUS_PUBLISHED, 14);
+
+        $response = $this->asAdmin()->get('/kelola?page=2')
+            ->assertDontSee('Menunggu Persetujuan (')
+            ->assertSee('Sudah Diterbitkan (20)');
+
+        $this->assertCount(10, $response->viewData('publishedPosts'));
+
+        $seen = collect([1, 2, 3])->flatMap(
+            fn (int $page) => $this->get("/kelola?page={$page}")->viewData('publishedPosts')->pluck('slug')
+        );
+
+        // Tidak ada artikel yang terlewat atau muncul dua kali di antara halaman.
+        $this->assertCount(20, $seen);
+        $this->assertCount(20, $seen->unique());
+    }
+
+    public function test_fewer_pending_leaves_more_room_for_published(): void
+    {
+        $this->createPosts(Post::STATUS_PUBLISHED, 10);
+
+        $this->assertCount(10, $this->asAdmin()->get('/kelola')->assertDontSee('Lihat Selengkapnya')->viewData('publishedPosts'));
+
+        $this->createPosts(Post::STATUS_PENDING, 1);
+
+        $this->assertCount(9, $this->get('/kelola')->assertDontSee('Lihat Selengkapnya')->viewData('publishedPosts'));
+    }
+
+    public function test_exactly_eight_published_with_two_pending_fit_on_one_page(): void
+    {
+        Post::query()->delete();
+        $this->createPosts(Post::STATUS_PENDING, 2);
+        $this->createPosts(Post::STATUS_PUBLISHED, 8);
+
+        $this->asAdmin()->get('/kelola')->assertDontSee('Berikutnya')->assertSee('Total 10 artikel');
     }
 
     public function test_admin_can_review_and_approve_a_submission(): void

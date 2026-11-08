@@ -25,10 +25,19 @@ class PostListRequest extends FormRequest
 
     public function sort(): string
     {
+        return $this->requestedSort() ?? CommunityRepository::DEFAULT_POST_SORT;
+    }
+
+    /** Antrean dimulai dari kiriman terlama, kecuali admin memilih urutan lain. */
+    public function pendingSort(): string
+    {
+        return $this->requestedSort() ?? 'terlama';
+    }
+
+    private function requestedSort(): ?string
+    {
         $sort = $this->query('urut');
 
-        return is_string($sort) && array_key_exists($sort, CommunityRepository::POST_SORTS)
-            ? $sort
-            : CommunityRepository::DEFAULT_POST_SORT;
+        return is_string($sort) && array_key_exists($sort, CommunityRepository::POST_SORTS) ? $sort : null;
     }
 }

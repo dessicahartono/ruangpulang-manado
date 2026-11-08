@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Models\Post;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator as LengthAwarePaginatorInstance;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -53,15 +55,35 @@ class CommunityRepository
             ->withQueryString();
     }
 
-    /**
-     * Kiriman yang menunggu persetujuan admin, diurutkan menurut tanggal kirim.
-     * Nomor halamannya terpisah dari daftar artikel terbit di halaman yang sama.
-     */
-    public function pendingPosts(string $search, string $sort, int $perPage): LengthAwarePaginator
+    /** Kiriman yang menunggu persetujuan admin, diurutkan menurut tanggal kirim. */
+    public function pendingPosts(string $search, string $sort): Collection
     {
         return $this->sorted(Post::where('status', Post::STATUS_PENDING), $sort, 'created_at')
             ->when($search !== '', fn (Builder $query) => $this->applySearch($query, $search))
-            ->paginate($perPage, pageName: 'menunggu')
+            ->get();
+    }
+
+    /**
+     * Artikel terbit untuk halaman Kelola, dengan sebagian tempat di halaman 1
+     * dipakai oleh artikel yang menunggu.
+     *
+     * Paginator Laravel menganggap semua halaman sama panjang. Karena itu tempat
+     * yang dipakai ikut dihitung dalam total supaya jumlah halamannya tetap benar,
+     * sehingga jumlah artikel sebenarnya adalah total() dikurangi $reserved.
+     */
+    public function publishedPostsWithReservedSlots(string $search, string $sort, int $perPage, int $reserved): LengthAwarePaginator
+    {
+        $query = $this->sorted(Post::published(), $sort)
+            ->when($search !== '', fn (Builder $query) => $this->applySearch($query, $search));
+
+        $total = (clone $query)->count();
+        $page = Paginator::resolveCurrentPage();
+
+        $posts = $page === 1
+            ? $query->limit($perPage - $reserved)->get()
+            : $query->offset(($page - 1) * $perPage - $reserved)->limit($perPage)->get();
+
+        return (new LengthAwarePaginatorInstance($posts, $total + $reserved, $perPage, $page, ['path' => Paginator::resolveCurrentPath()]))
             ->withQueryString();
     }
 
@@ -117,7 +139,7 @@ class CommunityRepository
     private function sorted(Builder $query, string $sort, string $dateColumn = 'published_at'): Builder
     {
         return match ($sort) {
-            'terlama' => $query->orderBy($dateColumn),
+            'terlama' => $query->orderBy($dateColumn)->orderBy('id'),
             'judul-az' => $query->orderByRaw('LOWER(title) asc'),
             'judul-za' => $query->orderByRaw('LOWER(title) desc'),
             default => $query->orderByDesc($dateColumn)->orderByDesc('id'),

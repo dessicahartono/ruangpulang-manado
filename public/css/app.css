@@ -61,6 +61,13 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 .admin-meta { font-size: 1rem; }
 .admin-section { margin-top: 40px; }
 .admin-empty { color: var(--ink-soft); }
+.admin-more__rows { display: none; margin-top: 12px; }
+.admin-more__check:checked ~ .admin-more__rows { display: grid; }
+.admin-more__toggle { margin-top: 14px; cursor: pointer; }
+.admin-more__less { display: none; }
+.admin-more__check:checked ~ .admin-more__toggle .admin-more__more { display: none; }
+.admin-more__check:checked ~ .admin-more__toggle .admin-more__less { display: inline; }
+.admin-more__check:focus-visible ~ .admin-more__toggle { outline: 3px solid var(--ember); outline-offset: 3px; }
 .sort-icon { display: contents; }
 .sort-icon svg { display: none; }
 .article__title { margin-bottom: 12px; }
