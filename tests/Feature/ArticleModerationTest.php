@@ -158,16 +158,50 @@ class ArticleModerationTest extends TestCase
         $this->post('/kelola/masuk', ['password' => 'kata-sandi-benar'])->assertTooManyRequests();
     }
 
-    public function test_admin_list_shows_pending_first_with_review_button_only(): void
+    public function test_admin_list_separates_pending_from_published(): void
     {
         $this->post('/tulis-artikel', self::ARTICLE);
 
         $this->asAdmin()->get('/kelola')
-            ->assertSeeInOrder(['Nama Penulis', 'Judul Baru', 'Penulis', 'Menunggu Persetujuan', 'Tinjau Artikel', 'Kapan Sebaiknya'])
-            ->assertSee('(1 Menunggu Persetujuan)')
+            ->assertSeeInOrder([
+                'Total 7 artikel',
+                'Menunggu Persetujuan (1)', 'Tanggal Dikirim', 'Judul Baru', 'Tinjau Artikel',
+                'Sudah Diterbitkan (6)', 'Tanggal Publikasi', 'Kapan Sebaiknya',
+            ])
             ->assertSee('/kelola/judul-baru/tinjau')
             ->assertDontSee('Setujui')
             ->assertDontSee('Kategori');
+    }
+
+    public function test_approved_article_moves_to_the_published_section(): void
+    {
+        $this->post('/tulis-artikel', self::ARTICLE);
+        $this->asAdmin()->post('/kelola/judul-baru/setujui');
+
+        $this->get('/kelola')
+            ->assertSeeInOrder(['Menunggu Persetujuan (0)', 'Tidak ada artikel yang menunggu persetujuan.', 'Sudah Diterbitkan (7)', 'Judul Baru']);
+    }
+
+    public function test_search_applies_to_both_sections(): void
+    {
+        $this->post('/tulis-artikel', self::ARTICLE);
+
+        $this->asAdmin()->get('/kelola?q=Judul+Baru')
+            ->assertSeeInOrder(['Total 1 artikel', 'Menunggu Persetujuan (1)', 'Sudah Diterbitkan (0)', 'Tidak ada yang cocok'])
+            ->assertDontSee('Kapan Sebaiknya');
+    }
+
+    public function test_each_section_has_its_own_pagination(): void
+    {
+        foreach (range(1, 11) as $number) {
+            Post::create(['slug' => "antre-{$number}", 'title' => "Antre {$number}", 'author' => 'A', 'status' => Post::STATUS_PENDING, 'excerpt' => 'x', 'body' => 'x']);
+        }
+
+        $this->asAdmin()->get('/kelola')->assertSee('menunggu=2', false)->assertSee('Sudah Diterbitkan (6)');
+
+        $this->get('/kelola?menunggu=2')
+            ->assertSee('Menunggu Persetujuan (11)')
+            ->assertSee('Kapan Sebaiknya');
     }
 
     public function test_admin_can_review_and_approve_a_submission(): void

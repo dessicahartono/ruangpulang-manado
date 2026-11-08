@@ -89,7 +89,7 @@ Desain berasal dari prototipe pemilik proyek. Prototipe memiliki file terpisah u
 ### Alur artikel
 
 1. Pengunjung mengirim artikel lewat `/tulis-artikel`. Artikel tersimpan dengan status `pending` dan belum bisa dilihat publik.
-2. Admin masuk ke `/kelola`, membuka kiriman di bagian paling atas daftar lewat tombol Tinjau Artikel, lalu menyetujui, mengubah, atau menghapusnya.
+2. Admin masuk ke `/kelola`, membuka kiriman di bagian Menunggu Persetujuan lewat tombol Tinjau Artikel, lalu menyetujui, mengubah, atau menghapusnya.
 3. Artikel yang disetujui mendapat tanggal publikasi dan tampil di `/blog`.
 
 Pengiriman dibatasi 5 kali per jam per IP dan memakai kolom jebakan untuk bot. Percobaan masuk admin dibatasi 5 kali per menit per IP. Isi artikel selalu di-escape oleh Blade.

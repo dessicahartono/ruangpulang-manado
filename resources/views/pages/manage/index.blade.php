@@ -12,12 +12,7 @@
             @endif
 
             <div class="admin-head">
-                <p class="blog-count admin-count">
-                    Total {{ $posts->total() }} artikel
-                    @if ($pendingCount)
-                        <strong>({{ $pendingCount }} Menunggu Persetujuan)</strong>
-                    @endif
-                </p>
+                <p class="blog-count admin-count">Total {{ $pendingPosts->total() + $publishedPosts->total() }} artikel</p>
                 <div class="admin-head__actions">
                     <x-button variant="accent" :href="route('manage.create')">Tulis Artikel</x-button>
                     <form method="POST" action="{{ route('manage.logout') }}">
@@ -29,32 +24,21 @@
 
             <x-post-toolbar :action="route('manage.index')" :search="$search" :sort="$sort" />
 
-            <div class="admin-list">
-                <div class="admin-row admin-row--head"><span>Judul dan Slug</span><span>Nama Penulis</span><span>Tanggal Publikasi</span><span>Aksi</span></div>
-                @forelse ($posts as $post)
-                    <div class="admin-row">
-                        <div>
-                            <h3>{{ $post->title }}</h3>
-                            <small>/blog/{{ $post->slug }}</small>
-                        </div>
-                        <div class="admin-meta">{{ $post->author }}</div>
-                        <div class="admin-meta">
-                            @if ($post->isPending())
-                                <strong>Menunggu Persetujuan</strong>
-                            @else
-                                <time datetime="{{ $post->published_at->toDateString() }}">{{ $post->published_at->translatedFormat('j F Y') }}</time>
-                            @endif
-                        </div>
-                        <div class="admin-actions">
-                            <x-button variant="outline" class="btn--sm" :href="route('manage.show', $post->slug)">Tinjau Artikel</x-button>
-                        </div>
-                    </div>
-                @empty
-                    <p>Belum ada artikel yang cocok.</p>
-                @endforelse
-            </div>
+            <x-admin-post-list
+                title="Menunggu Persetujuan"
+                :posts="$pendingPosts"
+                date-label="Tanggal Dikirim"
+                date-column="created_at"
+                :empty="$search !== '' ? 'Tidak ada yang cocok dengan pencarian ini.' : 'Tidak ada artikel yang menunggu persetujuan.'"
+            />
 
-            <x-pager :paginator="$posts" />
+            <x-admin-post-list
+                title="Sudah Diterbitkan"
+                :posts="$publishedPosts"
+                date-label="Tanggal Publikasi"
+                date-column="published_at"
+                :empty="$search !== '' ? 'Tidak ada yang cocok dengan pencarian ini.' : 'Belum ada artikel yang diterbitkan.'"
+            />
         </div>
     </section>
 @endsection

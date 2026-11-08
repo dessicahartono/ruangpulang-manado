@@ -59,7 +59,8 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 .admin-row--head { font-family: var(--font-body); font-size: .95rem; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--ink); }
 .admin-row small { font-family: var(--font-body); font-size: .85rem; font-weight: 400; }
 .admin-meta { font-size: 1rem; }
-.admin-list { margin-top: 26px; }
+.admin-section { margin-top: 40px; }
+.admin-empty { color: var(--ink-soft); }
 .sort-icon { display: contents; }
 .sort-icon svg { display: none; }
 .article__title { margin-bottom: 12px; }

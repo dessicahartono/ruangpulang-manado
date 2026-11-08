@@ -53,20 +53,16 @@ class CommunityRepository
             ->withQueryString();
     }
 
-    /** Semua artikel untuk admin. Yang menunggu persetujuan selalu tampil paling atas. */
-    public function managedPosts(string $search, string $sort, int $perPage): LengthAwarePaginator
+    /**
+     * Kiriman yang menunggu persetujuan admin, diurutkan menurut tanggal kirim.
+     * Nomor halamannya terpisah dari daftar artikel terbit di halaman yang sama.
+     */
+    public function pendingPosts(string $search, string $sort, int $perPage): LengthAwarePaginator
     {
-        $query = Post::query()->orderByRaw('status = ? desc', [Post::STATUS_PENDING]);
-
-        return $this->sorted($query, $sort)
+        return $this->sorted(Post::where('status', Post::STATUS_PENDING), $sort, 'created_at')
             ->when($search !== '', fn (Builder $query) => $this->applySearch($query, $search))
-            ->paginate($perPage)
+            ->paginate($perPage, pageName: 'menunggu')
             ->withQueryString();
-    }
-
-    public function pendingPostCount(): int
-    {
-        return Post::where('status', Post::STATUS_PENDING)->count();
     }
 
     public function findPublishedPost(string $slug): ?Post
@@ -118,13 +114,13 @@ class CommunityRepository
         $post->delete();
     }
 
-    private function sorted(Builder $query, string $sort): Builder
+    private function sorted(Builder $query, string $sort, string $dateColumn = 'published_at'): Builder
     {
         return match ($sort) {
-            'terlama' => $query->orderBy('published_at'),
+            'terlama' => $query->orderBy($dateColumn),
             'judul-az' => $query->orderByRaw('LOWER(title) asc'),
             'judul-za' => $query->orderByRaw('LOWER(title) desc'),
-            default => $query->orderByDesc('published_at')->orderByDesc('id'),
+            default => $query->orderByDesc($dateColumn)->orderByDesc('id'),
         };
     }
 

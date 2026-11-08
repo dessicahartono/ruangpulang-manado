@@ -19,8 +19,8 @@ class ManageBlogController extends Controller
     public function index(PostListRequest $request): View
     {
         return view('pages.manage.index', [
-            'posts' => $this->community->managedPosts($request->search(), $request->sort(), self::PER_PAGE),
-            'pendingCount' => $this->community->pendingPostCount(),
+            'pendingPosts' => $this->community->pendingPosts($request->search(), $request->sort(), self::PER_PAGE),
+            'publishedPosts' => $this->community->publishedPosts($request->search(), $request->sort(), self::PER_PAGE),
             'search' => $request->search(),
             'sort' => $request->sort(),
         ]);
