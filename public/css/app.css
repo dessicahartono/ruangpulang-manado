@@ -1,0 +1,72 @@
+/*
+ * Penyesuaian untuk versi Laravel. Dimuat setelah rp.css dan rp-ext.css.
+ * Berisi hal yang di prototipe ditulis inline atau hanya berlaku di canvas desain.
+ */
+
+/* Latar langit pada judul halaman */
+main .hero { background: #04060f url(../images/hero-langit.jpg) center bottom / 100% auto no-repeat; }
+main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top / 100% auto no-repeat; }
+
+/* Satu halaman responsif menggantikan file desktop dan HP yang terpisah */
+.only-narrow { display: none !important; }
+.nav-narrow { display: none !important; }
+
+@media (max-width: 960px) {
+    .nav-wide { display: none !important; }
+    .nav-narrow { display: block !important; }
+}
+
+@media (max-width: 760px) {
+    main .page-hero { background-size: 260% auto; }
+    .only-wide { display: none !important; }
+    .only-narrow { display: revert !important; }
+    .hero__actions .only-narrow { display: inline-flex !important; }
+    .acc-list.only-narrow { display: grid !important; }
+    .sort-menu.only-narrow { display: block !important; }
+}
+
+/* Tombol chat: fixed di kanan bawah. Di canvas desain posisinya absolut. */
+.fab { position: fixed; top: auto; right: 24px; bottom: 24px; }
+.fab__panel { max-height: var(--fab-panel-max, calc(100dvh - 110px)); }
+.chat__header span { display: block; }
+.chat__header span[hidden] { display: none; }
+.chat__privacy { margin: 0; font-size: .78rem; line-height: 1.4; color: var(--ink-soft); }
+.chat__call { flex-shrink: 0; }
+.chat__reset[hidden] { display: none !important; }
+
+@media (max-width: 760px) {
+    .fab { right: 16px; bottom: 16px; }
+}
+
+/* Beranda */
+.join h2 { font-size: 40px; }
+
+@media (max-width: 760px) {
+    .join h2 { font-size: 30px; }
+}
+
+/* Foto pengurus dan kegiatan: pertahankan bagian orangnya saat dipotong */
+.arch img { height: 100%; }
+.founder-card__portrait { overflow: hidden; }
+.founder-card__portrait img { object-fit: cover; object-position: 50% 30%; }
+.team-group + .team-group { margin-top: 56px; }
+.group-desc p + p { margin-top: 8px; }
+
+/* Tentang */
+.mission-list { padding-left: 1.3em; list-style: decimal outside; }
+
+/* Kelola */
+.admin-head__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.admin-actions form { display: contents; }
+.form--login { max-width: 420px; }
+.field-trap { position: absolute; left: -9999px; }
+.admin-count { margin: 0; }
+.notice { max-width: 820px; margin-bottom: 22px; padding: 12px 16px; border-left: 4px solid var(--ember); border-radius: 0 12px 12px 0; background: #fbe6c6; font-size: .95rem; }
+.form__error { font-size: .9rem; color: var(--ember-deep); }
+
+/* Kontak */
+.contact-page { display: grid; gap: 28px; }
+.contact-page .contact__body { padding: 0; }
+
+/* 404 */
+.not-found p { margin-bottom: 24px; }
