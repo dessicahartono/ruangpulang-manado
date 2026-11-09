@@ -1,6 +1,6 @@
 # Ruang Pulang
 
-Website **Ruang Pulang**, komunitas di Manado untuk bercerita, merawat diri, dan menemukan teman baru. Dibangun dengan Laravel untuk memenuhi tugas pengembangan web.
+Website yang dibangun untuk komunitas osial di Manado bernama **Ruang Pulang**
 
 ## Fitur
 
