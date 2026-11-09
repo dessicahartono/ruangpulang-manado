@@ -4,8 +4,8 @@
         ['route' => 'home', 'label' => 'Beranda', 'active' => ['home']],
         ['route' => 'about', 'label' => 'Tentang', 'active' => ['about']],
         ['route' => 'activity', 'label' => 'Kegiatan', 'active' => ['activity']],
-        ['route' => 'portofolioteam', 'label' => 'Pengurus', 'active' => ['portofolioteam']],
-        ['route' => 'blog.index', 'label' => 'Blog', 'active' => ['blog.*', 'manage.*']],
+        ['route' => 'portofolioteam', 'label' => 'Pengurus', 'active' => ['portofolioteam', 'manage.members.*']],
+        ['route' => 'blog.index', 'label' => 'Blog', 'active' => ['blog.*', 'manage.blog.*']],
     ];
 @endphp
 

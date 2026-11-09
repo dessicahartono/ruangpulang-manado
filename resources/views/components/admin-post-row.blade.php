@@ -10,6 +10,6 @@
         <time datetime="{{ $post->{$dateColumn}->toDateString() }}">{{ $post->{$dateColumn}->translatedFormat('j F Y') }}</time>
     </div>
     <div class="admin-actions">
-        <x-button variant="outline" class="btn--sm" :href="route('manage.show', $post->slug)">Tinjau Artikel</x-button>
+        <x-button variant="outline" class="btn--sm" :href="route('manage.blog.show', $post->slug)">Tinjau Artikel</x-button>
     </div>
 </div>

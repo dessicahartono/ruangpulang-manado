@@ -16,7 +16,7 @@ class AdminSessionController extends Controller
     public function create(Request $request): View|RedirectResponse
     {
         return $request->session()->get('is_admin') === true
-            ? to_route('manage.index')
+            ? to_route('manage.dashboard')
             : view('pages.manage.login');
     }
 
@@ -37,7 +37,7 @@ class AdminSessionController extends Controller
         $request->session()->regenerate();
         $request->session()->put('is_admin', true);
 
-        return redirect()->intended(route('manage.index'));
+        return redirect()->intended(route('manage.dashboard'));
     }
 
     public function destroy(Request $request): RedirectResponse

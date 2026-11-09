@@ -40,9 +40,9 @@ class ManageBlogController extends Controller
     {
         return view('pages.manage.form', [
             'post' => null,
-            'action' => route('manage.store'),
+            'action' => route('manage.blog.store'),
             'method' => 'POST',
-            'cancelUrl' => route('manage.index'),
+            'cancelUrl' => route('manage.blog.index'),
             'submitLabel' => 'Terbitkan Artikel',
             'hint' => 'Slug dan tanggal publikasi dibuat otomatis oleh sistem saat artikel diterbitkan.',
         ]);
@@ -52,7 +52,7 @@ class ManageBlogController extends Controller
     {
         $this->community->publishPost($request->validated());
 
-        return to_route('manage.index')->with('notice', 'Artikel sudah diterbitkan.');
+        return to_route('manage.blog.index')->with('notice', 'Artikel sudah diterbitkan.');
     }
 
     public function show(string $slug): View
@@ -66,9 +66,9 @@ class ManageBlogController extends Controller
 
         return view('pages.manage.form', [
             'post' => $post,
-            'action' => route('manage.update', $post->slug),
+            'action' => route('manage.blog.update', $post->slug),
             'method' => 'PUT',
-            'cancelUrl' => route('manage.index'),
+            'cancelUrl' => route('manage.blog.index'),
             'submitLabel' => 'Simpan Perubahan',
             'hint' => 'Slug dan tanggal publikasi tidak berubah saat artikel disimpan.',
         ]);
@@ -78,7 +78,7 @@ class ManageBlogController extends Controller
     {
         $this->community->updatePost($this->findOrFail($slug), $request->validated());
 
-        return to_route('manage.show', $slug)->with('notice', 'Perubahan sudah disimpan.');
+        return to_route('manage.blog.show', $slug)->with('notice', 'Perubahan sudah disimpan.');
     }
 
     public function approve(string $slug): RedirectResponse
@@ -86,14 +86,14 @@ class ManageBlogController extends Controller
         $this->community->approvePost($this->findOrFail($slug));
 
         // Fragmen #terbit membuka popup "Artikel Telah Diterbitkan" di halaman Tinjau.
-        return to_route('manage.show', $slug)->withFragment('terbit')->with('published', true);
+        return to_route('manage.blog.show', $slug)->withFragment('terbit')->with('published', true);
     }
 
     public function destroy(string $slug): RedirectResponse
     {
         $this->community->deletePost($this->findOrFail($slug));
 
-        return to_route('manage.index')->with('notice', 'Artikel sudah dihapus.');
+        return to_route('manage.blog.index')->with('notice', 'Artikel sudah dihapus.');
     }
 
     private function findOrFail(string $slug): Post

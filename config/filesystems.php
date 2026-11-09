@@ -38,6 +38,15 @@ return [
             'report' => false,
         ],
 
+        // Foto pengurus unggahan admin. Langsung di folder public supaya tidak perlu storage:link.
+        'members' => [
+            'driver' => 'local',
+            'root' => public_path('uploads/pengurus'),
+            'visibility' => 'public',
+            'throw' => true,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

@@ -10,6 +10,8 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JoinController;
 use App\Http\Controllers\ManageBlogController;
+use App\Http\Controllers\ManageDashboardController;
+use App\Http\Controllers\ManageMemberController;
 use App\Http\Controllers\PortofolioTeamController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,15 +40,29 @@ Route::prefix('kelola')->name('manage.')->group(function () {
         Route::post('/keluar', 'destroy')->name('logout');
     });
 
-    Route::controller(ManageBlogController::class)->middleware('admin')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/tambah', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{slug}/tinjau', 'show')->name('show');
-        Route::get('/{slug}/ubah', 'edit')->name('edit');
-        Route::put('/{slug}', 'update')->name('update');
-        Route::post('/{slug}/setujui', 'approve')->name('approve');
-        Route::delete('/{slug}', 'destroy')->name('destroy');
+    Route::middleware('admin')->group(function () {
+        Route::get('/', ManageDashboardController::class)->name('dashboard');
+
+        Route::controller(ManageBlogController::class)->prefix('blog')->name('blog.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/tambah', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{slug}/tinjau', 'show')->name('show');
+            Route::get('/{slug}/ubah', 'edit')->name('edit');
+            Route::put('/{slug}', 'update')->name('update');
+            Route::post('/{slug}/setujui', 'approve')->name('approve');
+            Route::delete('/{slug}', 'destroy')->name('destroy');
+        });
+
+        Route::controller(ManageMemberController::class)->prefix('pengurus')->name('members.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/tambah', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{member}/tinjau', 'show')->name('show');
+            Route::get('/{member}/ubah', 'edit')->name('edit');
+            Route::put('/{member}', 'update')->name('update');
+            Route::delete('/{member}', 'destroy')->name('destroy');
+        });
     });
 });
 

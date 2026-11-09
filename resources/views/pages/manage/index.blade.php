@@ -14,15 +14,12 @@
             <div class="admin-head">
                 <p class="blog-count admin-count">Total {{ $pendingPosts->count() + $publishedCount }} artikel</p>
                 <div class="admin-head__actions">
-                    <x-button variant="accent" :href="route('manage.create')">Tulis Artikel</x-button>
-                    <form method="POST" action="{{ route('manage.logout') }}">
-                        @csrf
-                        <x-button variant="outline" type="submit">Keluar</x-button>
-                    </form>
+                    <x-button variant="accent" :href="route('manage.blog.create')">Tulis Artikel</x-button>
+                    <a class="text-link admin-back-link" href="{{ route('manage.dashboard') }}">Kembali ke menu utama</a>
                 </div>
             </div>
 
-            <x-post-toolbar :action="route('manage.index')" :search="$search" :sort="$sort" />
+            <x-post-toolbar :action="route('manage.blog.index')" :search="$search" :sort="$sort" />
 
             {{-- Halaman 2 dan seterusnya hanya berisi artikel yang sudah terbit. --}}
             @if ($publishedPosts->onFirstPage())
