@@ -98,6 +98,15 @@ class MemberManagementTest extends TestCase
             ->assertDontSee('Kelola Admin');
     }
 
+    public function test_activity_card_is_only_a_marker_for_now(): void
+    {
+        $this->asAdmin()->get('/kelola')
+            ->assertSeeInOrder(['Kelola Kegiatan', 'On Progress'])
+            ->assertDontSee('/kelola/kegiatan');
+
+        $this->get('/kelola/kegiatan')->assertNotFound();
+    }
+
     public function test_blog_management_toolbar_matches_the_member_page(): void
     {
         $this->asAdmin()->get('/kelola/blog?urut=judul-az')

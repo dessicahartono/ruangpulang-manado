@@ -14,7 +14,7 @@ Website yang dibangun untuk komunitas sosial di Manado bernama **Ruang Pulang**
 | `/kontak` | Media sosial dan informasi bantuan darurat |
 | `/bergabung` | Ketentuan keanggotaan dan tautan grup WhatsApp |
 | `/tulis-artikel` | Kiriman artikel dari pengunjung, tampil setelah disetujui admin |
-| `/kelola` | Menu admin, berisi Kelola Profil Pengurus (`/kelola/pengurus`) dan Kelola Blog (`/kelola/blog`) |
+| `/kelola` | Menu admin, berisi Kelola Profil Pengurus (`/kelola/pengurus`), Kelola Blog (`/kelola/blog`) Kelola Kegiatan (`/kelola/kegiatan`) |
 
 Chatbot AI "Teman Pulang" tersedia di semua halaman.
 
@@ -27,7 +27,7 @@ composer run setup
 php artisan serve
 ```
 
-Buka <http://localhost:8000>. Perintah setup juga membuat database SQLite dan mengisinya dengan artikel contoh serta data pengurus. Untuk menjalankan pengujian, gunakan `php artisan test`.
+Buka <http://localhost:8000>. Perintah setup juga membuat database SQLite dan mengisinya dengan data pengurus, blog, dan kegiatan. Untuk menjalankan pengujian, gunakan `php artisan test`.
 
 **Halaman Kelola:** jalankan `php artisan admin:password` untuk membuat kata sandi admin.
 
