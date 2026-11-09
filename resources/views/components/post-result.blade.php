@@ -9,7 +9,7 @@
         <h3 class="result__title"><a href="{{ route('blog.show', $post->slug) }}">{{ $post->title }}</a></h3>
         <p class="result__snippet">
             <time datetime="{{ $post->published_at->toDateString() }}">{{ $post->published_at->translatedFormat('j F Y') }}</time>
-            &mdash; {{ $post->excerpt }}
+            {{ $post->excerpt }}
         </p>
     </div>
 </article>
