@@ -14,7 +14,7 @@ class ChatMessageRequest extends FormRequest
         return [
             'messages' => ['required', 'array', 'min:1', 'max:'.config('chatbot.max_history')],
             'messages.*.role' => ['required', Rule::in(['user', 'assistant'])],
-            'messages.*.content' => ['required', 'string', 'max:'.config('chatbot.max_message_length')],
+            'messages.*.content' => ['required', 'string', 'max:'.config('chatbot.max_reply_length')],
         ];
     }
 
@@ -40,6 +40,15 @@ class ChatMessageRequest extends FormRequest
 
             if ($messages[0]['role'] !== 'user' || end($messages)['role'] !== 'user') {
                 $validator->errors()->add('messages', 'Format percakapan tidak valid.');
+
+                return;
+            }
+
+            // Batas ketat hanya untuk pesan baru, karena riwayat juga berisi balasan AI.
+            $limit = config('chatbot.max_message_length');
+
+            if (mb_strlen(trim(end($messages)['content'])) > $limit) {
+                $validator->errors()->add('messages', "Pesannya terlalu panjang. Coba kirim maksimal {$limit} karakter.");
             }
         }];
     }

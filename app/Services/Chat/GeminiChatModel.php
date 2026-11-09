@@ -42,6 +42,11 @@ class GeminiChatModel implements ChatModel
             ->pluck('text')
             ->implode('');
 
+        // Balasan yang terpotong batas token dipotong lagi ke akhir kalimat terakhir yang utuh.
+        if ($response->json('candidates.0.finishReason') === 'MAX_TOKENS') {
+            $text = preg_replace('/[^.!?]*$/u', '', trim($text));
+        }
+
         return trim($text) === '' ? null : trim($text);
     }
 
