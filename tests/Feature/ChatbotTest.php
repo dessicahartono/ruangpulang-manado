@@ -94,6 +94,9 @@ class ChatbotTest extends TestCase
         return array_map(fn ($phrase) => [$phrase], [
             'kepikiran bunuh diri', 'BUNUH DIRI', 'ingin mengakhiri hidup', 'aku mau mati', 'mending mati aja',
             'gak mau hidup lagi', 'pengen nyakitin diri', 'aku melukai diri', 'i want to kill myself', 'capek hidup',
+            'akhir-akhir ini aku merasa semua orang bakal lebih baik tanpa aku', 'mereka lebih bahagia kalau tanpa gue',
+            'semua lebih baik kalau aku gak ada', 'kayaknya gak ada gunanya lagi aku di sini', 'hidupku gak ada artinya',
+            'rasanya gak ada alasan buat bertahan', 'pengen hilang aja', 'aku mau menghilang selamanya',
         ]);
     }
 
@@ -107,6 +110,8 @@ class ChatbotTest extends TestCase
     {
         return array_map(fn ($phrase) => [$phrase], [
             'tadi mati lampu', 'hari ini capek banget', 'aku mau hidup sehat', 'nonton film tentang kematian', 'tugas bikin stres',
+            'kopinya lebih baik tanpa gula', 'gak ada gunanya lagi belajar malam ini', 'gak ada alasan buat telat',
+            'kalau aku gak ada kelas, kita ketemu', 'bosku mau hilangkan lembur', 'kuncinya hilang saja di jalan',
         ]);
     }
 
