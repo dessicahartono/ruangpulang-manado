@@ -62,6 +62,6 @@ Website ini memakai paket gratis Gemini, sehingga hanya cocok untuk tugas, demo,
 
 ## Penggunaan AI
 
-Proyek ini dikembangkan dengan bantuan AI untuk mengefisienkan waktu pengerjaan. Ide dan konsep desain berasal dari pemilik proyek, dan pengerjaannya dibantu Claude. Claude Code membantu membuat struktur awal Laravel, menerapkan desain ke Blade, menulis kode fitur, artikel contoh, dan pengujian. Hasilnya ditinjau, dipelajari, dan dijalankan sendiri oleh pemilik proyek.
+Proyek ini dikembangkan dengan bantuan AI untuk mengefisienkan waktu pengerjaan. Ide dan konsep desain berasal dari pemilik proyek, dan pengerjaannya dibantu Claude. Claude Code membantu membuat struktur awal Laravel, menerapkan desain ke Blade, menulis artikel contoh, dan pengujian. Hasilnya ditinjau, dipelajari, dan dijalankan sendiri oleh pemilik proyek.
 
 Fitur chatbot memakai model AI Google Gemini saat `GEMINI_API_KEY` diisi.
