@@ -1,6 +1,6 @@
 # Ruang Pulang
 
-Website yang dibangun untuk komunitas osial di Manado bernama **Ruang Pulang**
+Website yang dibangun untuk komunitas sosial di Manado bernama **Ruang Pulang**
 
 ## Fitur
 
