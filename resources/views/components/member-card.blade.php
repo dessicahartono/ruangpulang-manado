@@ -3,12 +3,12 @@
 <article class="founder-card">
     <div class="arch founder-card__portrait">
         @if ($member->photo)
-            <img src="{{ asset($member->photo) }}" alt="Foto {{ $member->name }}" loading="lazy">
+            <img src="{{ asset($member->photo) }}" alt="Foto {{ $member->display_name }}" loading="lazy">
         @else
-            <span aria-hidden="true">{{ Str::substr($member->name, 0, 1) }}</span>
+            <span aria-hidden="true">{{ Str::substr($member->full_name, 0, 1) }}</span>
         @endif
     </div>
-    <h3>{{ $member->name }}</h3>
+    <h3>{{ $member->display_name }}</h3>
     @isset($member->role)
         <p class="founder-card__role">{{ $member->role }}</p>
     @endisset

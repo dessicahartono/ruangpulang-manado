@@ -12,7 +12,7 @@
             <div class="only-wide">
                 @foreach ($groups as $group)
                     <div class="team-group">
-                        <h2 class="h3-title">{{ $group->title }}</h2>
+                        <h2 class="h3-title">{{ $group->name }}</h2>
                         <x-team-group :group="$group" />
                     </div>
                 @endforeach
@@ -21,7 +21,7 @@
             <div class="acc-list only-narrow">
                 @foreach ($groups as $group)
                     <details class="acc" @if ($loop->first) open @endif>
-                        <summary class="acc__sum">{{ $group->title }}</summary>
+                        <summary class="acc__sum">{{ $group->name }}</summary>
                         <div class="acc__body">
                             <x-team-group :group="$group" />
                         </div>

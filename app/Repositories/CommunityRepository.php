@@ -2,18 +2,23 @@
 
 namespace App\Repositories;
 
+use App\Models\Division;
+use App\Models\Member;
 use App\Models\Post;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator as LengthAwarePaginatorInstance;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
  * Satu-satunya pintu masuk data konten website.
  *
- * Artikel blog disimpan di database. Profil, kegiatan, dan pengurus masih dari
+ * Artikel blog dan pengurus disimpan di database. Profil dan kegiatan masih dari
  * file PHP di resources/data karena hanya berubah kalau komunitasnya berubah.
  */
 class CommunityRepository
@@ -27,18 +32,75 @@ class CommunityRepository
         'judul-za' => 'Judul Z sampai A',
     ];
 
+    public const DEFAULT_MEMBER_SORT = 'susunan';
+
+    public const MEMBER_SORTS = [
+        'susunan' => 'Susunan Halaman Pengurus',
+        'nama-az' => 'Nama A sampai Z',
+        'nama-za' => 'Nama Z sampai A',
+        'terbaru' => 'Terakhir Ditambahkan',
+    ];
+
+    /** Lokasi foto unggahan admin di folder public. Foto awal ada di images/pengurus. */
+    private const MEMBER_UPLOAD_PATH = 'uploads/pengurus/';
+
     public function activities(): Collection
     {
         return $this->load('activities');
     }
 
+    /** Seluruh divisi beserta pengurusnya, sesuai susunan halaman Pengurus. */
     public function portofolioTeam(): Collection
     {
-        return $this->load('portofolioteam')->map(function (object $group) {
-            $group->members = collect($group->members)->map(fn (array $member) => (object) $member);
+        return Division::with('members')->orderBy('position')->get();
+    }
 
-            return $group;
-        });
+    public function divisions(): Collection
+    {
+        return Division::orderBy('position')->get();
+    }
+
+    public function members(string $search, ?int $divisionId, string $sort, int $perPage): LengthAwarePaginator
+    {
+        return $this->sortedMembers(Member::with('division'), $sort)
+            ->when($divisionId !== null, fn (Builder $query) => $query->where('division_id', $divisionId))
+            ->when($search !== '', fn (Builder $query) => $query->where(fn (Builder $matches) => $matches
+                ->whereAny(['full_name', 'nickname'], 'like', "%{$search}%")
+                ->orWhereHas('division', fn (Builder $division) => $division->where('name', 'like', "%{$search}%"))))
+            ->paginate($perPage)
+            ->withQueryString();
+    }
+
+    public function createMember(array $data): Member
+    {
+        return Member::create([
+            ...Arr::except($data, 'photo'),
+            'photo' => $this->storeMemberPhoto($data['photo']),
+            'position' => $this->nextMemberPosition($data['division_id']),
+        ]);
+    }
+
+    public function updateMember(Member $member, array $data): void
+    {
+        $attributes = Arr::except($data, 'photo');
+
+        // Pindah divisi berarti masuk ke urutan terakhir di divisi barunya.
+        if ((int) $data['division_id'] !== $member->division_id) {
+            $attributes['position'] = $this->nextMemberPosition($data['division_id']);
+        }
+
+        if (isset($data['photo'])) {
+            $this->deleteMemberPhoto($member);
+            $attributes['photo'] = $this->storeMemberPhoto($data['photo']);
+        }
+
+        $member->update($attributes);
+    }
+
+    public function deleteMember(Member $member): void
+    {
+        $member->delete();
+        $this->deleteMemberPhoto($member);
     }
 
     public function profile(): object
@@ -180,6 +242,37 @@ class CommunityRepository
             ->first(fn (string $block) => ! str_starts_with($block, '## '), '');
 
         return Str::limit(Str::squish($firstParagraph), 160);
+    }
+
+    private function sortedMembers(Builder $query, string $sort): Builder
+    {
+        return match ($sort) {
+            'nama-az' => $query->orderByRaw('LOWER(full_name) asc')->orderBy('id'),
+            'nama-za' => $query->orderByRaw('LOWER(full_name) desc')->orderBy('id'),
+            'terbaru' => $query->orderByDesc('id'),
+            default => $query
+                ->orderBy(Division::select('position')->whereColumn('divisions.id', 'members.division_id'))
+                ->orderBy('position')
+                ->orderBy('id'),
+        };
+    }
+
+    private function nextMemberPosition(int|string $divisionId): int
+    {
+        return (Member::where('division_id', $divisionId)->max('position') ?? -1) + 1;
+    }
+
+    private function storeMemberPhoto(UploadedFile $photo): string
+    {
+        return self::MEMBER_UPLOAD_PATH.$photo->storeAs('', $photo->hashName(), 'members');
+    }
+
+    /** Foto awal di images/pengurus ikut tersimpan di Git dan bisa dipakai beberapa baris, jadi tidak dihapus. */
+    private function deleteMemberPhoto(Member $member): void
+    {
+        if ($member->photo && str_starts_with($member->photo, self::MEMBER_UPLOAD_PATH)) {
+            Storage::disk('members')->delete(basename($member->photo));
+        }
     }
 
     private function load(string $file): Collection
