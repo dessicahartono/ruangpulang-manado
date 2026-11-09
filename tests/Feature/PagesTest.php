@@ -109,7 +109,7 @@ class PagesTest extends TestCase
             ->assertDontSee('Healing Tidak Harus Liburan')
             ->assertSee('Sekitar 1 artikel ditemukan');
 
-        $this->get('/blog?q=TIM+RUANG+PULANG')->assertSee('Sekitar 3 artikel ditemukan');
+        $this->get('/blog?q=TIM+RUANG+PULANG')->assertSee('Sekitar 9 artikel ditemukan');
         $this->get('/blog?q=matahari+terbenam')->assertSee('Healing Tidak Harus Liburan');
         $this->get('/blog?q=tidak-ada-yang-cocok')->assertSee('Belum ada artikel yang cocok');
     }
@@ -119,7 +119,7 @@ class PagesTest extends TestCase
         $this->get('/blog?urut=terlama')->assertSeeInOrder(['Tips Datang Sendirian', 'Healing Tidak Harus Liburan']);
         $this->get('/blog?urut=terbaru')->assertSeeInOrder(['Kapan Sebaiknya', 'Kenapa Bercerita']);
         $this->get('/blog?urut=judul-az')->assertSeeInOrder(['Belajar Menjadi', 'Cara Menenangkan']);
-        $this->get('/blog?urut=judul-za')->assertSeeInOrder(['Tips Datang', 'Kenapa Bercerita']);
+        $this->get('/blog?urut=judul-za')->assertSeeInOrder(['Tips Datang', 'Saat Lelah']);
     }
 
     public function test_blog_pagination_keeps_the_query_and_only_shows_real_pages(): void
@@ -127,9 +127,9 @@ class PagesTest extends TestCase
         $this->get('/blog?urut=terlama')
             ->assertSee('urut=terlama&amp;page=2', false)
             ->assertSee('Berikutnya')
-            ->assertDontSee('>3</a>', false);
+            ->assertDontSee('>5</a>', false);
 
-        $this->get('/blog?urut=terlama&page=2')
+        $this->get('/blog?urut=terlama&page=4')
             ->assertSee('Kapan Sebaiknya')
             ->assertDontSee('Berikutnya');
 
@@ -138,7 +138,7 @@ class PagesTest extends TestCase
 
     public function test_malformed_blog_queries_are_ignored(): void
     {
-        $this->get('/blog?q[]=x&urut[]=y&page=abc')->assertOk()->assertSee('Sekitar 6 artikel ditemukan');
+        $this->get('/blog?q[]=x&urut[]=y&page=abc')->assertOk()->assertSee('Sekitar 17 artikel ditemukan');
         $this->get('/blog?urut=tidak-ada')->assertOk()->assertSeeInOrder(['Kapan Sebaiknya', 'Kenapa Bercerita']);
     }
 

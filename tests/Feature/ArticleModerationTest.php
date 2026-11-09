@@ -164,9 +164,9 @@ class ArticleModerationTest extends TestCase
 
         $this->asAdmin()->get('/kelola')
             ->assertSeeInOrder([
-                'Total 7 artikel',
+                'Total 18 artikel',
                 'Menunggu Persetujuan (1)', 'Tanggal Dikirim', 'Judul Baru', 'Tinjau Artikel',
-                'Sudah Diterbitkan (6)', 'Tanggal Publikasi', 'Kapan Sebaiknya',
+                'Sudah Diterbitkan (17)', 'Tanggal Publikasi', 'Kapan Sebaiknya',
             ])
             ->assertSee('/kelola/judul-baru/tinjau')
             ->assertDontSee('Setujui')
@@ -179,7 +179,7 @@ class ArticleModerationTest extends TestCase
         $this->asAdmin()->post('/kelola/judul-baru/setujui');
 
         $this->get('/kelola')
-            ->assertSeeInOrder(['Menunggu Persetujuan (0)', 'Tidak ada artikel yang menunggu persetujuan.', 'Sudah Diterbitkan (7)', 'Judul Baru']);
+            ->assertSeeInOrder(['Menunggu Persetujuan (0)', 'Tidak ada artikel yang menunggu persetujuan.', 'Sudah Diterbitkan (18)', 'Judul Baru']);
     }
 
     public function test_search_applies_to_both_sections(): void
@@ -230,9 +230,9 @@ class ArticleModerationTest extends TestCase
         $this->createPosts(Post::STATUS_PUBLISHED, 10);
 
         $posts = $this->asAdmin()->get('/kelola')
-            ->assertSee('Total 21 artikel')
+            ->assertSee('Total 32 artikel')
             ->assertSee('Menunggu Persetujuan (5)')
-            ->assertSee('Sudah Diterbitkan (16)')
+            ->assertSee('Sudah Diterbitkan (27)')
             ->assertSee('Lihat Selengkapnya (3)')
             ->assertSee('Berikutnya')
             ->viewData('publishedPosts');
@@ -243,7 +243,7 @@ class ArticleModerationTest extends TestCase
     public function test_later_pages_show_ten_published_without_pending(): void
     {
         $this->createPosts(Post::STATUS_PENDING, 5);
-        $this->createPosts(Post::STATUS_PUBLISHED, 14);
+        $this->createPosts(Post::STATUS_PUBLISHED, 3);
 
         $response = $this->asAdmin()->get('/kelola?page=2')
             ->assertDontSee('Menunggu Persetujuan (')
@@ -363,7 +363,7 @@ class ArticleModerationTest extends TestCase
 
         $this->seed();
 
-        $this->assertSame(6, Post::count());
+        $this->assertSame(17, Post::count());
         $this->assertSame('Sudah Diedit', Post::firstWhere('slug', self::SLUG)->title);
     }
 
