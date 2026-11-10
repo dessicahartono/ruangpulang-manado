@@ -47,7 +47,7 @@ return [
         ],
         'members' => [
             $member('Dessica Suhaedi Hartono (Dessica)', '12bc5ee3', 'dessicahartono'),
-            $member('April'),
+            $member('Dhea Aprilliani Abasi (April)', 'b9db305d', 'dheaprillia__'),
             $member('Roma Palilati (Roma)', '3903f871', 'kafeel4191'),
         ],
     ],
@@ -63,8 +63,8 @@ return [
         'title' => 'Ruang Karya',
         'description' => ['Berfokus pada dokumentasi dan kreativitas, seperti foto, video, editing, konten, serta kebutuhan visual Ruang Pulang.'],
         'members' => [
-            $member('Rey'),
-            $member('Fay'),
+            $member('Reyno (Mas/Rey)', '1879dee9', 'mamas_rey1'),
+            $member('Rizka Polingal (Fay)', '64d55550', 'fay.pl05'),
             $member('Timothy Tongkeles Wirodigdoyo (Moty)', 'c6f33261', 'imoht22'),
         ],
     ],
@@ -75,15 +75,15 @@ return [
             $member('Ursula Kimberly Melania (Kim)', 'cb6a27ba', 'kimberlymelania'),
             $member(...$fathur),
             $member('Keren Kezia Makasala (Eyen)', 'cc4567a9', 'kerenaa_1'),
-            $member('Randhy'),
+            $member('Raydiansyah Kula (Randy)', '9ff35bb7', 'rundayyyy'),
         ],
     ],
     [
         'title' => 'Ruang Tertib',
         'description' => ['Ruang Tertib bertugas menjaga kedisiplinan, ketertiban, dan kenyamanan seluruh anggota Ruang Pulang dengan memastikan setiap anggota menaati aturan komunitas, menindaklanjuti pelanggaran, memberikan teguran secara bijak, serta membantu menjaga suasana kegiatan agar tetap aman, tertib, dan kondusif. Ruang Tertib mengedepankan sikap tegas, adil, dan humanis dalam menjalankan tugasnya.'],
         'members' => [
-            $member('Agung'),
-            $member('Opyan'),
+            $member('Varen Julian Legrants (Agung)', 'df54b79b', 'varenlegrants'),
+            $member('Opyan Yunus (Opyan)', '765112fb', 'opyanry'),
         ],
     ],
 ];

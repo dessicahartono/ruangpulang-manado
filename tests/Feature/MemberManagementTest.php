@@ -23,6 +23,17 @@ class MemberManagementTest extends TestCase
         Storage::fake('members');
     }
 
+    /** Semua pengurus awal sudah lengkap, jadi yang belum lengkap dibuat khusus untuk tes. */
+    private function incompleteMember(): Member
+    {
+        return Member::create([
+            'division_id' => Division::firstWhere('name', 'Ruang Tumbuh')->id,
+            'full_name' => 'Belum Lengkap',
+            'nickname' => 'Belum',
+            'position' => 99,
+        ]);
+    }
+
     private function asAdmin(): static
     {
         return $this->withSession(['is_admin' => true]);
@@ -54,10 +65,16 @@ class MemberManagementTest extends TestCase
         $this->assertDatabaseHas('members', ['nickname' => 'Sudah Diedit']);
     }
 
+    public function test_seeded_members_have_a_photo_and_instagram(): void
+    {
+        $this->assertSame(0, Member::whereNull('photo')->orWhereNull('instagram')->count());
+    }
+
     public function test_seeder_splits_names_and_keeps_role_and_bio(): void
     {
         $this->assertDatabaseHas('members', ['full_name' => 'Alim Aprilianto', 'nickname' => 'Alim', 'role' => 'Ketua']);
-        $this->assertDatabaseHas('members', ['full_name' => 'April', 'nickname' => 'April', 'photo' => null]);
+        $this->assertDatabaseHas('members', ['full_name' => 'Dhea Aprilliani Abasi', 'nickname' => 'April', 'photo' => 'images/pengurus/foto-b9db305d.jpg']);
+        $this->assertDatabaseHas('members', ['full_name' => 'Reyno', 'nickname' => 'Mas/Rey']);
         $this->assertNotNull(Member::firstWhere('nickname', 'Dhia')->bio_more);
     }
 
@@ -152,11 +169,11 @@ class MemberManagementTest extends TestCase
 
     public function test_list_can_be_sorted(): void
     {
-        $this->asAdmin()->get('/kelola/pengurus?urut=nama-az')->assertSeeInOrder(['Agung', 'Alim Aprilianto']);
-        $this->get('/kelola/pengurus?urut=nama-za')->assertSeeInOrder(['Ursula Kimberly Melania', 'Timothy Tongkeles Wirodigdoyo']);
+        $this->asAdmin()->get('/kelola/pengurus?urut=nama-az')->assertSeeInOrder(['Alim Aprilianto', 'Dessica Suhaedi Hartono']);
+        $this->get('/kelola/pengurus?urut=nama-za')->assertSeeInOrder(['Varen Julian Legrants', 'Ursula Kimberly Melania', 'Timothy Tongkeles Wirodigdoyo']);
 
         $this->post('/kelola/pengurus', $this->payload());
-        $this->get('/kelola/pengurus?urut=terbaru')->assertSeeInOrder(['Nama Uji Coba', 'Opyan']);
+        $this->get('/kelola/pengurus?urut=terbaru')->assertSeeInOrder(['Nama Uji Coba', 'Opyan Yunus']);
     }
 
     public function test_query_keeps_on_pagination_and_malformed_values_are_ignored(): void
@@ -178,7 +195,9 @@ class MemberManagementTest extends TestCase
 
     public function test_list_flags_incomplete_data(): void
     {
-        $this->asAdmin()->get('/kelola/pengurus?q=April')->assertSee('Belum ada foto dan Instagram');
+        $this->incompleteMember();
+
+        $this->asAdmin()->get('/kelola/pengurus?q=Belum+Lengkap')->assertSee('Belum ada foto dan Instagram');
         $this->get('/kelola/pengurus?q=Aprilianto')->assertSee('Lengkap')->assertDontSee('Belum ada');
     }
 
@@ -271,19 +290,19 @@ class MemberManagementTest extends TestCase
 
     public function test_incomplete_member_can_be_opened_and_saved_without_photo_or_instagram(): void
     {
-        $member = Member::firstWhere('full_name', 'April');
+        $member = $this->incompleteMember();
 
         $this->asAdmin()->get("/kelola/pengurus/{$member->id}/tinjau")->assertOk()->assertSee('Belum ada');
         $this->get("/kelola/pengurus/{$member->id}/ubah")->assertOk();
 
         $this->put("/kelola/pengurus/{$member->id}", [
             'division_id' => $member->division_id,
-            'full_name' => 'April Nama Lengkap',
-            'nickname' => 'April',
+            'full_name' => 'Belum Lengkap Diisi',
+            'nickname' => 'Belum',
             'instagram' => '',
         ])->assertRedirect("/kelola/pengurus/{$member->id}/tinjau");
 
-        $this->assertDatabaseHas('members', ['id' => $member->id, 'full_name' => 'April Nama Lengkap', 'instagram' => null, 'photo' => null]);
+        $this->assertDatabaseHas('members', ['id' => $member->id, 'full_name' => 'Belum Lengkap Diisi', 'instagram' => null, 'photo' => null]);
     }
 
     public function test_edit_keeps_photo_role_and_bio_when_they_are_not_changed(): void
