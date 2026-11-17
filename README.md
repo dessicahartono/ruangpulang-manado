@@ -20,7 +20,7 @@ Chatbot AI "Teman Pulang" tersedia di semua halaman.
 
 ## Cara menjalankan
 
-Syarat: PHP 8.3 atau lebih baru dan Composer.
+Syarat: PHP 8.4.1 atau lebih baru (dibutuhkan Symfony 8 pada `composer.lock`) dan Composer.
 
 ```bash
 composer run setup
@@ -37,6 +37,29 @@ Buka <http://localhost:8000>. Perintah setup juga membuat database SQLite dan me
 GEMINI_API_KEY=isi-dengan-key-kamu
 GEMINI_MODEL=gemini-3.5-flash-lite
 ```
+
+## Deploy ke hosting tanpa SSH
+
+Cocok untuk hosting bersama (cPanel) yang tidak punya akses SSH. Server cukup memakai **PHP 8.4.1 atau lebih baru**.
+
+**Pertama kali**
+
+1. Di laptop, jalankan `deploy/build.sh`. Skrip ini menyiapkan salinan bersih di folder `build/`, memasang paket tanpa paket pengembangan, membuat `.env` produksi dan database baru berisi data awal, lalu meminta kata sandi admin. Hasilnya `build/ruangpulang-full.zip`.
+2. Di cPanel, **File Manager**, unggah zip itu ke luar `public_html` (misalnya `/home/USERNAME/ruangpulang`) lalu **Extract**. Hapus zip-nya setelah itu, karena memuat `.env`.
+3. Di **Domains**, arahkan **Document Root** domain ke `ruangpulang/public`.
+4. Di **Select PHP Version**, pilih PHP 8.4 atau lebih dan aktifkan ekstensi `mbstring`, `pdo_sqlite`, `sqlite3`, `fileinfo`, `curl`, `xml`, `tokenizer`.
+5. Beri izin tulis (775) pada `storage`, `bootstrap/cache`, `database`, dan `public/uploads` lewat File Manager.
+6. Aktifkan SSL, lalu buka domain untuk menguji.
+
+Domain lain: `APP_URL=https://domainmu.com deploy/build.sh`.
+
+**Pembaruan berikutnya**
+
+Jalankan `deploy/build.sh --update`, lalu unggah dan Extract `build/ruangpulang-update.zip` ke folder yang sama dan pilih timpa. Zip ini tidak memuat `.env`, database, dan foto unggahan, sehingga data di server aman. Jangan mengunggah ulang `database.sqlite`, karena akan menimpa artikel dan data yang sudah ada di server. Kalau ada migrasi baru, jalankan `php artisan migrate --force` di server lewat **Cron Jobs** cPanel (jadwalkan satu kali, tunggu berjalan, lalu hapus).
+
+**Cadangan**
+
+Salin `database/database.sqlite` dan folder `public/uploads` dari server secara berkala.
 
 ## Struktur
 
