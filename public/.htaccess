@@ -1,7 +1,16 @@
-# Sembunyikan versi PHP dari header respons.
+# Sembunyikan versi PHP dan pasang header keamanan.
 <IfModule mod_headers.c>
     Header always unset X-Powered-By
     Header unset X-Powered-By
+
+    # Halaman hanya boleh dibingkai oleh situs ini sendiri (mencegah clickjacking).
+    Header always set X-Frame-Options "SAMEORIGIN"
+    # Browser tidak boleh menebak jenis file di luar Content-Type yang dikirim.
+    Header always set X-Content-Type-Options "nosniff"
+    # Alamat lengkap tidak dikirim ke situs lain, hanya asalnya.
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    # Paksa HTTPS selama 6 bulan. Hanya dikirim lewat koneksi HTTPS.
+    Header always set Strict-Transport-Security "max-age=15552000" env=HTTPS
 </IfModule>
 
 <IfModule mod_rewrite.c>
