@@ -22,6 +22,7 @@ class ManageActivityController extends Controller
     {
         return view('pages.manage.activities.form', [
             'activity' => null,
+            'sponsors' => $this->community->sponsors(),
             'action' => route('manage.activities.store'),
             'method' => 'POST',
             'cancelUrl' => route('manage.activities.index'),
@@ -38,13 +39,14 @@ class ManageActivityController extends Controller
 
     public function show(Activity $activity): View
     {
-        return view('pages.manage.activities.review', ['activity' => $activity->load('media')]);
+        return view('pages.manage.activities.review', ['activity' => $activity->load(['media', 'sponsors'])]);
     }
 
     public function edit(Activity $activity): View
     {
         return view('pages.manage.activities.form', [
-            'activity' => $activity->load('media'),
+            'activity' => $activity->load(['media', 'sponsors']),
+            'sponsors' => $this->community->sponsors(),
             'action' => route('manage.activities.update', $activity),
             'method' => 'PUT',
             'cancelUrl' => route('manage.activities.show', $activity),

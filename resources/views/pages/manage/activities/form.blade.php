@@ -18,6 +18,25 @@
 
                 <p class="form__hint">Link dan teks link boleh dikosongkan. Link bisa berupa alamat lengkap (diawali https://) atau halaman di situs ini (diawali /, misalnya /blog). Kalau teks link kosong, yang tampil adalah "Kunjungi Situs" untuk situs lain atau "Kunjungi Laman" untuk halaman di situs ini.</p>
 
+                @if ($sponsors->isNotEmpty())
+                    @php($chosen = array_map('intval', (array) old('sponsors', $activity?->sponsors->pluck('id')->all() ?? [])))
+                    <fieldset class="form__row sponsor-choice">
+                        <legend>Didukung oleh Sponsor</legend>
+                        <div class="sponsor-choice__list">
+                            @foreach ($sponsors as $sponsor)
+                                <label class="sponsor-choice__item">
+                                    <input type="checkbox" name="sponsors[]" value="{{ $sponsor->id }}" @checked(in_array($sponsor->id, $chosen, true))>
+                                    {{ $sponsor->name }}
+                                </label>
+                            @endforeach
+                        </div>
+                        @error('sponsors.*')
+                            <p class="form__error">{{ $message }}</p>
+                        @enderror
+                    </fieldset>
+                    <p class="form__hint">Boleh tidak dicentang kalau kegiatan ini tidak didukung sponsor.</p>
+                @endif
+
                 @if ($activity?->media->isNotEmpty())
                     <fieldset class="form__row media-current">
                         <legend>Media Saat Ini</legend>

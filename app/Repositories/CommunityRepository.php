@@ -54,7 +54,7 @@ class CommunityRepository
 
     public function activities(): Collection
     {
-        return Activity::with('media')->orderBy('position')->orderBy('id')->get();
+        return Activity::with(['media', 'sponsors'])->orderBy('position')->orderBy('id')->get();
     }
 
     /** @param  array<int, UploadedFile>  $files */
@@ -65,6 +65,7 @@ class CommunityRepository
             'position' => (Activity::max('position') ?? -1) + 1,
         ]);
 
+        $activity->sponsors()->sync($data['sponsors'] ?? []);
         $this->addActivityMedia($activity, $files);
 
         return $activity;
@@ -77,6 +78,7 @@ class CommunityRepository
     public function updateActivity(Activity $activity, array $data, array $files, array $removeIds): void
     {
         $activity->update($this->activityAttributes($data));
+        $activity->sponsors()->sync($data['sponsors'] ?? []);
 
         $activity->media()->whereIn('id', $removeIds)->get()->each(function (ActivityMedia $media) {
             $media->delete();
@@ -150,7 +152,7 @@ class CommunityRepository
 
     public function sponsors(): Collection
     {
-        return Sponsor::orderBy('position')->orderBy('id')->get();
+        return Sponsor::with('activities')->orderBy('position')->orderBy('id')->get();
     }
 
     public function createSponsor(array $data): Sponsor

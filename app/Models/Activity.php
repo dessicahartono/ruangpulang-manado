@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Activity extends Model
@@ -14,6 +15,12 @@ class Activity extends Model
     public function media(): HasMany
     {
         return $this->hasMany(ActivityMedia::class)->orderBy('position')->orderBy('id');
+    }
+
+    /** Many-to-many lewat tabel activity_sponsor. */
+    public function sponsors(): BelongsToMany
+    {
+        return $this->belongsToMany(Sponsor::class)->withTimestamps()->orderBy('position')->orderBy('sponsors.id');
     }
 
     /** Link ke situs lain dibuka di tab baru. Link ke halaman situs ini tidak. */

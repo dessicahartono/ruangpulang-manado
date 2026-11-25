@@ -23,6 +23,7 @@
                 <dl class="member-review__facts">
                     <div><dt>Nama Sponsor</dt><dd>{{ $sponsor->name }}</dd></div>
                     <div><dt>Deskripsi</dt><dd>{{ $sponsor->description }}</dd></div>
+                    <div><dt>Kegiatan yang Didukung</dt><dd>{{ $sponsor->activities->pluck('title')->join(', ', ' dan ') ?: 'Belum ada. Atur lewat Kelola Kegiatan.' }}</dd></div>
                     <div>
                         <dt>Link</dt>
                         <dd>

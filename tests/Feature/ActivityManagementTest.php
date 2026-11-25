@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Activity;
 use App\Models\ActivityMedia;
+use App\Models\Sponsor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -274,6 +275,50 @@ class ActivityManagementTest extends TestCase
     public function test_invalid_links_are_rejected(string $link): void
     {
         $this->asAdmin()->post('/kelola/kegiatan', $this->payload(['link_url' => $link]))->assertSessionHasErrors('link_url');
+    }
+
+    public function test_activities_and_sponsors_are_linked_many_to_many(): void
+    {
+        $gramedia = Sponsor::firstWhere('name', 'Gramedia');
+        $paragon = Sponsor::firstWhere('name', 'Paragon');
+
+        $this->asAdmin()->post('/kelola/kegiatan', $this->payload(['sponsors' => [$gramedia->id, $paragon->id]]))
+            ->assertSessionHasNoErrors();
+        $activity = Activity::firstWhere('title', 'Kegiatan Uji');
+        $menulis = Activity::firstWhere('title', 'Menulis');
+        $this->asAdmin()->put("/kelola/kegiatan/{$menulis->id}", $this->payload([
+            'title' => 'Menulis', 'media' => [], 'link_url' => '/blog', 'sponsors' => [$gramedia->id],
+        ]))->assertSessionHasNoErrors();
+
+        // Dari dua arah: kegiatan punya banyak sponsor, sponsor mendukung banyak kegiatan.
+        $this->assertSame(['Paragon', 'Gramedia'], $activity->sponsors->pluck('name')->all());
+        $this->assertSame(['Menulis', 'Kegiatan Uji'], $gramedia->activities->pluck('title')->all());
+
+        $this->get('/kegiatan')->assertSee('Didukung oleh Paragon dan Gramedia');
+        $this->get('/sponsorship')->assertSee('Mendukung kegiatan Menulis dan Kegiatan Uji');
+        $this->asAdmin()->get("/kelola/sponsorship/{$gramedia->id}/tinjau")->assertSee('Menulis dan Kegiatan Uji');
+    }
+
+    public function test_unchecking_sponsors_detaches_them_and_deleting_cleans_the_pivot(): void
+    {
+        $gramedia = Sponsor::firstWhere('name', 'Gramedia');
+        $this->asAdmin()->post('/kelola/kegiatan', $this->payload(['sponsors' => [$gramedia->id]]));
+        $activity = Activity::firstWhere('title', 'Kegiatan Uji');
+
+        $this->asAdmin()->get("/kelola/kegiatan/{$activity->id}/ubah")->assertSee('value="'.$gramedia->id.'" checked', false);
+
+        $this->asAdmin()->put("/kelola/kegiatan/{$activity->id}", $this->payload(['media' => []]));
+        $this->assertDatabaseMissing('activity_sponsor', ['activity_id' => $activity->id]);
+
+        $activity->sponsors()->attach($gramedia);
+        $this->asAdmin()->delete("/kelola/sponsorship/{$gramedia->id}");
+        $this->assertDatabaseMissing('activity_sponsor', ['sponsor_id' => $gramedia->id]);
+        $this->assertDatabaseHas('activities', ['id' => $activity->id]);
+    }
+
+    public function test_unknown_sponsor_is_rejected(): void
+    {
+        $this->asAdmin()->post('/kelola/kegiatan', $this->payload(['sponsors' => [999]]))->assertSessionHasErrors('sponsors.0');
     }
 
     public function test_deleting_an_activity_removes_its_uploaded_files(): void

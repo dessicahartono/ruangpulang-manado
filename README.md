@@ -71,9 +71,37 @@ Foto maksimal 2 MB dan video kegiatan (MP4 atau WEBM) maksimal 15 detik dan 20 M
 | Data kegiatan | Database, dengan data awal di `resources/data/activities.php` |
 | Data profil | `resources/data` |
 
+## Database dan relasi
+
+| Tabel | Isi | Relasi |
+| --- | --- | --- |
+| `posts` | Artikel blog, baik kiriman pengunjung maupun tulisan admin | Berdiri sendiri |
+| `divisions` | Divisi pengurus | One-to-many ke `members` |
+| `members` | Penempatan pengurus di tiap divisi | Belongs-to `divisions` |
+| `activities` | Kegiatan komunitas | One-to-many ke `activity_media`, many-to-many ke `sponsors` |
+| `activity_media` | Satu sampai tiga foto atau video per kegiatan | Belongs-to `activities` |
+| `sponsors` | Sponsor komunitas | Many-to-many ke `activities` |
+| `activity_sponsor` | Tabel penghubung kegiatan dan sponsor | Pivot |
+
+Relasi many-to-many diatur dari form Kelola Kegiatan lewat centang "Didukung oleh Sponsor". Hasilnya tampil di dua arah: kartu kegiatan menulis "Didukung oleh …" dan kartu sponsor menulis "Mendukung kegiatan …".
+
+Data awal diisi oleh seeder di `database/seeders` dari file `resources/data`. Semua seeder memakai `firstOrCreate`, jadi aman dijalankan ulang tanpa menimpa data yang sudah diubah admin.
+
+## Penanganan error
+
+| Kode | Kapan muncul |
+| --- | --- |
+| 404 | Halaman atau artikel tidak ditemukan |
+| 413 | File unggahan melebihi batas server |
+| 419 | Formulir terlalu lama dibiarkan terbuka sehingga sesinya kedaluwarsa |
+| 429 | Terlalu banyak percobaan masuk admin atau kiriman artikel |
+| 500 | Kesalahan di server. Detailnya tidak ditampilkan, tapi tercatat di `storage/logs/laravel.log` |
+
+Kesalahan isian formulir ditampilkan di bawah kolomnya masing-masing, dalam bahasa Indonesia.
+
 ## Data
 
-Profil, kegiatan, dan pengurus memakai data asli komunitas. Artikel awal adalah data contoh dan ditandai di akhir tiap artikel.
+Profil, kegiatan, pengurus, dan sponsor memakai data asli komunitas. Artikel awal adalah data contoh dan ditandai di akhir tiap artikel.
 
 ## Penggunaan AI
 

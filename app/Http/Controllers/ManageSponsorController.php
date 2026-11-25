@@ -38,7 +38,7 @@ class ManageSponsorController extends Controller
 
     public function show(Sponsor $sponsor): View
     {
-        return view('pages.manage.sponsors.review', ['sponsor' => $sponsor]);
+        return view('pages.manage.sponsors.review', ['sponsor' => $sponsor->load('activities')]);
     }
 
     public function edit(Sponsor $sponsor): View

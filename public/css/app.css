@@ -239,3 +239,10 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
     .js .is-loading { animation: none; }
     .js :is(.arch, .sponsor-card__logo, .media-slider__item) > :is(img, video) { clip-path: none; transform: none; transition: none; }
 }
+
+/* Relasi sponsor dan kegiatan */
+.activity-card__sponsors, .sponsor-card__activities { font-size: .9rem; font-weight: 600; color: var(--dusk) !important; }
+.sponsor-choice { margin: 0; padding: 0; border: 0; }
+.sponsor-choice legend { margin-bottom: 8px; font-weight: 600; }
+.sponsor-choice__list { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+.sponsor-choice__item { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }

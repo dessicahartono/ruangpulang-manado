@@ -38,6 +38,8 @@ class ActivityRequest extends FormRequest
             'link_label' => ['nullable', 'string', 'max:60'],
             'media' => ['nullable', 'array', 'max:'.Activity::MAX_MEDIA],
             'media.*' => ['file', 'mimetypes:'.implode(',', [...self::IMAGE_MIMES, ...self::VIDEO_MIMES])],
+            'sponsors' => ['nullable', 'array'],
+            'sponsors.*' => ['integer', Rule::exists('sponsors', 'id')],
             'remove_media' => ['nullable', 'array'],
             'remove_media.*' => [
                 'integer',
@@ -106,6 +108,7 @@ class ActivityRequest extends FormRequest
             'media.*.mimetypes' => 'Media harus berupa foto JPG, PNG, atau WEBP, atau video MP4 atau WEBM.',
             'media.*.uploaded' => 'Media gagal diunggah. Foto maksimal 2 MB dan video maksimal 20 MB.',
             'remove_media.*.exists' => 'Media yang mau dihapus tidak ditemukan.',
+            'sponsors.*.exists' => 'Pilih sponsor yang tersedia.',
             'max' => ':attribute maksimal :max karakter.',
         ];
     }

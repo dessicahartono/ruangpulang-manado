@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -162,5 +163,20 @@ class PagesTest extends TestCase
     {
         $this->get('/blog/tidak-ada')->assertNotFound()->assertSee('Salah Belok');
         $this->get('/halaman-yang-tidak-ada')->assertNotFound()->assertSee('Salah Belok');
+    }
+
+    public function test_expired_session_uses_friendly_419(): void
+    {
+        Route::get('/_uji/sesi-berakhir', fn () => abort(419));
+
+        $this->get('/_uji/sesi-berakhir')->assertStatus(419)->assertSee('Sudah <em>Berakhir</em>', false)->assertSee('Kembali ke Halaman Sebelumnya');
+    }
+
+    public function test_server_error_uses_friendly_500_without_details(): void
+    {
+        config(['app.debug' => false]);
+        Route::get('/_uji/error-server', fn () => throw new \RuntimeException('rahasia-internal'));
+
+        $this->get('/_uji/error-server')->assertStatus(500)->assertSee('Tidak Beres')->assertDontSee('rahasia-internal');
     }
 }

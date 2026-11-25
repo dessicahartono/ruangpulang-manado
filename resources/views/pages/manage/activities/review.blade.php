@@ -20,6 +20,7 @@
                     <div><dt>Judul Kegiatan</dt><dd>{{ $activity->title }}</dd></div>
                     <div><dt>Deskripsi</dt><dd>{{ $activity->description }}</dd></div>
                     <div><dt>Media</dt><dd>{{ $activity->mediaSummary() }}</dd></div>
+                    <div><dt>Didukung oleh</dt><dd>{{ $activity->sponsors->pluck('name')->join(', ', ' dan ') ?: 'Tidak ada sponsor' }}</dd></div>
                     <div>
                         <dt>Link</dt>
                         <dd>
