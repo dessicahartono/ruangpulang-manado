@@ -32,10 +32,6 @@
         <x-contact-modal />
     </div>
 
-    <x-chat-widget />
-
     <script src="{{ asset('js/site.js') }}" defer></script>
-    <script src="{{ asset('js/chat-position.js') }}" defer></script>
-    <script src="{{ asset('js/chat.js') }}" defer></script>
 </body>
 </html>

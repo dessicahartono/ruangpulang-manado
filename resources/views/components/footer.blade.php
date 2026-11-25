@@ -7,15 +7,10 @@
             </a>
             <p class="footer__tagline">{{ config('community.tagline') }}</p>
         </div>
-        <nav aria-label="Menu footer">
-            <ul class="footer__list">
-                <li><a href="{{ route('about') }}">Tentang</a></li>
-                <li><a href="{{ route('activity') }}">Kegiatan</a></li>
-                <li><a href="{{ route('portofolioteam') }}">Pengurus</a></li>
-                <li><a href="{{ route('blog.index') }}">Blog</a></li>
-                <li><label class="contact-open" for="hubungi-chk" role="button" tabindex="0">Kontak</label></li>
-            </ul>
-        </nav>
+        <div class="footer__crisis">
+            <img src="{{ asset('images/bird-hand.png') }}" alt="" width="44" height="57">
+            <p>Kalau kamu sedang berpikir untuk mengakhiri hidup atau merasa tidak aman, segera hubungi <a href="{{ config('community.crisis.phone_href') }}">{{ config('community.crisis.phone_label') }}</a>. Kamu tidak harus menghadapinya sendirian.</p>
+        </div>
     </div>
     <div class="container footer__bottom">
         <span>&copy; {{ date('Y') }} {{ config('community.name') }} Social Community in {{ config('community.location') }}</span>

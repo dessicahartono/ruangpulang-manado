@@ -25,19 +25,6 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
     .sort-menu.only-narrow { display: block !important; }
 }
 
-/* Tombol chat: fixed di kanan bawah. Di canvas desain posisinya absolut. */
-.fab { position: fixed; top: auto; right: 24px; bottom: 24px; }
-.fab__panel { max-height: var(--fab-panel-max, calc(100dvh - 110px)); }
-.chat__header span { display: block; }
-.chat__header span[hidden] { display: none; }
-.chat__privacy { margin: 0; font-size: .78rem; line-height: 1.4; color: var(--ink-soft); }
-.chat__call { flex-shrink: 0; }
-.chat__reset[hidden] { display: none !important; }
-
-@media (max-width: 760px) {
-    .fab { right: 16px; bottom: 16px; }
-}
-
 /* Beranda */
 .join h2 { font-size: 40px; }
 
@@ -128,8 +115,3 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 /* 404 */
 .not-found p { margin-bottom: 24px; }
 
-/* Footer: di bawah 960px logo mengisi satu baris penuh, jadi menu dibuat selebar kontainer dan menempel ke kanan */
-@media (max-width: 960px) {
-    .footer__grid nav { grid-column: 1 / -1; text-align: right; }
-    .footer__grid .footer__list { justify-items: end; }
-}

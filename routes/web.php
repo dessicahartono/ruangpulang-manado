@@ -5,7 +5,6 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AdminSessionController;
 use App\Http\Controllers\ArticleSubmissionController;
 use App\Http\Controllers\BlogController;
-use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JoinController;
@@ -65,6 +64,3 @@ Route::prefix('kelola')->name('manage.')->group(function () {
         });
     });
 });
-
-// Dibatasi supaya endpoint publik tanpa login ini tidak bisa dipakai berlebihan.
-Route::post('/teman-cerita/pesan', [ChatController::class, 'send'])->middleware('throttle:chat')->name('chat.send');

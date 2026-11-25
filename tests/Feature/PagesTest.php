@@ -20,7 +20,8 @@ class PagesTest extends TestCase
             ->assertSee($expected)
             ->assertSee('Menu utama')
             ->assertSee('Media Sosial Kami')
-            ->assertSee('Teman Bicara AI');
+            ->assertSee('Kamu tidak harus menghadapinya sendirian.')
+            ->assertDontSee('Teman Bicara AI');
     }
 
     public static function pages(): array

@@ -1,4 +1,4 @@
-// Menu HP, kontak, dan chat memakai checkbox sehingga tetap jalan tanpa JavaScript.
+// Menu HP dan kontak memakai checkbox sehingga tetap jalan tanpa JavaScript.
 // Skrip ini hanya menambahkan kemudahan: tombol keyboard dan penutupan otomatis.
 
 const dropdowns = document.querySelectorAll('[data-navdrop]');
@@ -13,7 +13,7 @@ document.addEventListener('click', (event) => {
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
-        ['nav-chk', 'hubungi-chk', 'rp-chat-toggle'].forEach((id) => {
+        ['nav-chk', 'hubungi-chk'].forEach((id) => {
             document.getElementById(id).checked = false;
         });
         dropdowns.forEach((dropdown) => {

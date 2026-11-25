@@ -16,8 +16,6 @@ Website yang dibangun untuk komunitas sosial di Manado bernama **Ruang Pulang**
 | `/tulis-artikel` | Kiriman artikel dari pengunjung, tampil setelah disetujui admin |
 | `/kelola` | Menu admin, berisi Kelola Profil Pengurus (`/kelola/pengurus`), Kelola Blog (`/kelola/blog`) Kelola Kegiatan (`/kelola/kegiatan`) |
 
-Chatbot AI "Teman Pulang" tersedia di semua halaman.
-
 ## Cara menjalankan
 
 Syarat: PHP 8.4.1 atau lebih baru (dibutuhkan Symfony 8 pada `composer.lock`) dan Composer.
@@ -30,13 +28,6 @@ php artisan serve
 Buka <http://localhost:8000>. Perintah setup juga membuat database SQLite dan mengisinya dengan data pengurus, blog, dan kegiatan. Untuk menjalankan pengujian, gunakan `php artisan test`.
 
 **Halaman Kelola:** jalankan `php artisan admin:password` untuk membuat kata sandi admin.
-
-**Chatbot AI:** tanpa API key, chatbot berjalan dalam mode demo. Untuk memakai AI, buat API key di [Google AI Studio](https://aistudio.google.com/apikey), lalu isi di `.env`. Jangan pernah meng-commit file `.env`.
-
-```env
-GEMINI_API_KEY=isi-dengan-key-kamu
-GEMINI_MODEL=gemini-3.5-flash-lite
-```
 
 ## Deploy ke hosting tanpa SSH
 
@@ -77,14 +68,6 @@ Salin `database/database.sqlite` dan folder `public/uploads` dari server secara 
 
 Profil, kegiatan, dan pengurus memakai data asli komunitas. Artikel awal adalah data contoh dan ditandai di akhir tiap artikel.
 
-## Catatan chatbot
-
-Chatbot ini bukan pengganti tenaga profesional, dan pendeteksian pesan krisisnya berbasis kata kunci sehingga bisa terlewat atau keliru. Pesan dikirim ke Google, tetapi tidak disimpan di database website. Riwayat hanya tersimpan di browser pengguna.
-
-Website ini memakai paket gratis Gemini, sehingga hanya cocok untuk tugas, demo, dan uji coba. Sebelum dipakai pengguna sungguhan, proyek perlu pindah ke paket berbayar, dan perilaku chatbot perlu ditinjau oleh orang yang berkompeten di bidang kesehatan mental. Pada paket gratis, konten dapat dibaca peninjau manusia dan dipakai untuk mengembangkan produk Google, informasi pribadi atau sensitif tidak boleh dikirim, dan API tidak boleh dipakai pada aplikasi yang kemungkinan besar diakses pengguna di bawah 18 tahun. Lihat [ketentuan Gemini API](https://aistudio.google.com/docs/terms).
-
 ## Penggunaan AI
 
 Proyek ini dikembangkan dengan bantuan AI untuk mengefisienkan waktu pengerjaan. Ide dan konsep desain berasal dari pemilik proyek, dan pengerjaannya dibantu Claude. Claude Code membantu membuat struktur awal Laravel, menerapkan desain ke Blade, menulis artikel contoh, dan pengujian. Hasilnya ditinjau, dipelajari, dan dijalankan sendiri oleh pemilik proyek.
-
-Fitur chatbot memakai model AI Google Gemini saat `GEMINI_API_KEY` diisi.
