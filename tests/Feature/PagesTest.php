@@ -48,6 +48,13 @@ class PagesTest extends TestCase
         $this->get('/kelola/masuk')->assertDontSee('Lihat Ketentuan untuk Bergabung');
     }
 
+    public function test_home_desktop_header_shows_sponsorship_and_keeps_pengurus_in_the_dropdown(): void
+    {
+        $this->get('/')
+            ->assertSee('class="navbar__link nav-wide" href="'.route('sponsorship').'">Sponsorship</a>', false)
+            ->assertSeeInOrder(['Tentang Kami', 'Kegiatan', route('portofolioteam'), 'Pengurus', 'Kontak'], false);
+    }
+
     public function test_home_uses_the_transparent_header_and_other_pages_use_the_sub_layout(): void
     {
         $this->get('/')->assertSee('class="is-home"', false)->assertSee('Tentang Kami');

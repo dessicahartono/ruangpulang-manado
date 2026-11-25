@@ -26,13 +26,13 @@
         <nav class="navbar__menu" id="menu-utama" aria-label="Menu utama">
             {{-- Di desktop, beranda memakai menu ringkas dengan dropdown. Halaman lain dan tampilan HP memakai daftar lengkap. --}}
             @if ($isHome)
-                <a class="navbar__link nav-wide" href="{{ route('portofolioteam') }}">Pengurus</a>
+                <a class="navbar__link nav-wide" href="{{ route('sponsorship') }}">Sponsorship</a>
                 <details class="navdrop nav-wide" data-navdrop>
                     <summary class="navbar__link">Tentang Kami</summary>
                     <div class="navdrop__list">
                         <a href="{{ route('about') }}">Tentang</a>
                         <a href="{{ route('activity') }}">Kegiatan</a>
-                        <a href="{{ route('sponsorship') }}">Sponsorship</a>
+                        <a href="{{ route('portofolioteam') }}">Pengurus</a>
                         <label class="contact-open" for="hubungi-chk" role="button" tabindex="0">Kontak</label>
                     </div>
                 </details>
