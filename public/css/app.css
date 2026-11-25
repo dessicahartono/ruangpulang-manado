@@ -256,3 +256,14 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
     .navbar__link { padding: 8px 9px; }
     .navbar .brand span { white-space: nowrap; }
 }
+
+/* Artikel dari TinyMCE: daftar, kutipan, subjudul kecil, dan tautan */
+.prose--rich h3 { margin: 24px 0 8px; font-size: 1.25rem; }
+.prose--rich > * + * { margin-top: 16px; }
+.prose--rich ul, .prose--rich ol { padding-left: 1.4em; }
+.prose--rich ul { list-style: disc; }
+.prose--rich ol { list-style: decimal; display: block; }
+.prose--rich li + li { margin-top: 6px; }
+.prose--rich blockquote { margin-inline: 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--sand-deep); color: var(--ink-soft); font-style: italic; }
+.prose--rich a { color: var(--ember-deep); text-decoration: underline; text-underline-offset: 3px; }
+.form__row .tox-tinymce { border-radius: 12px; border: 1.5px solid var(--sand-deep); }

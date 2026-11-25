@@ -45,6 +45,7 @@ class ManageBlogController extends Controller
             'cancelUrl' => route('manage.blog.index'),
             'submitLabel' => 'Terbitkan Artikel',
             'hint' => 'Slug dan tanggal publikasi dibuat otomatis oleh sistem saat artikel diterbitkan.',
+            'richEditor' => true,
         ]);
     }
 
@@ -71,6 +72,7 @@ class ManageBlogController extends Controller
             'cancelUrl' => route('manage.blog.index'),
             'submitLabel' => 'Simpan Perubahan',
             'hint' => 'Slug dan tanggal publikasi tidak berubah saat artikel disimpan.',
+            'richEditor' => true,
         ]);
     }
 

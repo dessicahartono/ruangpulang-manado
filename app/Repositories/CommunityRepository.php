@@ -8,6 +8,7 @@ use App\Models\Division;
 use App\Models\Member;
 use App\Models\Post;
 use App\Models\Sponsor;
+use App\Support\ArticleHtml;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
@@ -241,27 +242,26 @@ class CommunityRepository
     /** Kiriman pengunjung. Tidak tampil di blog sampai disetujui admin. */
     public function submitPost(array $data): Post
     {
-        return Post::create([...$this->attributesFrom($data), 'status' => Post::STATUS_PENDING]);
+        // Kiriman pengunjung tetap berupa teks, karena form publik tidak memakai TinyMCE.
+        return Post::create([...$this->attributesFrom($data, Post::FORMAT_TEXT), 'status' => Post::STATUS_PENDING]);
     }
 
     public function publishPost(array $data): Post
     {
         return Post::create([
-            ...$this->attributesFrom($data),
+            ...$this->attributesFrom($data, Post::FORMAT_HTML),
             'status' => Post::STATUS_PUBLISHED,
             'published_at' => now(),
         ]);
     }
 
-    /** Slug tidak berubah supaya tautan lama ke artikel ini tetap berfungsi. */
+    /**
+     * Slug tidak berubah supaya tautan lama ke artikel ini tetap berfungsi.
+     * Admin mengubah artikel lewat TinyMCE, jadi artikel yang diubah selalu tersimpan sebagai HTML.
+     */
     public function updatePost(Post $post, array $data): void
     {
-        $post->update([
-            'title' => $data['title'],
-            'author' => $data['author'],
-            'body' => $data['body'],
-            'excerpt' => $this->excerptFrom($data['body']),
-        ]);
+        $post->update(Arr::except($this->attributesFrom($data, Post::FORMAT_HTML), 'slug'));
     }
 
     public function approvePost(Post $post): void
@@ -292,14 +292,19 @@ class CommunityRepository
         $query->whereAny(['title', 'author', 'excerpt', 'body'], 'like', "%{$search}%");
     }
 
-    private function attributesFrom(array $data): array
+    private function attributesFrom(array $data, string $format): array
     {
+        $body = $format === Post::FORMAT_HTML ? ArticleHtml::clean($data['body']) : $data['body'];
+
         return [
             'slug' => $this->uniqueSlug($data['title']),
             'title' => $data['title'],
             'author' => $data['author'],
-            'body' => $data['body'],
-            'excerpt' => $this->excerptFrom($data['body']),
+            'body' => $body,
+            'format' => $format,
+            'excerpt' => $format === Post::FORMAT_HTML
+                ? Str::limit(Str::squish(ArticleHtml::firstParagraph($body)), 160)
+                : $this->excerptFrom($body),
         ];
     }
 

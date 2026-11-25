@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ArticleHtml;
 use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,7 +18,11 @@ class Post extends Model
 
     public const STATUS_PUBLISHED = 'published';
 
-    protected $fillable = ['slug', 'title', 'author', 'status', 'excerpt', 'body', 'published_at'];
+    public const FORMAT_TEXT = 'text';
+
+    public const FORMAT_HTML = 'html';
+
+    protected $fillable = ['slug', 'title', 'author', 'status', 'excerpt', 'body', 'format', 'published_at'];
 
     protected function casts(): array
     {
@@ -28,6 +33,24 @@ class Post extends Model
     protected function content(): Attribute
     {
         return Attribute::get(fn () => preg_split('/\R\s*\R/', trim($this->body)));
+    }
+
+    /** Artikel dari TinyMCE di halaman admin. Artikel lama dan kiriman pengunjung berupa teks. */
+    public function isHtml(): bool
+    {
+        return $this->format === self::FORMAT_HTML;
+    }
+
+    /** HTML yang aman untuk ditampilkan. Sudah dibersihkan saat disimpan, dibersihkan sekali lagi untuk berjaga-jaga. */
+    public function safeHtml(): string
+    {
+        return ArticleHtml::clean($this->body);
+    }
+
+    /** Isi untuk TinyMCE: artikel teks diubah dulu menjadi paragraf dan subjudul HTML. */
+    public function editorHtml(): string
+    {
+        return $this->isHtml() ? $this->body : ArticleHtml::fromText($this->body);
     }
 
     public function scopePublished(Builder $query): void
