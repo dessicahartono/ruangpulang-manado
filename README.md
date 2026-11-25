@@ -125,7 +125,7 @@ Factory juga dipakai di tes otomatis, misalnya `tests/Feature/FactoryTest.php`.
 | --- | --- |
 | 404 | Halaman atau artikel tidak ditemukan |
 | 413 | File unggahan melebihi batas server |
-| 419 | Formulir terlalu lama dibiarkan terbuka sehingga sesinya kedaluwarsa |
+| 419 | Kiriman formulir tidak bisa dipastikan berasal dari situs ini, misalnya dikirim dari situs lain. Laravel 13 menerima kiriman dari situs yang sama lewat header `Sec-Fetch-Site`, jadi di browser modern halaman ini jarang muncul |
 | 429 | Terlalu banyak percobaan masuk admin atau kiriman artikel |
 | 500 | Kesalahan di server. Detailnya tidak ditampilkan, tapi tercatat di `storage/logs/laravel.log` |
 

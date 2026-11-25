@@ -165,11 +165,11 @@ class PagesTest extends TestCase
         $this->get('/halaman-yang-tidak-ada')->assertNotFound()->assertSee('Salah Belok');
     }
 
-    public function test_expired_session_uses_friendly_419(): void
+    public function test_unverified_form_submission_uses_friendly_419(): void
     {
         Route::get('/_uji/sesi-berakhir', fn () => abort(419));
 
-        $this->get('/_uji/sesi-berakhir')->assertStatus(419)->assertSee('Sudah <em>Berakhir</em>', false)->assertSee('Kembali ke Halaman Sebelumnya');
+        $this->get('/_uji/sesi-berakhir')->assertStatus(419)->assertSee('Kiriman Tidak <em>Bisa Diproses</em>', false)->assertSee('Kembali ke Halaman Sebelumnya');
     }
 
     public function test_server_error_uses_friendly_500_without_details(): void
