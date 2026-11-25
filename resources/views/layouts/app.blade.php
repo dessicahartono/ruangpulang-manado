@@ -10,6 +10,8 @@
     <meta property="og:description" content="@yield('description', config('community.description'))">
     <meta property="og:type" content="website">
     <meta name="theme-color" content="#04060f">
+    {{-- Penanda JavaScript aktif, dipasang sedini mungkin supaya animasi muncul-media tidak berkedip. Tanpa JavaScript, foto tampil biasa. --}}
+    <script>document.documentElement.classList.add('js');setTimeout(function(){document.documentElement.classList.add('media-fallback');},6000);</script>
     <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

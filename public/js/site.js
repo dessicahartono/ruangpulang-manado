@@ -134,3 +134,92 @@ document.querySelectorAll('[data-hover-video]').forEach((video) => {
         }
     });
 });
+
+// Foto dan video selalu muncul seperti tirai yang turun, termasuk yang sudah ada di cache.
+// Kilau loading hanya muncul kalau media masih menunggu jaringan lebih dari sekejap.
+const revealTargets = '.arch img, .sponsor-card__logo img, .media-slider__item img, .media-slider__item video';
+const LOADING_DELAY = 150;
+
+document.querySelectorAll(revealTargets).forEach((media) => {
+    const frame = media.parentElement;
+    let finished = false;
+
+    const loadingTimer = window.setTimeout(() => {
+        if (!finished) {
+            frame.classList.add('is-loading');
+        }
+    }, LOADING_DELAY);
+
+    // Dua frame menunggu supaya keadaan tertutup sempat tergambar, lalu transisi tirainya berjalan.
+    const done = () => {
+        finished = true;
+        window.clearTimeout(loadingTimer);
+        frame.classList.remove('is-loading');
+        window.requestAnimationFrame(() => window.requestAnimationFrame(() => media.classList.add('is-revealed')));
+    };
+
+    const ready = media.tagName === 'VIDEO' ? media.readyState >= 2 : media.complete && media.naturalWidth > 0;
+    if (ready) {
+        done();
+        return;
+    }
+
+    media.addEventListener(media.tagName === 'VIDEO' ? 'loadeddata' : 'load', done, { once: true });
+    // Kalau gagal dimuat, tetap ditampilkan supaya bingkainya tidak kosong selamanya.
+    media.addEventListener('error', done, { once: true });
+});
+
+// Akordion (misalnya Pengurus di HP dan iPad): setiap kali dibuka lagi, foto yang sudah tampil dianimasikan ulang.
+// Saat ditutup, foto menutup dulu seperti tirai naik, baru akordionnya tertutup.
+const CLOSE_DURATION = 300;
+
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('details').forEach((details) => {
+        const summary = details.querySelector(':scope > summary');
+
+        summary?.addEventListener('click', (event) => {
+            const shown = [...details.querySelectorAll(revealTargets)].filter((media) => media.classList.contains('is-revealed'));
+
+            if (!details.open || shown.length === 0) {
+                return;
+            }
+
+            event.preventDefault();
+            if (details.dataset.closing) {
+                return;
+            }
+
+            details.dataset.closing = '1';
+            shown.forEach((media) => media.classList.add('is-closing'));
+
+            window.setTimeout(() => {
+                details.open = false;
+                shown.forEach((media) => media.classList.remove('is-closing'));
+                delete details.dataset.closing;
+            }, CLOSE_DURATION);
+        });
+
+        details.addEventListener('toggle', () => {
+            if (!details.open) {
+                return;
+            }
+
+            details.querySelectorAll(revealTargets).forEach((media) => {
+                if (!media.classList.contains('is-revealed')) {
+                    return; // Belum dimuat. Animasinya berjalan sendiri setelah selesai dimuat.
+                }
+
+                // Transisi CSS dilewati browser karena isi akordion yang tertutup tidak digambar,
+                // jadi animasinya diputar langsung: tirai 0,3 detik dan zoom 1,1 detik, sama dengan CSS.
+                media.animate(
+                    [{ clipPath: 'inset(0 0 99.9% 0)' }, { clipPath: 'inset(0 0 0 0)' }],
+                    { duration: 300, easing: 'cubic-bezier(.65, 0, .35, 1)' },
+                );
+                media.animate(
+                    [{ transform: 'scale(1.04)' }, { transform: 'none' }],
+                    { duration: 1100, easing: 'cubic-bezier(.2, .8, .2, 1)' },
+                );
+            });
+        });
+    });
+}
