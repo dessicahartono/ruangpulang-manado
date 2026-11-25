@@ -12,9 +12,10 @@ Website yang dibangun untuk komunitas sosial di Manado bernama **Ruang Pulang**
 | `/pengurus` | Pendiri dan pengurus (halaman Portfolio pada tugas) |
 | `/blog` | Daftar artikel dengan pencarian, pengurutan, dan halaman detail |
 | `/kontak` | Media sosial dan informasi bantuan darurat |
+| `/sponsorship` | Sponsor yang mendukung kegiatan komunitas |
 | `/bergabung` | Ketentuan keanggotaan dan tautan grup WhatsApp |
 | `/tulis-artikel` | Kiriman artikel dari pengunjung, tampil setelah disetujui admin |
-| `/kelola` | Menu admin, berisi Kelola Profil Pengurus (`/kelola/pengurus`), Kelola Blog (`/kelola/blog`) Kelola Kegiatan (`/kelola/kegiatan`) |
+| `/kelola` | Menu admin, berisi Kelola Profil Pengurus (`/kelola/pengurus`), Kelola Blog (`/kelola/blog`), Kelola Sponsorship (`/kelola/sponsorship`), Kelola Kegiatan (`/kelola/kegiatan`) |
 
 ## Cara menjalankan
 
@@ -50,7 +51,7 @@ Jalankan `deploy/build.sh --update`, lalu unggah dan Extract `build/ruangpulang-
 
 **Cadangan**
 
-Salin `database/database.sqlite` dan folder `public/uploads` dari server secara berkala.
+Salin `database/database.sqlite` dan folder `public/uploads` (foto pengurus dan sponsor) dari server secara berkala.
 
 ## Struktur
 
@@ -62,6 +63,7 @@ Salin `database/database.sqlite` dan folder `public/uploads` dari server secara 
 | Blade Components | `resources/views/components` |
 | Data artikel | Database, dengan data awal di `resources/data/posts.php` |
 | Data pengurus | Database, dengan data awal di `resources/data/portofolioteam.php` |
+| Data sponsor | Database, dengan data awal di `resources/data/sponsors.php` |
 | Data profil dan kegiatan | `resources/data` |
 
 ## Data

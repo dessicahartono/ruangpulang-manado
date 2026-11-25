@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Division;
 use App\Models\Member;
 use App\Models\Post;
+use App\Models\Sponsor;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
@@ -18,7 +19,7 @@ use Illuminate\Support\Str;
 /**
  * Satu-satunya pintu masuk data konten website.
  *
- * Artikel blog dan pengurus disimpan di database. Profil dan kegiatan masih dari
+ * Artikel blog, pengurus, dan sponsor disimpan di database. Profil dan kegiatan masih dari
  * file PHP di resources/data karena hanya berubah kalau komunitasnya berubah.
  */
 class CommunityRepository
@@ -43,6 +44,8 @@ class CommunityRepository
 
     /** Lokasi foto unggahan admin di folder public. Foto awal ada di images/pengurus. */
     private const MEMBER_UPLOAD_PATH = 'uploads/pengurus/';
+
+    private const SPONSOR_UPLOAD_PATH = 'uploads/sponsor/';
 
     public function activities(): Collection
     {
@@ -101,6 +104,38 @@ class CommunityRepository
     {
         $member->delete();
         $this->deleteMemberPhoto($member);
+    }
+
+    public function sponsors(): Collection
+    {
+        return Sponsor::orderBy('position')->orderBy('id')->get();
+    }
+
+    public function createSponsor(array $data): Sponsor
+    {
+        return Sponsor::create([
+            ...Arr::except($data, 'photo'),
+            'photo' => $this->storeSponsorPhoto($data['photo']),
+            'position' => (Sponsor::max('position') ?? -1) + 1,
+        ]);
+    }
+
+    public function updateSponsor(Sponsor $sponsor, array $data): void
+    {
+        $attributes = Arr::except($data, 'photo');
+
+        if (isset($data['photo'])) {
+            $this->deleteSponsorPhoto($sponsor);
+            $attributes['photo'] = $this->storeSponsorPhoto($data['photo']);
+        }
+
+        $sponsor->update($attributes);
+    }
+
+    public function deleteSponsor(Sponsor $sponsor): void
+    {
+        $sponsor->delete();
+        $this->deleteSponsorPhoto($sponsor);
     }
 
     public function profile(): object
@@ -272,6 +307,18 @@ class CommunityRepository
     {
         if ($member->photo && str_starts_with($member->photo, self::MEMBER_UPLOAD_PATH)) {
             Storage::disk('members')->delete(basename($member->photo));
+        }
+    }
+
+    private function storeSponsorPhoto(UploadedFile $photo): string
+    {
+        return self::SPONSOR_UPLOAD_PATH.$photo->storeAs('', $photo->hashName(), 'sponsors');
+    }
+
+    private function deleteSponsorPhoto(Sponsor $sponsor): void
+    {
+        if ($sponsor->photo && str_starts_with($sponsor->photo, self::SPONSOR_UPLOAD_PATH)) {
+            Storage::disk('sponsors')->delete(basename($sponsor->photo));
         }
     }
 

@@ -52,7 +52,7 @@ if [[ "$MODE" == "full" ]]; then
   php artisan key:generate --force
 
   # 4. Database baru berisi data awal (pengurus dan artikel contoh).
-  mkdir -p public/uploads/pengurus
+  mkdir -p public/uploads/pengurus public/uploads/sponsor
   : > database/database.sqlite
   php artisan migrate --seed --force
 

@@ -18,6 +18,11 @@
                     <p>Tinjau kiriman, serta tulis, ubah, dan hapus artikel.</p>
                     <p class="admin-menu__count">{{ $postCount }} artikel, {{ $pendingCount }} menunggu persetujuan</p>
                 </a>
+                <a class="admin-menu__card" href="{{ route('manage.sponsors.index') }}">
+                    <h2>Kelola Sponsorship</h2>
+                    <p>Lihat, tambah, ubah, dan hapus data sponsor.</p>
+                    <p class="admin-menu__count">{{ $sponsorCount }} sponsor</p>
+                </a>
                 {{-- Penanda saja. Fiturnya belum dibuat, jadi kartu ini bukan tautan. --}}
                 <div class="admin-menu__card admin-menu__card--soon">
                     <h2>Kelola Kegiatan</h2>

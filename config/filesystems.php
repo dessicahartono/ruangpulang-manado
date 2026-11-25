@@ -47,6 +47,15 @@ return [
             'report' => false,
         ],
 
+        // Foto sponsor unggahan admin, dengan alasan yang sama seperti foto pengurus.
+        'sponsors' => [
+            'driver' => 'local',
+            'root' => public_path('uploads/sponsor'),
+            'visibility' => 'public',
+            'throw' => true,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

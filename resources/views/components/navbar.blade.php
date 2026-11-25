@@ -6,6 +6,7 @@
         ['route' => 'activity', 'label' => 'Kegiatan', 'active' => ['activity']],
         ['route' => 'portofolioteam', 'label' => 'Pengurus', 'active' => ['portofolioteam', 'manage.members.*']],
         ['route' => 'blog.index', 'label' => 'Blog', 'active' => ['blog.*', 'manage.blog.*']],
+        ['route' => 'sponsorship', 'label' => 'Sponsorship', 'active' => ['sponsorship', 'manage.sponsors.*']],
     ];
 @endphp
 
@@ -31,6 +32,7 @@
                     <div class="navdrop__list">
                         <a href="{{ route('about') }}">Tentang</a>
                         <a href="{{ route('activity') }}">Kegiatan</a>
+                        <a href="{{ route('sponsorship') }}">Sponsorship</a>
                         <label class="contact-open" for="hubungi-chk" role="button" tabindex="0">Kontak</label>
                     </div>
                 </details>

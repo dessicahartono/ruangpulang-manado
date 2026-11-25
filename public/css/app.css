@@ -115,3 +115,18 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 /* 404 */
 .not-found p { margin-bottom: 24px; }
 
+
+/* Sponsorship: logo dibiarkan utuh di atas latar putih, tidak dipotong seperti foto */
+.sponsor-intro { max-width: 60ch; margin: 0 auto 32px; text-align: center; color: var(--ink-soft); }
+.sponsor-card { background: var(--white); border: 1.5px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.sponsor-card .card__body { padding: 18px 20px 22px; }
+.sponsor-card__logo { display: grid; place-items: center; aspect-ratio: 16 / 10; padding: 24px; background: var(--white); border-bottom: 1.5px solid var(--line); }
+.sponsor-card__logo img { width: 100%; height: 100%; object-fit: contain; }
+.sponsor-card__logo span { font-size: 3rem; font-weight: 600; color: var(--dusk); }
+.member-review > .sponsor-card__logo { border: 1.5px solid var(--line); border-radius: var(--radius); }
+.sponsor-preview { width: 160px; height: 100px; object-fit: contain; background: var(--white); border: 1px solid var(--line); padding: 8px; }
+
+@media (min-width: 761px) {
+    .admin-list--sponsors .admin-row { grid-template-columns: minmax(0, 1fr) 190px 150px; }
+}
+.admin-list--sponsors .admin-row small { word-break: normal; }
