@@ -28,7 +28,7 @@ class PagesTest extends TestCase
     public static function pages(): array
     {
         return [
-            'beranda' => ['/', 'Pintu Kami Selalu Terbuka untukmu'],
+            'beranda' => ['/', 'Semua Orang Butuh Tempat untuk'],
             'tentang' => ['/tentang', 'Sejarah dan Latar Belakang'],
             'kegiatan' => ['/kegiatan', 'Pertemuan Mingguan'],
             'pengurus' => ['/pengurus', 'Para Pendiri'],
@@ -41,12 +41,18 @@ class PagesTest extends TestCase
         ];
     }
 
-    public function test_join_invitation_sits_above_the_footer_except_on_join_and_admin_pages(): void
+    public function test_whatsapp_button_replaces_the_join_band_except_on_join_and_admin_pages(): void
     {
-        $this->get('/blog')->assertSee('Lihat Ketentuan untuk Bergabung');
-        $this->get('/kontak')->assertSee('Lihat Ketentuan untuk Bergabung');
-        $this->get('/bergabung')->assertDontSee('Lihat Ketentuan untuk Bergabung');
-        $this->get('/kelola/masuk')->assertDontSee('Lihat Ketentuan untuk Bergabung');
+        $group = config('community.whatsapp_group');
+
+        $this->get('/blog')
+            ->assertSee('class="wa-dock"', false)
+            ->assertSee('href="'.$group.'"', false)
+            ->assertSee('Gabung Grup WhatsApp')
+            ->assertDontSee('Lihat Ketentuan untuk Bergabung');
+        $this->get('/')->assertSee('class="wa-dock"', false);
+        $this->get('/bergabung')->assertDontSee('class="wa-dock"', false);
+        $this->get('/kelola/masuk')->assertDontSee('class="wa-dock"', false);
     }
 
     public function test_home_desktop_header_shows_sponsorship_and_keeps_pengurus_in_the_dropdown(): void

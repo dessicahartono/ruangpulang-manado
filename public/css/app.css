@@ -267,3 +267,34 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 .prose--rich blockquote { margin-inline: 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--sand-deep); color: var(--ink-soft); font-style: italic; }
 .prose--rich a { color: var(--ember-deep); text-decoration: underline; text-underline-offset: 3px; }
 .form__row .tox-tinymce { border-radius: 12px; border: 1.5px solid var(--sand-deep); }
+
+/* Tombol WhatsApp kanan bawah. Kotak sticky setinggi 0 ikut turun saat digulir dan berhenti di atas footer,
+   sedangkan tombolnya menempel 24px di atas kotak itu. */
+.wa-dock { position: sticky; bottom: 0; z-index: 35; height: 0; }
+.wa-dock__menu { position: absolute; right: 24px; bottom: 24px; }
+.wa-dock__button { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 50%; background: #25d366; color: #fff; list-style: none; cursor: pointer; box-shadow: 0 8px 22px rgba(7, 94, 84, .35); transition: transform .2s ease, box-shadow .2s ease; }
+.wa-dock__button::-webkit-details-marker { display: none; }
+.wa-dock__button:hover { transform: scale(1.06); box-shadow: 0 10px 26px rgba(7, 94, 84, .45); }
+.wa-dock__button:focus-visible { outline: 3px solid var(--dusk); outline-offset: 4px; }
+.wa-dock__icon { width: 30px; height: 30px; }
+.wa-dock__icon--logo { fill: currentColor; }
+.wa-dock__icon--close { display: none; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
+.wa-dock__menu[open] .wa-dock__icon--logo { display: none; }
+.wa-dock__menu[open] .wa-dock__icon--close { display: block; }
+@keyframes wa-card-in { from { opacity: 0; transform: translateY(10px) scale(.97); } }
+.wa-dock__card { position: absolute; right: 0; bottom: 72px; width: min(300px, calc(100vw - 48px)); padding: 18px; background: var(--white); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 18px 44px rgba(15, 45, 51, .22); transform-origin: bottom right; animation: wa-card-in .25s cubic-bezier(.2, .8, .2, 1) backwards; }
+.wa-dock__title { margin: 0 0 6px; font-weight: 700; color: var(--ink); }
+.wa-dock__text { margin: 0 0 14px; font-size: .92rem; line-height: 1.5; color: var(--ink-soft); }
+.wa-dock__join { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 16px; border-radius: 999px; background: #075e54; color: #fff; font-weight: 600; text-decoration: none; transition: background-color .2s ease, transform .2s ease; }
+.wa-dock__join svg { width: 20px; height: 20px; fill: currentColor; }
+.wa-dock__join:hover { background: #054c44; transform: translateY(-1px); }
+.wa-dock__join:focus-visible { outline: 3px solid var(--dusk); outline-offset: 3px; }
+@media (max-width: 760px) {
+    .wa-dock__menu { right: 16px; bottom: 16px; }
+    .wa-dock__button { width: 54px; height: 54px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .wa-dock__button, .wa-dock__join { transition: none; }
+    .wa-dock__button:hover, .wa-dock__join:hover { transform: none; }
+    .wa-dock__card { animation: none; }
+}

@@ -30,9 +30,9 @@
             @yield('content')
         </main>
 
-        {{-- Halaman Bergabung sudah berisi ajakan ini, dan halaman admin tidak perlu. --}}
+        {{-- Halaman Bergabung sudah berisi tombol grup WhatsApp, dan halaman admin tidak perlu. --}}
         @unless (request()->routeIs('join', 'manage.*'))
-            <x-join-cta />
+            <x-whatsapp-dock />
         @endunless
 
         <x-footer />
