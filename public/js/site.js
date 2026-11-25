@@ -100,3 +100,37 @@ document.querySelectorAll('[data-max-video-seconds]').forEach((input) => {
         error.hidden = !message;
     });
 });
+
+// Video kegiatan diam saat halaman dimuat. Disorot kursor: berputar tanpa suara, berhenti saat kursor pergi.
+// Kalau pengunjung memutarnya sendiri lewat klik, video tidak dihentikan saat kursor pergi.
+const canHover = window.matchMedia('(hover: hover)').matches;
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+document.querySelectorAll('[data-hover-video]').forEach((video) => {
+    let preview = false;
+
+    video.addEventListener('play', () => {
+        if (!preview) {
+            video.dataset.userPlayed = '1';
+        }
+    });
+    video.addEventListener('pause', () => {
+        delete video.dataset.userPlayed;
+    });
+
+    if (!canHover || reduceMotion) {
+        return;
+    }
+
+    video.addEventListener('mouseenter', () => {
+        if (video.paused) {
+            preview = true;
+            video.play().catch(() => {}).finally(() => { preview = false; });
+        }
+    });
+    video.addEventListener('mouseleave', () => {
+        if (!video.dataset.userPlayed) {
+            video.pause();
+        }
+    });
+});

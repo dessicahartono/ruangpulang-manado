@@ -33,6 +33,9 @@ class ActivityRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:120', Rule::unique('activities')->ignore($activity)],
             'description' => ['required', 'string', 'max:1000'],
+            // Alamat lengkap (https://...) atau halaman di situs ini (/blog).
+            'link_url' => ['nullable', 'string', 'max:300', 'regex:#^(https?://\S+|/(?!/)\S*)$#'],
+            'link_label' => ['nullable', 'string', 'max:60'],
             'media' => ['nullable', 'array', 'max:'.Activity::MAX_MEDIA],
             'media.*' => ['file', 'mimetypes:'.implode(',', [...self::IMAGE_MIMES, ...self::VIDEO_MIMES])],
             'remove_media' => ['nullable', 'array'],
@@ -86,6 +89,8 @@ class ActivityRequest extends FormRequest
         return [
             'title' => 'Judul Kegiatan',
             'description' => 'Deskripsi',
+            'link_url' => 'Link',
+            'link_label' => 'Teks Link',
             'media' => 'Media',
             'media.*' => 'Media',
         ];
@@ -96,6 +101,7 @@ class ActivityRequest extends FormRequest
         return [
             'required' => ':attribute wajib diisi.',
             'title.unique' => 'Kegiatan dengan judul ini sudah ada.',
+            'link_url.regex' => 'Link harus diawali https:// atau /, misalnya https://www.instagram.com/ruangpulang atau /blog.',
             'media.max' => 'Satu kegiatan maksimal punya '.Activity::MAX_MEDIA.' media.',
             'media.*.mimetypes' => 'Media harus berupa foto JPG, PNG, atau WEBP, atau video MP4 atau WEBM.',
             'media.*.uploaded' => 'Media gagal diunggah. Foto maksimal 2 MB dan video maksimal 20 MB.',

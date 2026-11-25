@@ -61,8 +61,7 @@ class CommunityRepository
     public function createActivity(array $data, array $files): Activity
     {
         $activity = Activity::create([
-            'title' => $data['title'],
-            'description' => $data['description'],
+            ...$this->activityAttributes($data),
             'position' => (Activity::max('position') ?? -1) + 1,
         ]);
 
@@ -77,7 +76,7 @@ class CommunityRepository
      */
     public function updateActivity(Activity $activity, array $data, array $files, array $removeIds): void
     {
-        $activity->update(['title' => $data['title'], 'description' => $data['description']]);
+        $activity->update($this->activityAttributes($data));
 
         $activity->media()->whereIn('id', $removeIds)->get()->each(function (ActivityMedia $media) {
             $media->delete();
@@ -363,6 +362,27 @@ class CommunityRepository
         if ($sponsor->photo && str_starts_with($sponsor->photo, self::SPONSOR_UPLOAD_PATH)) {
             Storage::disk('sponsors')->delete(basename($sponsor->photo));
         }
+    }
+
+    /**
+     * Teks link boleh kosong. Kalau link diisi tanpa teks, dipakai "Kunjungi Laman" untuk halaman situs ini
+     * dan "Kunjungi Situs" untuk situs lain. Tanpa link, teksnya dibuang.
+     */
+    private function activityAttributes(array $data): array
+    {
+        $url = filled($data['link_url'] ?? null) ? trim($data['link_url']) : null;
+
+        return [
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'link_url' => $url,
+            'link_label' => match (true) {
+                $url === null => null,
+                filled($data['link_label'] ?? null) => trim($data['link_label']),
+                str_starts_with($url, '/') => 'Kunjungi Laman',
+                default => 'Kunjungi Situs',
+            },
+        ];
     }
 
     /** Media baru masuk ke urutan terakhir. Alt foto memakai judul kegiatan. */

@@ -223,6 +223,59 @@ class ActivityManagementTest extends TestCase
         $this->assertDatabaseHas('activity_media', ['id' => $other->id]);
     }
 
+    public function test_admin_can_add_an_external_link_that_opens_in_a_new_tab(): void
+    {
+        $this->asAdmin()->post('/kelola/kegiatan', $this->payload([
+            'link_url' => 'https://www.instagram.com/p/contoh/',
+            'link_label' => 'Lihat Dokumentasi',
+        ]))->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('activities', ['title' => 'Kegiatan Uji', 'link_url' => 'https://www.instagram.com/p/contoh/', 'link_label' => 'Lihat Dokumentasi']);
+
+        $this->get('/kegiatan')
+            ->assertSeeInOrder(['href="https://www.instagram.com/p/contoh/"', 'target="_blank"', 'rel="noopener"', 'Lihat Dokumentasi'], false);
+    }
+
+    public function test_link_label_defaults_and_is_dropped_without_a_link(): void
+    {
+        $this->asAdmin()->post('/kelola/kegiatan', $this->payload(['link_url' => '/sponsorship', 'link_label' => '']));
+        $this->assertDatabaseHas('activities', ['title' => 'Kegiatan Uji', 'link_url' => '/sponsorship', 'link_label' => 'Kunjungi Laman']);
+
+        $this->asAdmin()->post('/kelola/kegiatan', $this->payload(['title' => 'Kegiatan Luar', 'link_url' => 'https://www.youtube.com/', 'link_label' => '']));
+        $this->assertDatabaseHas('activities', ['title' => 'Kegiatan Luar', 'link_label' => 'Kunjungi Situs']);
+
+        $activity = Activity::firstWhere('title', 'Kegiatan Uji');
+        $this->asAdmin()->put("/kelola/kegiatan/{$activity->id}", $this->payload(['media' => [], 'link_url' => '', 'link_label' => 'Sisa Teks']));
+        $this->assertDatabaseHas('activities', ['id' => $activity->id, 'link_url' => null, 'link_label' => null]);
+    }
+
+    public function test_edit_form_keeps_the_seeded_blog_link(): void
+    {
+        $activity = Activity::firstWhere('title', 'Menulis');
+
+        $this->asAdmin()->get("/kelola/kegiatan/{$activity->id}/ubah")
+            ->assertSee('value="/blog"', false)
+            ->assertSee('value="Kunjungi Blog"', false);
+
+        $this->get('/kegiatan')->assertSee('href="'.url('/blog').'"', false)->assertDontSee('href="'.url('/blog').'" target', false);
+    }
+
+    public static function invalidLinks(): array
+    {
+        return [
+            'tanpa awalan' => ['www.contoh.com'],
+            'javascript' => ['javascript:alert(1)'],
+            'situs lain lewat dua garis miring' => ['//contoh.com'],
+            'ada spasi' => ['https://contoh .com'],
+        ];
+    }
+
+    #[DataProvider('invalidLinks')]
+    public function test_invalid_links_are_rejected(string $link): void
+    {
+        $this->asAdmin()->post('/kelola/kegiatan', $this->payload(['link_url' => $link]))->assertSessionHasErrors('link_url');
+    }
+
     public function test_deleting_an_activity_removes_its_uploaded_files(): void
     {
         $this->asAdmin()->post('/kelola/kegiatan', $this->payload(['media' => [$this->photo(), $this->video()]]));

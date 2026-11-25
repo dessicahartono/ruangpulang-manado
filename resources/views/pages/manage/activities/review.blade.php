@@ -12,7 +12,7 @@
             @endif
 
             <div class="member-review activity-review">
-                <div class="arch">
+                <div class="activity-card__media activity-review__media">
                     <x-media-slider :media="$activity->media" />
                 </div>
 
@@ -20,9 +20,17 @@
                     <div><dt>Judul Kegiatan</dt><dd>{{ $activity->title }}</dd></div>
                     <div><dt>Deskripsi</dt><dd>{{ $activity->description }}</dd></div>
                     <div><dt>Media</dt><dd>{{ $activity->mediaSummary() }}</dd></div>
-                    @if ($activity->link_url)
-                        <div><dt>Tautan</dt><dd><a class="text-link" href="{{ url($activity->link_url) }}">{{ $activity->link_label }}</a></dd></div>
-                    @endif
+                    <div>
+                        <dt>Link</dt>
+                        <dd>
+                            @if ($activity->link_url)
+                                <a class="text-link" href="{{ url($activity->link_url) }}" @if ($activity->linkIsExternal()) target="_blank" rel="noopener" @endif>{{ $activity->link_label }}</a>
+                                <small class="activity-review__url">{{ $activity->link_url }}</small>
+                            @else
+                                Tidak ada
+                            @endif
+                        </dd>
+                    </div>
                 </dl>
             </div>
 

@@ -177,7 +177,7 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 .media-slider__track { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
 .media-slider__track::-webkit-scrollbar { display: none; }
 .media-slider__track:focus-visible { outline-offset: -3px; }
-.media-slider__item { flex: 0 0 100%; scroll-snap-align: start; aspect-ratio: 4 / 3.4; }
+.media-slider__item { position: relative; flex: 0 0 100%; height: 100%; scroll-snap-align: start; }
 .media-slider__item img, .media-slider__item video { display: block; width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; }
 .media-slider__item video { object-fit: contain; background: var(--dusk-deep); }
 .media-slider__nav { position: absolute; top: 50%; display: grid; place-items: center; width: 34px; height: 34px; margin-top: -17px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .88); color: var(--dusk); box-shadow: 0 2px 8px rgba(0, 0, 0, .2); cursor: pointer; transition: transform .2s ease, background-color .2s ease; }
@@ -185,6 +185,7 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 .media-slider__nav[hidden] { display: none; }
 .media-slider__nav--prev { left: 10px; }
 .media-slider__nav--next { right: 10px; }
+.media-slider__badge { position: absolute; top: 10px; left: 10px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 999px; background: rgba(4, 6, 15, .6); color: #fff; font-size: .78rem; font-weight: 600; pointer-events: none; }
 .media-slider__count { position: absolute; top: 10px; right: 10px; padding: 2px 9px; border-radius: 999px; background: rgba(4, 6, 15, .6); color: #fff; font-size: .78rem; font-weight: 600; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .media-slider__track { scroll-behavior: auto; } .media-slider__nav { transition: none; } }
 
@@ -197,3 +198,10 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 .media-current__item span { display: flex; align-items: center; gap: 6px; }
 .activity-review { grid-template-columns: minmax(0, 360px) minmax(0, 1fr); }
 @media (max-width: 760px) { .activity-review { grid-template-columns: minmax(0, 1fr); } }
+
+/* Kartu kegiatan: kotak bergaris tepi seperti kartu Sponsorship, media mengisi bingkai 16:10 */
+.activity-card { background: var(--white); border: 1.5px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.activity-card .card__body { padding: 18px 20px 22px; }
+.activity-card__media { aspect-ratio: 16 / 10; overflow: hidden; background: var(--dusk-deep); border-bottom: 1.5px solid var(--line); }
+.activity-review__media { border: 1.5px solid var(--line); border-radius: var(--radius); }
+.activity-review__url { display: block; margin-top: 2px; color: var(--ink-soft); }

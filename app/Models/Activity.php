@@ -16,6 +16,12 @@ class Activity extends Model
         return $this->hasMany(ActivityMedia::class)->orderBy('position')->orderBy('id');
     }
 
+    /** Link ke situs lain dibuka di tab baru. Link ke halaman situs ini tidak. */
+    public function linkIsExternal(): bool
+    {
+        return $this->link_url !== null && ! str_starts_with($this->link_url, '/');
+    }
+
     /** Ringkasan isi media untuk daftar admin, misalnya "2 foto dan 1 video". */
     public function mediaSummary(): string
     {

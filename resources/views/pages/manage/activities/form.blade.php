@@ -13,6 +13,10 @@
 
                 <x-form-field name="title" label="Judul Kegiatan" placeholder="Tulis judul kegiatan" :value="$activity->title ?? ''" />
                 <x-form-field name="description" label="Deskripsi" placeholder="Tulis deskripsi kegiatan" :value="$activity->description ?? ''" multiline />
+                <x-form-field name="link_url" label="Link" placeholder="https://www.instagram.com/p/... atau /blog" :value="$activity->link_url ?? ''" :required="false" />
+                <x-form-field name="link_label" label="Teks Link" placeholder="Misalnya Lihat Dokumentasi" :value="$activity->link_label ?? ''" :required="false" />
+
+                <p class="form__hint">Link dan teks link boleh dikosongkan. Link bisa berupa alamat lengkap (diawali https://) atau halaman di situs ini (diawali /, misalnya /blog). Kalau teks link kosong, yang tampil adalah "Kunjungi Situs" untuk situs lain atau "Kunjungi Laman" untuk halaman di situs ini.</p>
 
                 @if ($activity?->media->isNotEmpty())
                     <fieldset class="form__row media-current">
