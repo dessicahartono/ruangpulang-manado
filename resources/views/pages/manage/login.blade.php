@@ -10,6 +10,13 @@
             <form class="form form--login" method="POST" action="{{ route('manage.login.store') }}">
                 @csrf
                 <div class="form__row">
+                    <label for="username">Username</label>
+                    <input class="field" id="username" name="username" type="text" value="{{ old('username') }}" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Masukkan username" required autofocus>
+                    @error('username')
+                        <p class="form__error">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="form__row">
                     <label for="password">Kata Sandi</label>
                     <input class="field" id="password" name="password" type="password" autocomplete="current-password" placeholder="Masukkan kata sandi" required>
                     @error('password')

@@ -246,3 +246,6 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 .sponsor-choice legend { margin-bottom: 8px; font-weight: 600; }
 .sponsor-choice__list { display: flex; flex-wrap: wrap; gap: 10px 22px; }
 .sponsor-choice__item { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+
+/* Kode verifikasi dua langkah: angka besar dan berjarak supaya mudah dicocokkan dengan aplikasi */
+.field--code { max-width: 220px; font: 600 1.4rem/1.2 'JetBrains Mono', monospace; letter-spacing: .3em; text-align: center; }

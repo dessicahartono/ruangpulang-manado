@@ -40,6 +40,8 @@ Route::prefix('kelola')->name('manage.')->group(function () {
     Route::controller(AdminSessionController::class)->group(function () {
         Route::get('/masuk', 'create')->name('login');
         Route::post('/masuk', 'store')->middleware('throttle:admin-login')->name('login.store');
+        Route::get('/masuk/kode', 'codeForm')->name('login.code');
+        Route::post('/masuk/kode', 'verifyCode')->middleware('throttle:admin-login')->name('login.code.store');
         Route::post('/keluar', 'destroy')->name('logout');
     });
 

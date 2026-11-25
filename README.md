@@ -38,7 +38,9 @@ Kalau port 3306 sudah dipakai MySQL lain, misalnya dari Homebrew, matikan dulu d
 
 Untuk menjalankan pengujian, gunakan `php artisan test`. Secara bawaan tes memakai SQLite di memori supaya cepat. Untuk menguji di MySQL, buat database `ruangpulang_test`, lalu jalankan `DB_CONNECTION=mysql DB_DATABASE=ruangpulang_test php artisan test`.
 
-**Halaman Kelola:** jalankan `php artisan admin:password` untuk membuat kata sandi admin.
+**Halaman Kelola:** jalankan `php artisan admin:password` untuk mengatur username dan kata sandi admin. Keduanya disimpan di `.env` sebagai `ADMIN_USERNAME` dan `ADMIN_PASSWORD_HASH`, dan kata sandinya hanya disimpan sebagai hash. Saat login, username boleh diketik dengan atau tanpa `@`, dan huruf besar-kecil tidak dibedakan.
+
+**Verifikasi dua langkah (disarankan):** jalankan `php artisan admin:2fa`, lalu scan QR yang muncul di terminal dengan Google Authenticator, Microsoft Authenticator, atau aplikasi sejenis. Perintah ini meminta satu kode dari aplikasi untuk memastikan, baru setelah itu menyimpan `ADMIN_TOTP_SECRET` ke `.env`. Sejak itu, login admin butuh kata sandi dan kode 6 angka yang berganti setiap 30 detik. Kode yang sudah dipakai tidak bisa dipakai lagi, dan percobaannya dibatasi 5 kali per menit. Matikan dengan `php artisan admin:2fa --disable`. Kalau `ADMIN_TOTP_SECRET` kosong, login cukup dengan kata sandi.
 
 ## Deploy ke hosting tanpa SSH
 
@@ -58,6 +60,10 @@ Domain lain: `APP_URL=https://domainmu.com deploy/build.sh`.
 **Pembaruan berikutnya**
 
 Jalankan `deploy/build.sh --update`, lalu unggah dan Extract `build/ruangpulang-update.zip` ke folder yang sama dan pilih timpa. Zip ini tidak memuat `.env`, database, dan foto unggahan, sehingga data di server aman. Jangan mengunggah ulang `database.sqlite`, karena akan menimpa artikel dan data yang sudah ada di server. Kalau ada migrasi baru, jalankan `php artisan migrate --force` di server lewat **Cron Jobs** cPanel (jadwalkan satu kali, tunggu berjalan, lalu hapus).
+
+**Verifikasi dua langkah di hosting**
+
+Hosting tidak punya terminal, jadi jalankan `php artisan admin:2fa` di laptop, lalu salin baris `ADMIN_USERNAME=...` dan `ADMIN_TOTP_SECRET=...` dari `.env` laptop ke `.env` di server lewat File Manager. Laptop dan hosting akan memakai kode yang sama dari aplikasi. Simpan baris itu dengan aman, karena siapa pun yang memegangnya bisa membuat kode admin.
 
 **Cadangan**
 

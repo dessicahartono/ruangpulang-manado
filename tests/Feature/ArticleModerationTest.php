@@ -125,14 +125,14 @@ class ArticleModerationTest extends TestCase
 
     public function test_admin_can_log_in_and_log_out(): void
     {
-        config(['community.admin_password_hash' => Hash::make('kata-sandi-benar')]);
+        config(['community.admin_username' => 'dessicahartono', 'community.admin_password_hash' => Hash::make('kata-sandi-benar')]);
 
         $this->get('/kelola/blog')->assertRedirect('/kelola/masuk');
 
-        $this->post('/kelola/masuk', ['password' => 'kata-sandi-salah'])->assertSessionHasErrors('password');
+        $this->post('/kelola/masuk', ['username' => 'dessicahartono', 'password' => 'kata-sandi-salah'])->assertSessionHasErrors('password');
         $this->assertNull(session('is_admin'));
 
-        $this->post('/kelola/masuk', ['password' => 'kata-sandi-benar'])->assertRedirect('/kelola/blog');
+        $this->post('/kelola/masuk', ['username' => 'dessicahartono', 'password' => 'kata-sandi-benar'])->assertRedirect('/kelola/blog');
         $this->get('/kelola/blog')->assertOk()->assertSee('Tulis Artikel');
 
         $this->post('/kelola/keluar')->assertRedirect('/');
@@ -141,21 +141,53 @@ class ArticleModerationTest extends TestCase
 
     public function test_login_is_impossible_when_no_password_is_configured(): void
     {
-        config(['community.admin_password_hash' => null]);
+        config(['community.admin_username' => 'dessicahartono', 'community.admin_password_hash' => null]);
 
-        $this->post('/kelola/masuk', ['password' => 'apa-saja'])->assertSessionHasErrors('password');
+        $this->post('/kelola/masuk', ['username' => 'dessicahartono', 'password' => 'apa-saja'])->assertSessionHasErrors('password');
+        $this->assertNull(session('is_admin'));
+    }
+
+    public function test_login_needs_the_right_username_and_shows_one_generic_error(): void
+    {
+        config(['community.admin_username' => 'dessicahartono', 'community.admin_password_hash' => Hash::make('kata-sandi-benar')]);
+
+        $this->get('/kelola/masuk')->assertSee('Username')->assertSee('autocomplete="username"', false);
+
+        $this->post('/kelola/masuk', ['username' => 'orang-lain', 'password' => 'kata-sandi-benar'])
+            ->assertSessionHasErrors(['password' => 'Username atau kata sandi salah.'])
+            ->assertSessionHasInput('username', 'orang-lain')
+            ->assertSessionMissing('_old_input.password');
+        $this->post('/kelola/masuk', ['username' => 'dessicahartono', 'password' => 'salah'])
+            ->assertSessionHasErrors(['password' => 'Username atau kata sandi salah.']);
+        $this->post('/kelola/masuk', ['password' => 'kata-sandi-benar'])->assertSessionHasErrors('username');
+        $this->assertNull(session('is_admin'));
+    }
+
+    public function test_username_works_with_or_without_at_sign_and_any_case(): void
+    {
+        config(['community.admin_username' => 'dessicahartono', 'community.admin_password_hash' => Hash::make('kata-sandi-benar')]);
+
+        $this->post('/kelola/masuk', ['username' => ' @DessicaHartono ', 'password' => 'kata-sandi-benar'])->assertRedirect('/kelola');
+    }
+
+    public function test_login_is_impossible_when_no_username_is_configured(): void
+    {
+        config(['community.admin_username' => null, 'community.admin_password_hash' => Hash::make('kata-sandi-benar')]);
+
+        $this->post('/kelola/masuk', ['username' => '', 'password' => 'kata-sandi-benar'])->assertSessionHasErrors('username');
+        $this->post('/kelola/masuk', ['username' => '@', 'password' => 'kata-sandi-benar'])->assertSessionHasErrors('password');
         $this->assertNull(session('is_admin'));
     }
 
     public function test_login_attempts_are_rate_limited(): void
     {
-        config(['community.admin_password_hash' => Hash::make('kata-sandi-benar')]);
+        config(['community.admin_username' => 'dessicahartono', 'community.admin_password_hash' => Hash::make('kata-sandi-benar')]);
 
         foreach (range(1, 5) as $attempt) {
-            $this->post('/kelola/masuk', ['password' => 'salah']);
+            $this->post('/kelola/masuk', ['username' => 'dessicahartono', 'password' => 'salah']);
         }
 
-        $this->post('/kelola/masuk', ['password' => 'kata-sandi-benar'])->assertTooManyRequests();
+        $this->post('/kelola/masuk', ['username' => 'dessicahartono', 'password' => 'kata-sandi-benar'])->assertTooManyRequests();
     }
 
     public function test_admin_list_separates_pending_from_published(): void
@@ -375,6 +407,7 @@ class ArticleModerationTest extends TestCase
         $this->app->useEnvironmentPath($directory);
 
         $this->artisan('admin:password')
+            ->expectsQuestion('Username admin', '@dessicahartono')
             ->expectsQuestion('Kata sandi admin baru (minimal 12 karakter)', 'kata-sandi-panjang')
             ->expectsQuestion('Ulangi kata sandi', 'kata-sandi-panjang')
             ->assertSuccessful();
@@ -386,6 +419,7 @@ class ArticleModerationTest extends TestCase
         $this->assertStringNotContainsString('kata-sandi-panjang', $env);
         $this->assertStringContainsString('APP_NAME=Tes', $env);
         $this->assertSame(1, substr_count($env, 'ADMIN_PASSWORD_HASH='));
+        $this->assertStringContainsString("ADMIN_USERNAME=dessicahartono\n", $env);
         preg_match("/ADMIN_PASSWORD_HASH='(.+)'/", $env, $match);
         $this->assertTrue(Hash::check('kata-sandi-panjang', $match[1]));
     }
@@ -393,7 +427,15 @@ class ArticleModerationTest extends TestCase
     public function test_password_command_rejects_short_passwords(): void
     {
         $this->artisan('admin:password')
+            ->expectsQuestion('Username admin', 'dessicahartono')
             ->expectsQuestion('Kata sandi admin baru (minimal 12 karakter)', 'pendek')
+            ->assertFailed();
+    }
+
+    public function test_password_command_rejects_invalid_usernames(): void
+    {
+        $this->artisan('admin:password')
+            ->expectsQuestion('Username admin', 'ada spasi')
             ->assertFailed();
     }
 }
