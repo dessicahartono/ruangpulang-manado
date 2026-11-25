@@ -8,7 +8,7 @@ Website yang dibangun untuk komunitas sosial di Manado bernama **Ruang Pulang**
 | --- | --- |
 | `/` | Beranda |
 | `/tentang` | Sejarah, tujuan, visi, dan misi |
-| `/kegiatan` | Jenis kegiatan komunitas |
+| `/kegiatan` | Jenis kegiatan komunitas, masing-masing dengan satu sampai tiga foto atau video |
 | `/pengurus` | Pendiri dan pengurus (halaman Portfolio pada tugas) |
 | `/blog` | Daftar artikel dengan pencarian, pengurutan, dan halaman detail |
 | `/kontak` | Media sosial dan informasi bantuan darurat |
@@ -40,7 +40,7 @@ Cocok untuk hosting bersama (cPanel) yang tidak punya akses SSH. Server cukup me
 2. Di cPanel, **File Manager**, unggah zip itu ke luar `public_html` (misalnya `/home/USERNAME/ruangpulang`) lalu **Extract**. Hapus zip-nya setelah itu, karena memuat `.env`.
 3. Di **Domains**, arahkan **Document Root** domain ke `ruangpulang/public`.
 4. Di **Select PHP Version**, pilih PHP 8.4 atau lebih dan aktifkan ekstensi `mbstring`, `pdo_sqlite`, `sqlite3`, `fileinfo`, `curl`, `xml`, `tokenizer`.
-5. Beri izin tulis (775) pada `storage`, `bootstrap/cache`, `database`, dan `public/uploads` lewat File Manager.
+5. Beri izin tulis (775) pada `storage`, `bootstrap/cache`, `database`, dan `public/uploads` (beserta subfoldernya) lewat File Manager.
 6. Aktifkan SSL, lalu buka domain untuk menguji.
 
 Domain lain: `APP_URL=https://domainmu.com deploy/build.sh`.
@@ -51,7 +51,11 @@ Jalankan `deploy/build.sh --update`, lalu unggah dan Extract `build/ruangpulang-
 
 **Cadangan**
 
-Salin `database/database.sqlite` dan folder `public/uploads` (foto pengurus dan sponsor) dari server secara berkala.
+Salin `database/database.sqlite` dan folder `public/uploads` (foto pengurus dan sponsor, serta foto dan video kegiatan) dari server secara berkala.
+
+**Batas upload**
+
+Foto maksimal 2 MB dan video kegiatan (MP4 atau WEBM) maksimal 15 detik dan 20 MB. Durasi video dicek di browser saat file dipilih. Batas PHP di server dinaikkan lewat `public/.user.ini`. Kalau upload video tetap gagal, isi nilai yang sama di **MultiPHP INI Editor** cPanel: `upload_max_filesize = 25M` dan `post_max_size = 70M`.
 
 ## Struktur
 
@@ -64,7 +68,8 @@ Salin `database/database.sqlite` dan folder `public/uploads` (foto pengurus dan 
 | Data artikel | Database, dengan data awal di `resources/data/posts.php` |
 | Data pengurus | Database, dengan data awal di `resources/data/portofolioteam.php` |
 | Data sponsor | Database, dengan data awal di `resources/data/sponsors.php` |
-| Data profil dan kegiatan | `resources/data` |
+| Data kegiatan | Database, dengan data awal di `resources/data/activities.php` |
+| Data profil | `resources/data` |
 
 ## Data
 

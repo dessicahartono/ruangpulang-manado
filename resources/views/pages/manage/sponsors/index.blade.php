@@ -22,7 +22,7 @@
             @if ($sponsors->isEmpty())
                 <p class="admin-empty">Belum ada data sponsor.</p>
             @else
-                <div class="admin-list admin-list--sponsors">
+                <div class="admin-list admin-list--simple">
                     <div class="admin-row admin-row--head"><span>Nama Sponsor</span><span>Kelengkapan Data</span><span>Aksi</span></div>
                     @foreach ($sponsors as $sponsor)
                         <div class="admin-row">

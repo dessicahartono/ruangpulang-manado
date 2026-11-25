@@ -2,14 +2,13 @@
 
 <article class="card portfolio-card">
     <div class="arch">
-        <img src="{{ asset($activity->image) }}" alt="{{ $activity->alt }}" loading="lazy"
-             @isset($activity->position) style="object-position: {{ $activity->position }}" @endisset>
+        <x-media-slider :media="$activity->media" />
     </div>
     <div class="card__body">
         <h3>{{ $activity->title }}</h3>
-        <p>{{ $activity->text }}</p>
-        @isset($activity->link_route)
-            <p><a class="text-link" href="{{ route($activity->link_route) }}">{{ $activity->link_label }}</a></p>
-        @endisset
+        <p>{{ $activity->description }}</p>
+        @if ($activity->link_url)
+            <p><a class="text-link" href="{{ url($activity->link_url) }}">{{ $activity->link_label }}</a></p>
+        @endif
     </div>
 </article>

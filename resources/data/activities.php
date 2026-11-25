@@ -1,6 +1,6 @@
 <?php
 
-// Jenis kegiatan Ruang Pulang.
+// Data awal kegiatan Ruang Pulang. Setelah di-seed, kegiatan diatur lewat /kelola/kegiatan.
 return [
     [
         'title' => 'Pertemuan Mingguan',

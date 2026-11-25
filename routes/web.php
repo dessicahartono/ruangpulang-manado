@@ -8,6 +8,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JoinController;
+use App\Http\Controllers\ManageActivityController;
 use App\Http\Controllers\ManageBlogController;
 use App\Http\Controllers\ManageDashboardController;
 use App\Http\Controllers\ManageMemberController;
@@ -64,6 +65,16 @@ Route::prefix('kelola')->name('manage.')->group(function () {
             Route::get('/{member}/ubah', 'edit')->name('edit');
             Route::put('/{member}', 'update')->name('update');
             Route::delete('/{member}', 'destroy')->name('destroy');
+        });
+
+        Route::controller(ManageActivityController::class)->prefix('kegiatan')->name('activities.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/tambah', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{activity}/tinjau', 'show')->name('show');
+            Route::get('/{activity}/ubah', 'edit')->name('edit');
+            Route::put('/{activity}', 'update')->name('update');
+            Route::delete('/{activity}', 'destroy')->name('destroy');
         });
 
         Route::controller(ManageSponsorController::class)->prefix('sponsorship')->name('sponsors.')->group(function () {

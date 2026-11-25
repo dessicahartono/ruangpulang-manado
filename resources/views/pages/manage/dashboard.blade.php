@@ -23,12 +23,11 @@
                     <p>Lihat, tambah, ubah, dan hapus data sponsor.</p>
                     <p class="admin-menu__count">{{ $sponsorCount }} sponsor</p>
                 </a>
-                {{-- Penanda saja. Fiturnya belum dibuat, jadi kartu ini bukan tautan. --}}
-                <div class="admin-menu__card admin-menu__card--soon">
+                <a class="admin-menu__card" href="{{ route('manage.activities.index') }}">
                     <h2>Kelola Kegiatan</h2>
-                    <p>Lihat, tambah, ubah, dan hapus data kegiatan.</p>
-                    <p class="admin-menu__status">On Progress</p>
-                </div>
+                    <p>Lihat, tambah, ubah, dan hapus kegiatan beserta foto dan videonya.</p>
+                    <p class="admin-menu__count">{{ $activityCount }} kegiatan</p>
+                </a>
             </div>
 
             <form class="admin-section" method="POST" action="{{ route('manage.logout') }}">

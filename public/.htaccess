@@ -13,6 +13,11 @@
     Header always set Strict-Transport-Security "max-age=15552000" env=HTTPS
 </IfModule>
 
+# Pengaturan PHP di .user.ini tidak boleh dibaca pengunjung.
+<Files ".user.ini">
+    Require all denied
+</Files>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes

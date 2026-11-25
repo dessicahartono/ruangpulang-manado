@@ -56,6 +56,15 @@ return [
             'report' => false,
         ],
 
+        // Foto dan video kegiatan unggahan admin.
+        'activities' => [
+            'driver' => 'local',
+            'root' => public_path('uploads/kegiatan'),
+            'visibility' => 'public',
+            'throw' => true,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

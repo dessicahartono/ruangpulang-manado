@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Models\Activity;
+use App\Models\ActivityMedia;
 use App\Models\Division;
 use App\Models\Member;
 use App\Models\Post;
@@ -19,7 +21,7 @@ use Illuminate\Support\Str;
 /**
  * Satu-satunya pintu masuk data konten website.
  *
- * Artikel blog, pengurus, dan sponsor disimpan di database. Profil dan kegiatan masih dari
+ * Artikel blog, pengurus, sponsor, dan kegiatan disimpan di database. Profil masih dari
  * file PHP di resources/data karena hanya berubah kalau komunitasnya berubah.
  */
 class CommunityRepository
@@ -47,9 +49,50 @@ class CommunityRepository
 
     private const SPONSOR_UPLOAD_PATH = 'uploads/sponsor/';
 
+    /** Media awal ada di images/kegiatan dan ikut tersimpan di Git, jadi tidak pernah dihapus. */
+    private const ACTIVITY_UPLOAD_PATH = 'uploads/kegiatan/';
+
     public function activities(): Collection
     {
-        return $this->load('activities');
+        return Activity::with('media')->orderBy('position')->orderBy('id')->get();
+    }
+
+    /** @param  array<int, UploadedFile>  $files */
+    public function createActivity(array $data, array $files): Activity
+    {
+        $activity = Activity::create([
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'position' => (Activity::max('position') ?? -1) + 1,
+        ]);
+
+        $this->addActivityMedia($activity, $files);
+
+        return $activity;
+    }
+
+    /**
+     * @param  array<int, UploadedFile>  $files
+     * @param  array<int, int>  $removeIds
+     */
+    public function updateActivity(Activity $activity, array $data, array $files, array $removeIds): void
+    {
+        $activity->update(['title' => $data['title'], 'description' => $data['description']]);
+
+        $activity->media()->whereIn('id', $removeIds)->get()->each(function (ActivityMedia $media) {
+            $media->delete();
+            $this->deleteActivityFile($media);
+        });
+
+        $this->addActivityMedia($activity, $files);
+    }
+
+    public function deleteActivity(Activity $activity): void
+    {
+        $media = $activity->media()->get();
+
+        $activity->delete();
+        $media->each(fn (ActivityMedia $item) => $this->deleteActivityFile($item));
     }
 
     /** Seluruh divisi beserta pengurusnya, sesuai susunan halaman Pengurus. */
@@ -322,9 +365,29 @@ class CommunityRepository
         }
     }
 
-    private function load(string $file): Collection
+    /** Media baru masuk ke urutan terakhir. Alt foto memakai judul kegiatan. */
+    private function addActivityMedia(Activity $activity, array $files): void
     {
-        return collect(require resource_path("data/{$file}.php"))
-            ->map(fn (array $item) => (object) $item);
+        $position = ($activity->media()->max('position') ?? -1) + 1;
+
+        foreach ($files as $file) {
+            $isVideo = str_starts_with((string) $file->getMimeType(), 'video/');
+
+            $activity->media()->create([
+                'path' => self::ACTIVITY_UPLOAD_PATH.$file->storeAs('', $file->hashName(), 'activities'),
+                'type' => $isVideo ? ActivityMedia::TYPE_VIDEO : ActivityMedia::TYPE_IMAGE,
+                'alt' => ($isVideo ? 'Video kegiatan ' : 'Foto kegiatan ').$activity->title,
+                'position' => $position++,
+            ]);
+        }
+
+        $activity->unsetRelation('media');
+    }
+
+    private function deleteActivityFile(ActivityMedia $media): void
+    {
+        if (str_starts_with($media->path, self::ACTIVITY_UPLOAD_PATH)) {
+            Storage::disk('activities')->delete(basename($media->path));
+        }
     }
 }
