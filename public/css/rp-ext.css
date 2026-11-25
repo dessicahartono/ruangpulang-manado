@@ -357,7 +357,9 @@ h1 em, h2 em, .vision em { font-style: italic; font-weight: 500; color: var(--em
 .footer__crisis a{font-weight:700;color:var(--amber)}
 .footer__crisis img{flex:none;width:44px;height:auto;background:#fff;border-radius:12px;padding:5px 6px;box-sizing:border-box;animation:birdfloat 3.2s ease-in-out infinite}
 @keyframes birdfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-@media (prefers-reduced-motion:reduce){.footer__crisis img{animation:none}}
+/* Teks ikut melayang bersama burungnya, dengan irama yang sama */
+.footer__crisis p{animation:birdfloat 3.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.footer__crisis img,.footer__crisis p{animation:none}}
 /* Layar sedang: logo sudah satu baris penuh, jadi pesan krisis ikut selebar kontainer */
 @media (max-width:960px){.footer__crisis{grid-column:1 / -1}.footer__crisis p{max-width:none}}
 /* Bio panjang: format Selengkapnya */
