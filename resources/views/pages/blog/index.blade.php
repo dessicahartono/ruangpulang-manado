@@ -7,7 +7,8 @@
     <x-page-hero>Blog&nbsp;<em>Ruang Pulang</em></x-page-hero>
 
     <section class="section">
-        <div class="container">
+        {{-- Tombol tulis, pencarian, dan hasil berada di satu kolom supaya tepinya lurus. --}}
+        <div class="container blog-column">
             <div class="tool-link tool-link--center">
                 <x-button variant="accent" :href="route('articles.create')">Tulis Artikelmu di Sini</x-button>
             </div>

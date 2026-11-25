@@ -259,10 +259,15 @@ h1 em, h2 em, .vision em { font-style: italic; font-weight: 500; color: var(--em
 .sort-field label{font-size:15px;font-weight:500;color:#1b2340;white-space:nowrap}
 .sort-field{gap:6px;padding:0 6px 0 16px;min-height:46px;background:#fff;border:1px solid #cfd4e2;border-radius:12px}
 .sort-field .select{border:0;background-color:transparent;min-width:0;width:auto;padding-left:4px;box-shadow:none}
-.sort-field:focus-within{border-color:#2f4fd8}
+/* Garis fokus di kotak pembungkus, bukan di select di dalamnya, supaya ukurannya pas dan sama dengan kotak pencarian */
+.sort-field .select:focus,.sort-field .select:focus-visible{outline:0}
+.sort-field:focus-within{outline:2px solid var(--dusk);outline-offset:0;border-color:transparent}
 .sort-field{padding:0 6px 0 12px}
 .sort-field .select{padding-left:4px;min-width:190px}
 .section:has(.tool-link--center){padding-top:clamp(32px,4vw,48px)}
+/* Blog: tombol tulis, pencarian, jumlah, dan hasil sejajar dalam satu kolom */
+.container.blog-column{width:min(100% - 32px,760px)}
+.blog-column .tool-link--center{justify-content:flex-start}
 
 /* popup kontak */
 .modal--blur .modal__backdrop{background:rgba(4,6,15,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
