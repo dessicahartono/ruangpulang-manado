@@ -40,6 +40,14 @@ class PagesTest extends TestCase
         ];
     }
 
+    public function test_join_invitation_sits_above_the_footer_except_on_join_and_admin_pages(): void
+    {
+        $this->get('/blog')->assertSee('Lihat Ketentuan untuk Bergabung');
+        $this->get('/kontak')->assertSee('Lihat Ketentuan untuk Bergabung');
+        $this->get('/bergabung')->assertDontSee('Lihat Ketentuan untuk Bergabung');
+        $this->get('/kelola/masuk')->assertDontSee('Lihat Ketentuan untuk Bergabung');
+    }
+
     public function test_home_uses_the_transparent_header_and_other_pages_use_the_sub_layout(): void
     {
         $this->get('/')->assertSee('class="is-home"', false)->assertSee('Tentang Kami');

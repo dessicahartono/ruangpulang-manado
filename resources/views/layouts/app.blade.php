@@ -28,6 +28,11 @@
             @yield('content')
         </main>
 
+        {{-- Halaman Bergabung sudah berisi ajakan ini, dan halaman admin tidak perlu. --}}
+        @unless (request()->routeIs('join', 'manage.*'))
+            <x-join-cta />
+        @endunless
+
         <x-footer />
         <x-contact-modal />
     </div>
