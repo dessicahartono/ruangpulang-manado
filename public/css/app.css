@@ -130,3 +130,9 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
     .admin-list--sponsors .admin-row { grid-template-columns: minmax(0, 1fr) 190px 150px; }
 }
 .admin-list--sponsors .admin-row small { word-break: normal; }
+
+/* Bergabung: judul di atas, teks dibagi dua kolom */
+.join-page__title { margin-bottom: 20px; }
+@media (max-width: 960px) {
+    .join-page__columns { gap: 16px; }
+}
