@@ -249,3 +249,10 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 
 /* Kode verifikasi dua langkah: angka besar dan berjarak supaya mudah dicocokkan dengan aplikasi */
 .field--code { max-width: 220px; font: 600 1.4rem/1.2 'JetBrains Mono', monospace; letter-spacing: .3em; text-align: center; }
+
+/* Header desktop yang sempit (961 sampai 1100px): delapan menu tetap satu baris dan nama situs tidak terlipat */
+@media (min-width: 961px) and (max-width: 1100px) {
+    .navbar__menu { gap: 2px; }
+    .navbar__link { padding: 8px 9px; }
+    .navbar .brand span { white-space: nowrap; }
+}

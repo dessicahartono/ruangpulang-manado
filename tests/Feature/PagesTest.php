@@ -56,6 +56,15 @@ class PagesTest extends TestCase
             ->assertSeeInOrder(['Tentang Kami', 'Kegiatan', route('portofolioteam'), 'Pengurus', 'Kontak'], false);
     }
 
+    public function test_keanggotaan_is_in_the_header_and_the_home_dropdown(): void
+    {
+        $join = route('join');
+
+        $this->get('/blog')->assertSeeInOrder(['Sponsorship', 'href="'.$join.'"', 'Keanggotaan', 'Kontak'], false);
+        $this->get('/')->assertSeeInOrder(['Tentang Kami', 'Pengurus', 'href="'.route('blog.index').'">Blog</a>', 'href="'.$join.'">Keanggotaan</a>', 'Kontak'], false);
+        $this->get('/bergabung')->assertSee('aria-current="page"', false)->assertSeeInOrder(['is-active', 'Keanggotaan'], false);
+    }
+
     public function test_home_uses_the_transparent_header_and_other_pages_use_the_sub_layout(): void
     {
         $this->get('/')->assertSee('class="is-home"', false)->assertSee('Tentang Kami');

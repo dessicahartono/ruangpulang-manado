@@ -7,6 +7,7 @@
         ['route' => 'portofolioteam', 'label' => 'Pengurus', 'active' => ['portofolioteam', 'manage.members.*']],
         ['route' => 'blog.index', 'label' => 'Blog', 'active' => ['blog.*', 'manage.blog.*']],
         ['route' => 'sponsorship', 'label' => 'Sponsorship', 'active' => ['sponsorship', 'manage.sponsors.*']],
+        ['route' => 'join', 'label' => 'Keanggotaan', 'active' => ['join']],
     ];
 @endphp
 
@@ -33,6 +34,8 @@
                         <a href="{{ route('about') }}">Tentang</a>
                         <a href="{{ route('activity') }}">Kegiatan</a>
                         <a href="{{ route('portofolioteam') }}">Pengurus</a>
+                        <a href="{{ route('blog.index') }}">Blog</a>
+                        <a href="{{ route('join') }}">Keanggotaan</a>
                         <label class="contact-open" for="hubungi-chk" role="button" tabindex="0">Kontak</label>
                     </div>
                 </details>
