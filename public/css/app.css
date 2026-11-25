@@ -136,3 +136,41 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 @media (max-width: 960px) {
     .join-page__columns { gap: 16px; }
 }
+
+/* Pop-up Kontak: tepi halus. Kotak tidak berwarna sendiri, sehingga sudut atas hanya berisi header
+   gelap dan sudut bawah hanya berisi badan krem. Dua lapisan warna di sudut yang sama membuat garis terang. */
+.modal__box--contact { background: transparent; isolation: isolate; }
+.modal__box--contact .contact__body { background: var(--cream); }
+
+/* Pop-up Kontak: muncul pelan, latar memudar */
+@keyframes contact-fade { from { opacity: 0; } }
+@keyframes contact-rise { from { opacity: 0; transform: translateY(18px) scale(.97); } }
+@keyframes contact-sheet { from { transform: translateY(100%); } }
+@keyframes contact-btn-in { from { opacity: 0; transform: translateY(10px); } }
+.modal__check:checked + .modal .modal__backdrop { animation: contact-fade .25s ease-out backwards; }
+.modal__check:checked + .modal .modal__box--contact { animation: contact-rise .32s cubic-bezier(.2, .8, .2, 1) backwards; }
+@media (max-width: 760px) {
+    .modal__check:checked + .modal .modal__box--contact { animation: contact-sheet .34s cubic-bezier(.2, .8, .2, 1) backwards; }
+}
+
+/* Tombol Instagram dan TikTok: masuk bergantian, terangkat saat disorot, ikon bergoyang, mengecil sedikit saat ditekan */
+@keyframes contact-icon-wiggle {
+    0%, 100% { transform: rotate(0) scale(1); }
+    30% { transform: rotate(-12deg) scale(1.18); }
+    60% { transform: rotate(8deg) scale(1.12); }
+}
+.contact__btn { transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease; }
+.contact__btn svg { transition: transform .2s ease; }
+.contact__btn:hover { transform: translateY(-2px); border-color: var(--ember); box-shadow: 0 8px 20px rgba(23, 63, 69, .16); }
+.contact__btn:hover svg { animation: contact-icon-wiggle .5s ease; }
+.contact__btn:active { transform: translateY(0) scale(.97); box-shadow: 0 2px 6px rgba(23, 63, 69, .12); }
+.modal__check:checked + .modal .contact__btn { animation: contact-btn-in .35s ease-out backwards; animation-delay: .12s; }
+.modal__check:checked + .modal .contact__btn + .contact__btn { animation-delay: .2s; }
+
+@media (prefers-reduced-motion: reduce) {
+    .modal__check:checked + .modal .modal__backdrop,
+    .modal__check:checked + .modal .modal__box--contact,
+    .modal__check:checked + .modal .contact__btn,
+    .contact__btn:hover svg { animation: none; }
+    .contact__btn, .contact__btn:hover, .contact__btn:active { transform: none; }
+}

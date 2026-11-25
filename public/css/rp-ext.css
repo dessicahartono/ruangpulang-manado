@@ -297,7 +297,8 @@ h1 em, h2 em, .vision em { font-style: italic; font-weight: 500; color: var(--em
   .modal__close{transform:translateY(-45%)}
 }
 
-.modal__check{position:absolute;opacity:0;pointer-events:none;width:0;height:0}
+/* Fixed, bukan absolute: checkbox ini ada di bawah footer, jadi kalau absolute, browser menggulir ke sana saat Kontak diklik */
+.modal__check{position:fixed;top:0;left:0;opacity:0;pointer-events:none;width:0;height:0}
 .modal__check:checked + .modal{display:flex}
 .contact-open{cursor:pointer}
 .modal__backdrop,.modal__close{cursor:pointer}
