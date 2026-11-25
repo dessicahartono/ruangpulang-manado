@@ -26,12 +26,10 @@ class MemberManagementTest extends TestCase
     /** Semua pengurus awal sudah lengkap, jadi yang belum lengkap dibuat khusus untuk tes. */
     private function incompleteMember(): Member
     {
-        return Member::create([
-            'division_id' => Division::firstWhere('name', 'Ruang Tumbuh')->id,
-            'full_name' => 'Belum Lengkap',
-            'nickname' => 'Belum',
-            'position' => 99,
-        ]);
+        return Member::factory()
+            ->for(Division::firstWhere('name', 'Ruang Tumbuh'))
+            ->withoutInstagram()
+            ->create(['full_name' => 'Belum Lengkap', 'nickname' => 'Belum', 'position' => 99]);
     }
 
     private function asAdmin(): static

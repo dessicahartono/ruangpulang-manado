@@ -19,20 +19,30 @@ Website yang dibangun untuk komunitas sosial di Manado bernama **Ruang Pulang**
 
 ## Cara menjalankan
 
-Syarat: PHP 8.4.1 atau lebih baru (dibutuhkan Symfony 8 pada `composer.lock`) dan Composer.
+Syarat: PHP 8.4.1 atau lebih baru dengan ekstensi `pdo_mysql` (dibutuhkan Symfony 8 pada `composer.lock`), Composer, dan XAMPP untuk MySQL.
 
-```bash
-composer run setup
-php artisan serve
-```
+1. Buka XAMPP, lalu di **Manage Servers** nyalakan **MySQL Database**.
+2. Buat database `ruangpulang` dengan collation `utf8mb4_unicode_ci`, lewat phpMyAdmin (<http://localhost/phpmyadmin>) atau perintah:
+   ```bash
+   /Applications/XAMPP/xamppfiles/bin/mysql -u root -e "CREATE DATABASE ruangpulang CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+   ```
+3. Jalankan:
+   ```bash
+   composer run setup
+   php artisan serve
+   ```
 
-Buka <http://localhost:8000>. Perintah setup juga membuat database SQLite dan mengisinya dengan data pengurus, blog, dan kegiatan. Untuk menjalankan pengujian, gunakan `php artisan test`.
+Buka <http://localhost:8000>. Perintah setup menyalin `.env.example` ke `.env` (sudah berisi koneksi MySQL XAMPP: user `root` tanpa kata sandi), membuat tabel, dan mengisinya dengan data pengurus, blog, sponsor, dan kegiatan.
+
+Kalau port 3306 sudah dipakai MySQL lain, misalnya dari Homebrew, matikan dulu dengan `brew services stop mysql`.
+
+Untuk menjalankan pengujian, gunakan `php artisan test`. Secara bawaan tes memakai SQLite di memori supaya cepat. Untuk menguji di MySQL, buat database `ruangpulang_test`, lalu jalankan `DB_CONNECTION=mysql DB_DATABASE=ruangpulang_test php artisan test`.
 
 **Halaman Kelola:** jalankan `php artisan admin:password` untuk membuat kata sandi admin.
 
 ## Deploy ke hosting tanpa SSH
 
-Cocok untuk hosting bersama (cPanel) yang tidak punya akses SSH. Server cukup memakai **PHP 8.4.1 atau lebih baru**.
+Cocok untuk hosting bersama (cPanel) yang tidak punya akses SSH. Server cukup memakai **PHP 8.4.1 atau lebih baru**. Di laptop aplikasi memakai MySQL, sedangkan di hosting memakai SQLite supaya tidak perlu mengatur database di cPanel. `deploy/build.sh` otomatis mengubah `.env` produksi ke SQLite.
 
 **Pertama kali**
 
@@ -86,6 +96,28 @@ Foto maksimal 2 MB dan video kegiatan (MP4 atau WEBM) maksimal 15 detik dan 20 M
 Relasi many-to-many diatur dari form Kelola Kegiatan lewat centang "Didukung oleh Sponsor". Hasilnya tampil di dua arah: kartu kegiatan menulis "Didukung oleh …" dan kartu sponsor menulis "Mendukung kegiatan …".
 
 Data awal diisi oleh seeder di `database/seeders` dari file `resources/data`. Semua seeder memakai `firstOrCreate`, jadi aman dijalankan ulang tanpa menimpa data yang sudah diubah admin.
+
+## Factory dan data demo
+
+Setiap model konten punya factory di `database/factories`: `PostFactory`, `DivisionFactory`, `MemberFactory`, `SponsorFactory`, `ActivityFactory`, dan `ActivityMediaFactory`. Isinya kalimat berbahasa Indonesia sesuai tema komunitas, dengan nama dari Faker berlocale `id_ID`.
+
+| Factory | State tambahan |
+| --- | --- |
+| `PostFactory` | `pending()` untuk kiriman yang menunggu persetujuan |
+| `MemberFactory` | `withoutInstagram()`. Divisinya ikut dibuat lewat relasi kalau tidak ditentukan |
+| `SponsorFactory` | `withoutLink()` |
+| `ActivityFactory` | `withMedia($jumlah)` untuk 1 sampai 3 foto, dan `withLink()` |
+| `ActivityMediaFactory` | `video()` |
+
+Untuk demo pagination, pencarian, dan relasi, tambahkan data contoh dari factory:
+
+```bash
+php artisan db:seed --class=DemoSeeder
+```
+
+Seeder ini menambahkan 25 artikel terbit, 3 kiriman menunggu persetujuan, satu divisi berisi 12 pengurus, 3 sponsor, dan 3 kegiatan yang dihubungkan ke sponsor. `DemoSeeder` tidak ikut `DatabaseSeeder` supaya data asli tidak tercampur data palsu, dan hanya bisa dijalankan di laptop karena Faker tidak dipasang di hosting. Untuk kembali ke data asli saja, jalankan `php artisan migrate:fresh --seed`.
+
+Factory juga dipakai di tes otomatis, misalnya `tests/Feature/FactoryTest.php`.
 
 ## Penanganan error
 

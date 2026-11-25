@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use Database\Factories\PostFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
+    /** @use HasFactory<PostFactory> */
+    use HasFactory;
+
     public const STATUS_PENDING = 'pending';
 
     public const STATUS_PUBLISHED = 'published';

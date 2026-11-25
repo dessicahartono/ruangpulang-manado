@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Database\Factories\SponsorFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Sponsor extends Model
 {
+    /** @use HasFactory<SponsorFactory> */
+    use HasFactory;
+
     protected $fillable = ['name', 'photo', 'description', 'link', 'position'];
 
     /** Kegiatan yang didukung sponsor ini. Kebalikan dari Activity::sponsors(). */
