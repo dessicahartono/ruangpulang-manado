@@ -49,6 +49,9 @@ if [[ "$MODE" == "full" ]]; then
   set_env APP_DEBUG false
   set_env APP_URL "$APP_URL"
   set_env LOG_LEVEL error
+  # Hosting memakai SQLite, sedangkan .env.example memakai MySQL untuk laptop.
+  set_env DB_CONNECTION sqlite
+  perl -pi -e 's{^(DB_(HOST|PORT|DATABASE|USERNAME|PASSWORD)=)}{# $1}' .env
   php artisan key:generate --force
 
   # 4. Database baru berisi data awal (pengurus dan artikel contoh).
