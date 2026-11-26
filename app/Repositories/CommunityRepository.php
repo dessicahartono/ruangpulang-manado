@@ -253,8 +253,8 @@ class CommunityRepository
     /** Kiriman pengunjung. Tidak tampil di blog sampai disetujui admin. */
     public function submitPost(array $data): Post
     {
-        // Kiriman pengunjung tetap berupa teks, karena form publik tidak memakai TinyMCE.
-        return Post::create([...$this->attributesFrom($data, Post::FORMAT_TEXT), 'status' => Post::STATUS_PENDING]);
+        // Form Tulis Artikel juga memakai TinyMCE, jadi kirimannya HTML yang dibersihkan dulu oleh ArticleHtml.
+        return Post::create([...$this->attributesFrom($data, Post::FORMAT_HTML), 'status' => Post::STATUS_PENDING]);
     }
 
     public function publishPost(array $data): Post

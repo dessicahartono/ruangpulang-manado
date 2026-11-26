@@ -41,6 +41,14 @@ class ArticleHtml
         return trim(html_entity_decode(strip_tags(str_replace('<br>', ' ', $text)), ENT_QUOTES | ENT_HTML5));
     }
 
+    /** Jumlah kata, dihitung seperti penghitung kata di TinyMCE: tag diganti spasi supaya kata antarparagraf tidak menyatu. */
+    public static function wordCount(string $html): int
+    {
+        $text = html_entity_decode(preg_replace('/<[^>]*>/', ' ', $html), ENT_QUOTES | ENT_HTML5);
+
+        return count(preg_split('/[\s\x{A0}]+/u', $text, -1, PREG_SPLIT_NO_EMPTY));
+    }
+
     /** Benar kalau HTML-nya tidak berisi teks apa pun, misalnya "<p></p>" dari editor yang kosong. */
     public static function isEmpty(string $html): bool
     {

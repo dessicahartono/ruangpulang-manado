@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Post;
+use App\Support\ArticleHtml;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -17,13 +18,14 @@ class BlogRichEditorTest extends TestCase
         return $this->withSession(['is_admin' => true]);
     }
 
-    public function test_admin_forms_load_tinymce_but_the_public_form_does_not(): void
+    public function test_admin_and_public_forms_load_tinymce(): void
     {
         $post = Post::firstWhere('slug', 'kapan-sebaiknya-mencari-bantuan-profesional');
 
         $this->asAdmin()->get('/kelola/blog/tambah')->assertOk()->assertSee('tinymce@7.6.0', false)->assertSee('data-rich-editor', false);
         $this->asAdmin()->get("/kelola/blog/{$post->slug}/ubah")->assertOk()->assertSee('tinymce@7.6.0', false);
-        $this->get('/tulis-artikel')->assertOk()->assertDontSee('tinymce', false)->assertDontSee('data-rich-editor', false);
+        // Form pengunjung juga memakai TinyMCE, tetapi tanpa kolom English yang khusus admin.
+        $this->get('/tulis-artikel')->assertOk()->assertSee('tinymce@7.6.0', false)->assertSee('data-rich-editor', false)->assertDontSee('body_en', false);
     }
 
     public function test_admin_html_is_cleaned_before_it_is_saved(): void
@@ -103,20 +105,48 @@ class BlogRichEditorTest extends TestCase
         $this->assertDatabaseMissing('posts', ['title' => 'Kosong']);
     }
 
-    public function test_visitor_submissions_stay_plain_text(): void
+    public function test_visitor_html_is_cleaned_and_english_fields_are_ignored(): void
     {
         $this->post('/tulis-artikel', [
             'title' => 'Kiriman Pengunjung',
             'author' => 'Tamu',
-            'body' => "Paragraf satu <b>bukan tebal</b>.\n\nParagraf dua.",
+            'body' => '<p onclick="alert(1)">Paragraf satu <strong>tebal</strong>.</p><script>alert(1)</script><p>Paragraf dua.</p>',
+            'title_en' => 'Dari pengunjung',
         ]);
 
         $post = Post::firstWhere('title', 'Kiriman Pengunjung');
-        $this->assertFalse($post->isHtml());
-        $this->assertStringContainsString('<b>bukan tebal</b>', $post->body);
+        $this->assertTrue($post->isHtml());
+        $this->assertTrue($post->isPending());
+        $this->assertStringContainsString('<strong>tebal</strong>', $post->body);
+        $this->assertStringNotContainsString('<script', $post->body);
+        $this->assertStringNotContainsString('onclick', $post->body);
+        $this->assertNull($post->title_en);
+    }
 
-        $this->asAdmin()->get("/kelola/blog/{$post->slug}/tinjau")
-            ->assertSee('&lt;b&gt;bukan tebal&lt;/b&gt;', false)
-            ->assertDontSee('<b>bukan tebal</b>', false);
+    public function test_words_are_counted_across_paragraphs_and_entities(): void
+    {
+        $this->assertSame(5, ArticleHtml::wordCount('<p>Satu dua</p><p>tiga&nbsp;empat</p><ul><li>lima</li></ul>'));
+    }
+
+    public function test_article_body_is_limited_to_5000_words_for_visitors_and_admin(): void
+    {
+        $body = fn (int $words) => '<p>'.implode(' ', array_fill(0, $words, 'kata')).'</p>';
+
+        $this->post('/tulis-artikel', ['title' => 'Terlalu Panjang', 'author' => 'Tamu', 'body' => $body(5001)])
+            ->assertSessionHasErrors(['body' => 'Isi Artikel maksimal 5000 kata. Sekarang 5001 kata.']);
+        $this->asAdmin()->post('/kelola/blog', ['title' => 'Terlalu Panjang', 'author' => 'Admin', 'body' => $body(5001)])
+            ->assertSessionHasErrors('body');
+        $this->assertDatabaseMissing('posts', ['title' => 'Terlalu Panjang']);
+
+        $this->post('/tulis-artikel', ['title' => 'Pas', 'author' => 'Tamu', 'body' => $body(5000)])->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('posts', ['title' => 'Pas']);
+    }
+
+    public function test_visitor_body_with_only_unsafe_html_is_rejected(): void
+    {
+        $this->post('/tulis-artikel', ['title' => 'Kosong', 'author' => 'Tamu', 'body' => '<script>alert(1)</script>'])
+            ->assertSessionHasErrors('body');
+
+        $this->assertDatabaseMissing('posts', ['title' => 'Kosong']);
     }
 }

@@ -21,6 +21,7 @@ class ArticleSubmissionController extends Controller
             'submitLabel' => 'Kirim Artikel',
             'hint' => 'Artikelmu akan tampil setelah disetujui admin. Jangan tulis data pribadi orang lain.',
             'isPublicForm' => true,
+            'richEditor' => true,
         ]);
     }
 

@@ -17,7 +17,7 @@ class ArticleModerationTest extends TestCase
 
     private const SLUG = 'healing-tidak-harus-liburan';
 
-    private const ARTICLE = ['title' => 'Judul Baru', 'author' => 'Penulis', 'body' => "Paragraf pertama.\n\n## Subjudul\n\nParagraf kedua."];
+    private const ARTICLE = ['title' => 'Judul Baru', 'author' => 'Penulis', 'body' => '<p>Paragraf pertama.</p><h2>Subjudul</h2><p>Paragraf kedua.</p>'];
 
     private function asAdmin(): static
     {
@@ -85,9 +85,9 @@ class ArticleModerationTest extends TestCase
         $this->assertDatabaseHas('posts', ['slug' => 'artikel']);
     }
 
-    public function test_submitted_html_is_escaped_on_the_article_page(): void
+    public function test_submitted_html_is_cleaned_on_the_article_page(): void
     {
-        $this->post('/tulis-artikel', [...self::ARTICLE, 'body' => '<script>alert(1)</script>']);
+        $this->post('/tulis-artikel', [...self::ARTICLE, 'body' => '<p>Halo</p><script>alert(1)</script>']);
 
         $post = Post::firstWhere('title', 'Judul Baru');
         $this->asAdmin()->post("/kelola/blog/{$post->slug}/setujui");

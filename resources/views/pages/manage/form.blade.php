@@ -22,13 +22,16 @@
                 @if ($richEditor ?? false)
                     {{-- TinyMCE menggantikan kotak ini. Isinya HTML, dan dibersihkan lagi di server sebelum disimpan. --}}
                     <div class="form__row">
-                        <label for="body">Isi Artikel</label>
-                        <textarea class="textarea" id="body" name="body" data-rich-editor>{{ old('body', $post?->editorHtml() ?? '') }}</textarea>
+                        <label for="body">{{ __('Isi Artikel') }}</label>
+                        <textarea class="textarea" id="body" name="body" placeholder="{{ __('Tulis isi artikel di sini') }}" data-rich-editor>{{ old('body', $post?->editorHtml() ?? '') }}</textarea>
+                        <p class="form__hint">{{ __('Maksimal :max kata. Jumlah kata terlihat di pojok kanan bawah editor.', ['max' => App\Http\Requests\ArticleRequest::MAX_WORDS]) }}</p>
                         @error('body')
                             <p class="form__error">{{ $message }}</p>
                         @enderror
                     </div>
 
+                    {{-- Versi Inggris hanya untuk admin. Kiriman pengunjung diterjemahkan saat disetujui. --}}
+                    @unless (isset($isPublicForm))
                     <x-form-field name="title_en" label="Judul Artikel (English)" placeholder="Kosongkan untuk diterjemahkan otomatis" :value="$post->title_en ?? ''" :required="false" />
 
                     <div class="form__row">
@@ -40,6 +43,7 @@
                     </div>
 
                     <p class="form__hint">Kolom English boleh dikosongkan, nanti diterjemahkan otomatis oleh Gemini saat disimpan. Kalau teks Indonesia diubah tetapi kolom English tidak, versi Inggrisnya diterjemahkan ulang.</p>
+                    @endunless
                 @else
                     <x-form-field name="body" :label="__('Isi Artikel')" :placeholder="__('Tulis isi artikel di sini')" multiline :value="$post->body ?? ''" />
                 @endif
@@ -77,7 +81,7 @@
                 height: 520,
                 plugins: 'lists link autolink wordcount',
                 toolbar: 'undo redo | blocks | bold italic underline strikethrough | bullist numlist | blockquote link | removeformat',
-                block_formats: 'Paragraf=p; Subjudul=h2; Subjudul kecil=h3',
+                block_formats: @json(__('Paragraf').'=p; '.__('Subjudul').'=h2; '.__('Subjudul kecil').'=h3'),
                 // Sama dengan App\Support\ArticleHtml::ALLOWED, supaya yang terlihat di editor sama dengan yang tersimpan.
                 valid_elements: 'p,br,h2,h3,strong/b,em/i,u,s,ul,ol,li,blockquote,a[href|title|target|rel]',
                 link_default_target: '_blank',
