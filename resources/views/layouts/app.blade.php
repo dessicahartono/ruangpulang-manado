@@ -16,9 +16,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/rp.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/rp-ext.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    {{-- ?v= berisi waktu file terakhir diubah, supaya browser pengunjung langsung mengambil CSS dan JS baru setelah deploy. --}}
+    @php($fresh = fn (string $path) => asset($path).'?v='.filemtime(public_path($path)))
+    <link rel="stylesheet" href="{{ $fresh('css/rp.css') }}">
+    <link rel="stylesheet" href="{{ $fresh('css/rp-ext.css') }}">
+    <link rel="stylesheet" href="{{ $fresh('css/app.css') }}">
 </head>
 <body>
     <a class="skip-link" href="#konten">{{ __('Langsung ke Konten') }}</a>
@@ -39,7 +41,7 @@
         <x-contact-modal />
     </div>
 
-    <script src="{{ asset('js/site.js') }}" defer></script>
+    <script src="{{ $fresh('js/site.js') }}" defer></script>
     @stack('scripts')
 </body>
 </html>
