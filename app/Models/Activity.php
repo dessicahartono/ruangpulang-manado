@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasEnglish;
 use Database\Factories\ActivityFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,11 +12,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Activity extends Model
 {
     /** @use HasFactory<ActivityFactory> */
+    use HasEnglish;
     use HasFactory;
 
     public const MAX_MEDIA = 3;
 
-    protected $fillable = ['title', 'description', 'link_url', 'link_label', 'position'];
+    protected $fillable = ['title', 'title_en', 'description', 'description_en', 'link_url', 'link_label', 'link_label_en', 'position'];
+
+    protected array $translatable = ['title', 'description', 'link_label'];
 
     public function media(): HasMany
     {

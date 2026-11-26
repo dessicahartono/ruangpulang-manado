@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', $post->title)
-@section('description', $post->excerpt)
+@section('title', $post->local('title'))
+@section('description', $post->local('excerpt'))
 
 @section('content')
     <x-page-hero>
-        {{ $post->title }}
+        {{ $post->local('title') }}
         <x-slot:after>
             <p class="article-meta">
                 <span>{{ $post->author }}</span>
@@ -19,10 +19,10 @@
             <article class="article">
                 <x-article-body :post="$post" />
                 <div class="article__nav">
-                    <a class="back-arrow" href="{{ route('blog.index') }}" aria-label="Kembali ke Blog">
+                    <a class="back-arrow" href="{{ route('blog.index') }}" aria-label="{{ __('Kembali ke Blog') }}">
                         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"></path><path d="M11 6l-6 6 6 6"></path></svg>
                     </a>
-                    <a class="text-link" href="{{ route('blog.index') }}">Baca Artikel Lainnya <span aria-hidden="true">&#8599;</span></a>
+                    <a class="text-link" href="{{ route('blog.index') }}">{{ __('Baca Artikel Lainnya') }} <span aria-hidden="true">&#8599;</span></a>
                 </div>
             </article>
         </div>

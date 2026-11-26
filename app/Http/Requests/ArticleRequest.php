@@ -10,12 +10,20 @@ class ArticleRequest extends FormRequest
 {
     public function rules(): array
     {
-        return [
+        $rules = [
             'title' => ['required', 'string', 'max:150'],
             'author' => ['required', 'string', 'max:80'],
             // Dari TinyMCE (admin) isinya HTML, jadi batasnya lebih longgar karena tag ikut terhitung.
             'body' => ['required', 'string', 'max:'.($this->fromRichEditor() ? 60000 : 20000)],
         ];
+
+        // Versi Inggris hanya ada di form admin. Kosong berarti diterjemahkan otomatis.
+        if ($this->fromRichEditor()) {
+            $rules['title_en'] = ['nullable', 'string', 'max:150'];
+            $rules['body_en'] = ['nullable', 'string', 'max:60000'];
+        }
+
+        return $rules;
     }
 
     public function after(): array
@@ -35,14 +43,20 @@ class ArticleRequest extends FormRequest
 
     public function attributes(): array
     {
-        return ['title' => 'Judul Artikel', 'author' => 'Nama Penulis', 'body' => 'Isi Artikel'];
+        return [
+            'title' => __('Judul Artikel'),
+            'author' => __('Nama Penulis'),
+            'body' => __('Isi Artikel'),
+            'title_en' => 'Judul Artikel (English)',
+            'body_en' => 'Isi Artikel (English)',
+        ];
     }
 
     public function messages(): array
     {
         return [
-            'required' => ':attribute wajib diisi.',
-            'max' => ':attribute maksimal :max karakter.',
+            'required' => __(':attribute wajib diisi.'),
+            'max' => __(':attribute maksimal :max karakter.'),
         ];
     }
 }

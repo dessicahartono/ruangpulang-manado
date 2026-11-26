@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Pengurus')
-@section('description', 'Para pendiri dan pengurus komunitas Ruang Pulang.')
+@section('title', __('Pengurus'))
+@section('description', __('Para pendiri dan pengurus komunitas Ruang Pulang.'))
 
 @section('content')
-    <x-page-hero>Orang-orang di Balik <em>Ruang Pulang</em></x-page-hero>
+    <x-page-hero>{!! __('Orang-orang di Balik <em>Ruang Pulang</em>') !!}</x-page-hero>
 
     <section class="section">
         <div class="container">
@@ -12,7 +12,7 @@
             <div class="only-wide">
                 @foreach ($groups as $group)
                     <div class="team-group">
-                        <h2 class="h3-title">{{ $group->name }}</h2>
+                        <h2 class="h3-title">{{ $group->local('name') }}</h2>
                         <x-team-group :group="$group" />
                     </div>
                 @endforeach
@@ -21,7 +21,7 @@
             <div class="acc-list only-narrow">
                 @foreach ($groups as $group)
                     <details class="acc" @if ($loop->first) open @endif>
-                        <summary class="acc__sum">{{ $group->name }}</summary>
+                        <summary class="acc__sum">{{ $group->local('name') }}</summary>
                         <div class="acc__body">
                             <x-team-group :group="$group" />
                         </div>

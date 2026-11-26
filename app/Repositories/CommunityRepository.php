@@ -61,10 +61,12 @@ class CommunityRepository
     /** @param  array<int, UploadedFile>  $files */
     public function createActivity(array $data, array $files): Activity
     {
-        $activity = Activity::create([
+        $activity = new Activity([
             ...$this->activityAttributes($data),
             'position' => (Activity::max('position') ?? -1) + 1,
         ]);
+        $activity->translateToEnglish();
+        $activity->save();
 
         $activity->sponsors()->sync($data['sponsors'] ?? []);
         $this->addActivityMedia($activity, $files);
@@ -78,7 +80,9 @@ class CommunityRepository
      */
     public function updateActivity(Activity $activity, array $data, array $files, array $removeIds): void
     {
-        $activity->update($this->activityAttributes($data));
+        $activity->fill($this->activityAttributes($data));
+        $activity->translateToEnglish();
+        $activity->save();
         $activity->sponsors()->sync($data['sponsors'] ?? []);
 
         $activity->media()->whereIn('id', $removeIds)->get()->each(function (ActivityMedia $media) {
@@ -158,11 +162,15 @@ class CommunityRepository
 
     public function createSponsor(array $data): Sponsor
     {
-        return Sponsor::create([
+        $sponsor = new Sponsor([
             ...Arr::except($data, 'photo'),
             'photo' => $this->storeSponsorPhoto($data['photo']),
             'position' => (Sponsor::max('position') ?? -1) + 1,
         ]);
+        $sponsor->translateToEnglish();
+        $sponsor->save();
+
+        return $sponsor;
     }
 
     public function updateSponsor(Sponsor $sponsor, array $data): void
@@ -174,7 +182,9 @@ class CommunityRepository
             $attributes['photo'] = $this->storeSponsorPhoto($data['photo']);
         }
 
-        $sponsor->update($attributes);
+        $sponsor->fill($attributes);
+        $sponsor->translateToEnglish();
+        $sponsor->save();
     }
 
     public function deleteSponsor(Sponsor $sponsor): void
@@ -183,9 +193,10 @@ class CommunityRepository
         $this->deleteSponsorPhoto($sponsor);
     }
 
+    /** Profil versi Inggris ada di file terpisah, karena isinya juga dari file, bukan database. */
     public function profile(): object
     {
-        return (object) require resource_path('data/profile.php');
+        return (object) require resource_path(app()->isLocale('en') ? 'data/profile.en.php' : 'data/profile.php');
     }
 
     /** Artikel yang boleh dilihat pengunjung. */
@@ -248,11 +259,15 @@ class CommunityRepository
 
     public function publishPost(array $data): Post
     {
-        return Post::create([
+        $post = new Post([
             ...$this->attributesFrom($data, Post::FORMAT_HTML),
             'status' => Post::STATUS_PUBLISHED,
             'published_at' => now(),
         ]);
+        $post->translateToEnglish();
+        $post->save();
+
+        return $post;
     }
 
     /**
@@ -261,14 +276,19 @@ class CommunityRepository
      */
     public function updatePost(Post $post, array $data): void
     {
-        $post->update(Arr::except($this->attributesFrom($data, Post::FORMAT_HTML), 'slug'));
+        $post->fill(Arr::except($this->attributesFrom($data, Post::FORMAT_HTML), 'slug'));
+        $post->translateToEnglish();
+        $post->save();
     }
 
     public function approvePost(Post $post): void
     {
         // Artikel yang sudah terbit dilewati supaya tanggal publikasinya tidak berubah.
+        // Kiriman pengunjung baru diterjemahkan di sini, supaya kiriman yang ditolak tidak memakai kuota Gemini.
         if ($post->isPending()) {
-            $post->update(['status' => Post::STATUS_PUBLISHED, 'published_at' => now()]);
+            $post->fill(['status' => Post::STATUS_PUBLISHED, 'published_at' => now()]);
+            $post->translateToEnglish();
+            $post->save();
         }
     }
 
@@ -289,7 +309,7 @@ class CommunityRepository
 
     private function applySearch(Builder $query, string $search): void
     {
-        $query->whereAny(['title', 'author', 'excerpt', 'body'], 'like', "%{$search}%");
+        $query->whereAny(['title', 'title_en', 'author', 'excerpt', 'body', 'body_en'], 'like', "%{$search}%");
     }
 
     private function attributesFrom(array $data, string $format): array
@@ -301,10 +321,10 @@ class CommunityRepository
             'title' => $data['title'],
             'author' => $data['author'],
             'body' => $body,
+            'body_en' => $data['body_en'] ?? null,
+            'title_en' => $data['title_en'] ?? null,
             'format' => $format,
-            'excerpt' => $format === Post::FORMAT_HTML
-                ? Str::limit(Str::squish(ArticleHtml::firstParagraph($body)), 160)
-                : $this->excerptFrom($body),
+            'excerpt' => Post::excerptFrom($body, $format),
         ];
     }
 
@@ -318,14 +338,6 @@ class CommunityRepository
         }
 
         return $slug;
-    }
-
-    private function excerptFrom(string $body): string
-    {
-        $firstParagraph = collect(preg_split('/\R\s*\R/', trim($body)))
-            ->first(fn (string $block) => ! str_starts_with($block, '## '), '');
-
-        return Str::limit(Str::squish($firstParagraph), 160);
     }
 
     private function sortedMembers(Builder $query, string $sort): Builder
@@ -381,8 +393,12 @@ class CommunityRepository
 
         return [
             'title' => $data['title'],
+            'title_en' => $data['title_en'] ?? null,
             'description' => $data['description'],
+            'description_en' => $data['description_en'] ?? null,
             'link_url' => $url,
+            // Tanpa link, teks link versi Inggris ikut dikosongkan oleh translateToEnglish().
+            'link_label_en' => $data['link_label_en'] ?? null,
             'link_label' => match (true) {
                 $url === null => null,
                 filled($data['link_label'] ?? null) => trim($data['link_label']),

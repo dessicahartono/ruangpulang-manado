@@ -3,22 +3,22 @@
 <article class="founder-card">
     <div class="arch founder-card__portrait">
         @if ($member->photo)
-            <img src="{{ asset($member->photo) }}" alt="Foto {{ $member->display_name }}" loading="lazy">
+            <img src="{{ asset($member->photo) }}" alt="{{ __('Foto :name', ['name' => $member->display_name]) }}" loading="lazy">
         @else
             <span aria-hidden="true">{{ Str::substr($member->full_name, 0, 1) }}</span>
         @endif
     </div>
     <h3>{{ $member->display_name }}</h3>
     @isset($member->role)
-        <p class="founder-card__role">{{ $member->role }}</p>
+        <p class="founder-card__role">{{ $member->local('role') }}</p>
     @endisset
     @isset($member->bio)
-        <p>{{ $member->bio }}</p>
+        <p>{{ $member->local('bio') }}</p>
     @endisset
     @isset($member->bio_more)
         <details class="bio-more">
-            <summary class="text-link"><span class="bio-more__more">Selengkapnya</span><span class="bio-more__less">Sembunyikan</span></summary>
-            <p>{{ $member->bio_more }}</p>
+            <summary class="text-link"><span class="bio-more__more">{{ __('Selengkapnya') }}</span><span class="bio-more__less">{{ __('Sembunyikan') }}</span></summary>
+            <p>{{ $member->local('bio_more') }}</p>
         </details>
     @endisset
     @if ($member->instagram)

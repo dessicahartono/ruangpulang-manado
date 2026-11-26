@@ -130,3 +130,51 @@ Artisan::command('admin:2fa {--disable : Matikan verifikasi dua langkah}', funct
 
     return 1;
 })->purpose('Mengatur verifikasi dua langkah halaman Kelola');
+
+// Mengisi versi bahasa Inggris untuk konten yang sudah ada di database, misalnya data hasil seeder.
+// Yang sudah punya versi Inggris dilewati, kecuali memakai --ulang.
+Artisan::command('konten:terjemahkan {--ulang : Terjemahkan ulang semuanya, termasuk yang sudah punya versi Inggris}', function () {
+    if (blank(config('services.gemini.key'))) {
+        $this->error('GEMINI_API_KEY di .env masih kosong. Tidak ada yang diterjemahkan.');
+
+        return 1;
+    }
+
+    $items = collect([
+        App\Models\Post::published()->get(),
+        App\Models\Activity::all(),
+        App\Models\Sponsor::all(),
+        App\Models\Division::all(),
+        App\Models\Member::all(),
+    ])->flatten();
+
+    $failed = 0;
+
+    foreach ($items as $item) {
+        if ($this->option('ulang')) {
+            $item->forgetEnglish();
+        }
+
+        if ($item->untranslatedFields() === []) {
+            continue;
+        }
+
+        $name = class_basename($item).' #'.$item->id;
+        $item->translateToEnglish();
+
+        if ($item->untranslatedFields() === []) {
+            $item->save();
+            $this->info("{$name} selesai.");
+        } else {
+            $failed++;
+            $this->warn("{$name} gagal, lihat storage/logs/laravel.log.");
+        }
+
+        // Paket gratis Gemini membatasi jumlah permintaan per menit.
+        Illuminate\Support\Sleep::for(5)->seconds();
+    }
+
+    $this->line($failed === 0 ? 'Semua konten sudah punya versi Inggris.' : "{$failed} konten gagal. Jalankan lagi nanti untuk mencoba ulang yang gagal.");
+
+    return $failed === 0 ? 0 : 1;
+})->purpose('Menerjemahkan konten database ke bahasa Inggris dengan Gemini');

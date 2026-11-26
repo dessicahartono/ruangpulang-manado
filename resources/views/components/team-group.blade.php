@@ -2,7 +2,7 @@
 
 @isset($group->description)
     <div class="group-desc">
-        @foreach ($group->description as $paragraph)
+        @foreach ($group->local('description') as $paragraph)
             <p>{{ $paragraph }}</p>
         @endforeach
     </div>

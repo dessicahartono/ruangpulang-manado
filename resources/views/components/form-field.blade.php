@@ -3,7 +3,7 @@
 <div class="form__row">
     <label for="{{ $name }}">{{ $label }}</label>
     @if ($multiline)
-        <textarea class="textarea" id="{{ $name }}" name="{{ $name }}" placeholder="{{ $placeholder }}" required>{{ old($name, $value) }}</textarea>
+        <textarea class="textarea" id="{{ $name }}" name="{{ $name }}" placeholder="{{ $placeholder }}" @required($required)>{{ old($name, $value) }}</textarea>
     @else
         <input class="field" id="{{ $name }}" name="{{ $name }}" type="{{ $type }}" value="{{ old($name, $value) }}" placeholder="{{ $placeholder }}" @required($required)>
     @endif

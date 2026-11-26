@@ -36,6 +36,9 @@ class ActivityRequest extends FormRequest
             // Alamat lengkap (https://...) atau halaman di situs ini (/blog).
             'link_url' => ['nullable', 'string', 'max:300', 'regex:#^(https?://\S+|/(?!/)\S*)$#'],
             'link_label' => ['nullable', 'string', 'max:60'],
+            'title_en' => ['nullable', 'string', 'max:120'],
+            'description_en' => ['nullable', 'string', 'max:1000'],
+            'link_label_en' => ['nullable', 'string', 'max:60'],
             'media' => ['nullable', 'array', 'max:'.Activity::MAX_MEDIA],
             'media.*' => ['file', 'mimetypes:'.implode(',', [...self::IMAGE_MIMES, ...self::VIDEO_MIMES])],
             'sponsors' => ['nullable', 'array'],
@@ -93,6 +96,9 @@ class ActivityRequest extends FormRequest
             'description' => 'Deskripsi',
             'link_url' => 'Link',
             'link_label' => 'Teks Link',
+            'title_en' => 'Judul Kegiatan (English)',
+            'description_en' => 'Deskripsi (English)',
+            'link_label_en' => 'Teks Link (English)',
             'media' => 'Media',
             'media.*' => 'Media',
         ];

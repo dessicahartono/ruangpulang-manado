@@ -1,22 +1,22 @@
 @extends('layouts.app')
 
-@section('title', $post ? 'Ubah Artikel' : 'Tulis Artikel')
+@section('title', $post ? 'Ubah Artikel' : __('Tulis Artikel'))
 
 @section('content')
-    <x-page-hero>{{ $post ? 'Ubah' : 'Tulis' }}&nbsp;<em>Artikel</em></x-page-hero>
+    <x-page-hero>{!! $post ? __('Ubah&nbsp;<em>Artikel</em>') : __('Tulis&nbsp;<em>Artikel</em>') !!}</x-page-hero>
 
     <section class="section">
         <div class="container">
             @if (session('notice'))
-                <x-notice>{{ session('notice') }}</x-notice>
+                <x-notice>{{ __(session('notice')) }}</x-notice>
             @endif
 
             <form class="form" method="POST" action="{{ $action }}">
                 @csrf
                 @method($method)
 
-                <x-form-field name="title" label="Judul Artikel" placeholder="Tulis judul artikel" :value="$post->title ?? ''" />
-                <x-form-field name="author" label="Nama Penulis" placeholder="Tulis namamu" :value="$post->author ?? ''" />
+                <x-form-field name="title" :label="__('Judul Artikel')" :placeholder="__('Tulis judul artikel')" :value="$post->title ?? ''" />
+                <x-form-field name="author" :label="__('Nama Penulis')" :placeholder="__('Tulis namamu')" :value="$post->author ?? ''" />
 
 
                 @if ($richEditor ?? false)
@@ -28,8 +28,20 @@
                             <p class="form__error">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <x-form-field name="title_en" label="Judul Artikel (English)" placeholder="Kosongkan untuk diterjemahkan otomatis" :value="$post->title_en ?? ''" :required="false" />
+
+                    <div class="form__row">
+                        <label for="body_en">Isi Artikel (English)</label>
+                        <textarea class="textarea" id="body_en" name="body_en" data-rich-editor>{{ old('body_en', $post?->body_en ? $post->editorHtml('body_en') : '') }}</textarea>
+                        @error('body_en')
+                            <p class="form__error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <p class="form__hint">Kolom English boleh dikosongkan, nanti diterjemahkan otomatis oleh Gemini saat disimpan. Kalau teks Indonesia diubah tetapi kolom English tidak, versi Inggrisnya diterjemahkan ulang.</p>
                 @else
-                    <x-form-field name="body" label="Isi Artikel" placeholder="Tulis isi artikel di sini" multiline :value="$post->body ?? ''" />
+                    <x-form-field name="body" :label="__('Isi Artikel')" :placeholder="__('Tulis isi artikel di sini')" multiline :value="$post->body ?? ''" />
                 @endif
 
                 @isset($isPublicForm)
@@ -40,11 +52,11 @@
                     </div>
                 @endisset
 
-                <p class="form__hint">{{ $hint }}</p>
+                <p class="form__hint">{{ __($hint) }}</p>
 
                 <div class="form__actions">
-                    <x-button variant="accent" type="submit">{{ $submitLabel }}</x-button>
-                    <x-button variant="outline" :href="$cancelUrl">Batal</x-button>
+                    <x-button variant="accent" type="submit">{{ __($submitLabel) }}</x-button>
+                    <x-button variant="outline" :href="$cancelUrl">{{ __('Batal') }}</x-button>
                 </div>
             </form>
         </div>

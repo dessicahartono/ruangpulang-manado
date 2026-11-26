@@ -18,6 +18,12 @@
 
                 <p class="form__hint">Link dan teks link boleh dikosongkan. Link bisa berupa alamat lengkap (diawali https://) atau halaman di situs ini (diawali /, misalnya /blog). Kalau teks link kosong, yang tampil adalah "Kunjungi Situs" untuk situs lain atau "Kunjungi Laman" untuk halaman di situs ini.</p>
 
+                <x-form-field name="title_en" label="Judul Kegiatan (English)" placeholder="Kosongkan untuk diterjemahkan otomatis" :value="$activity->title_en ?? ''" :required="false" />
+                <x-form-field name="description_en" label="Deskripsi (English)" placeholder="Kosongkan untuk diterjemahkan otomatis" :value="$activity->description_en ?? ''" multiline :required="false" />
+                <x-form-field name="link_label_en" label="Teks Link (English)" placeholder="Kosongkan untuk diterjemahkan otomatis" :value="$activity->link_label_en ?? ''" :required="false" />
+
+                <p class="form__hint">Kolom English boleh dikosongkan, nanti diterjemahkan otomatis oleh Gemini saat disimpan. Kalau teks Indonesia diubah tetapi kolom English tidak, versi Inggrisnya diterjemahkan ulang.</p>
+
                 @if ($sponsors->isNotEmpty())
                     @php($chosen = array_map('intval', (array) old('sponsors', $activity?->sponsors->pluck('id')->all() ?? [])))
                     <fieldset class="form__row sponsor-choice">

@@ -15,6 +15,7 @@ class SponsorRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:120', Rule::unique('sponsors')->ignore($sponsor)],
             'description' => ['required', 'string', 'max:600'],
+            'description_en' => ['nullable', 'string', 'max:600'],
             'link' => ['nullable', 'string', 'max:300', 'url:http,https'],
             'photo' => [$sponsor ? 'nullable' : 'required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
@@ -25,6 +26,7 @@ class SponsorRequest extends FormRequest
         return [
             'name' => 'Nama Sponsor',
             'description' => 'Deskripsi',
+            'description_en' => 'Deskripsi (English)',
             'link' => 'Link',
             'photo' => 'Foto',
         ];
