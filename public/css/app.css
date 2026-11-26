@@ -32,6 +32,10 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
     .join h2 { font-size: 30px; }
 }
 
+/* Ikon blog di beranda berupa PNG hitam yang dibalik jadi putih. Saat tombol disorot dan latarnya terang, ikonnya kembali hitam seperti teksnya. */
+.btn--icon img { transition: filter .2s ease; }
+.btn--outline-light.btn--icon:hover img { filter: none; }
+
 /* Foto pengurus dan kegiatan: pertahankan bagian orangnya saat dipotong */
 .arch img { height: 100%; }
 .founder-card__portrait { overflow: hidden; }
