@@ -1,7 +1,7 @@
 @props(['paginator'])
 
 @if ($paginator->hasPages())
-    <nav class="pager" aria-label="Halaman">
+    <nav class="pager" aria-label="{{ __('Halaman') }}">
         <p class="pager__brand">
             {{ config('community.name') }}
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
@@ -14,7 +14,7 @@
                 </li>
             @endforeach
             @if ($paginator->hasMorePages())
-                <li><a class="pager__next" href="{{ $paginator->nextPageUrl() }}">Berikutnya</a></li>
+                <li><a class="pager__next" href="{{ $paginator->nextPageUrl() }}">{{ __('Berikutnya') }}</a></li>
             @endif
         </ol>
     </nav>

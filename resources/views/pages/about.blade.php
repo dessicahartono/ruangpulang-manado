@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
-@section('title', 'Tentang')
-@section('description', 'Sejarah, tujuan, visi, dan misi komunitas Ruang Pulang di Manado.')
+@section('title', __('Tentang Kami'))
+@section('description', __('Sejarah, tujuan, visi, dan misi komunitas Ruang Pulang di Manado.'))
 
 @section('content')
-    <x-page-hero>Tentang <em>Ruang Pulang</em></x-page-hero>
+    <x-page-hero>{!! __('Tentang <em>Ruang Pulang</em>') !!}</x-page-hero>
 
     {{-- Desktop: dua kolom. HP: akordion, sesuai desain. Isinya sama dan berasal dari data yang sama. --}}
     <div class="only-wide">
         <section class="section">
             <div class="container split">
                 <div class="prose">
-                    <h2>Sejarah dan Latar Belakang</h2>
+                    <h2>{{ __('Sejarah dan Latar Belakang') }}</h2>
                     <x-paragraphs :items="$profile->history" />
                 </div>
                 <div class="prose">
-                    <h2>Tujuan Terbentuknya Ruang Pulang</h2>
+                    <h2>{{ __('Tujuan Terbentuknya Ruang Pulang') }}</h2>
                     <x-paragraphs :items="$profile->purpose" />
                 </div>
             </div>
@@ -24,11 +24,11 @@
         <section class="section">
             <div class="container split">
                 <div class="prose">
-                    <h2>Visi</h2>
+                    <h2>{{ __('Visi') }}</h2>
                     <p>{{ $profile->vision }}</p>
                 </div>
                 <div class="prose">
-                    <h2>Misi</h2>
+                    <h2>{{ __('Misi') }}</h2>
                     <ol class="mission-list">
                         @foreach ($profile->missions as $mission)
                             <li>{{ $mission }}</li>
@@ -42,19 +42,19 @@
     <section class="section only-narrow">
         <div class="container acc-list">
             <details class="acc">
-                <summary class="acc__sum">Sejarah dan Latar Belakang</summary>
+                <summary class="acc__sum">{{ __('Sejarah dan Latar Belakang') }}</summary>
                 <div class="prose"><x-paragraphs :items="$profile->history" /></div>
             </details>
             <details class="acc">
-                <summary class="acc__sum">Tujuan Terbentuknya Ruang Pulang</summary>
+                <summary class="acc__sum">{{ __('Tujuan Terbentuknya Ruang Pulang') }}</summary>
                 <div class="prose"><x-paragraphs :items="$profile->purpose" /></div>
             </details>
             <details class="acc">
-                <summary class="acc__sum">Visi dan Misi</summary>
+                <summary class="acc__sum">{{ __('Visi dan Misi') }}</summary>
                 <div class="prose">
-                    <h3>Visi</h3>
+                    <h3>{{ __('Visi') }}</h3>
                     <p>{{ $profile->vision }}</p>
-                    <h3>Misi</h3>
+                    <h3>{{ __('Misi') }}</h3>
                     <ol class="mission-list">
                         @foreach ($profile->missions as $mission)
                             <li>{{ $mission }}</li>

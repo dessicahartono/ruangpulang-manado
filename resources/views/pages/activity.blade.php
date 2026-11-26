@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Kegiatan')
-@section('description', 'Pertemuan mingguan, sesi sharing, olahraga, musik, menulis, dan edukasi kesehatan mental bersama Ruang Pulang.')
+@section('title', __('Kegiatan'))
+@section('description', __('Pertemuan mingguan, sesi sharing, olahraga, musik, menulis, dan edukasi kesehatan mental bersama Ruang Pulang.'))
 
 @section('content')
-    <x-page-hero>Kegiatan <em>Ruang Pulang</em></x-page-hero>
+    <x-page-hero>{!! __('Kegiatan <em>Ruang Pulang</em>') !!}</x-page-hero>
 
     <section class="section section--sand">
         <div class="container">

@@ -15,6 +15,8 @@ use App\Http\Controllers\ManageMemberController;
 use App\Http\Controllers\ManageSponsorController;
 use App\Http\Controllers\PortofolioTeamController;
 use App\Http\Controllers\SponsorshipController;
+use App\Http\Middleware\SetLocale;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -24,6 +26,13 @@ Route::get('/pengurus', PortofolioTeamController::class)->name('portofolioteam')
 Route::get('/bergabung', JoinController::class)->name('join');
 Route::get('/kontak', ContactController::class)->name('contact');
 Route::get('/sponsorship', SponsorshipController::class)->name('sponsorship');
+
+// Tombol ID dan EN di navbar. Pilihan bahasa disimpan di session, lalu kembali ke halaman sebelumnya.
+Route::get('/bahasa/{locale}', function (Request $request, string $locale) {
+    $request->session()->put('locale', $locale);
+
+    return redirect()->back(fallback: route('home'));
+})->whereIn('locale', SetLocale::LOCALES)->name('locale');
 
 Route::controller(BlogController::class)->group(function () {
     Route::get('/blog', 'index')->name('blog.index');

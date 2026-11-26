@@ -5,11 +5,11 @@
                 <img src="{{ asset('images/logo.png') }}" alt="" width="38" height="38">
                 <span>{{ config('community.name') }}</span>
             </a>
-            <p class="footer__tagline">{{ config('community.tagline') }}</p>
+            <p class="footer__tagline">{{ __(config('community.tagline')) }}</p>
         </div>
         <div class="footer__crisis">
             <img src="{{ asset('images/bird-hand.png') }}" alt="" width="44" height="57">
-            <p>Kalau kamu sedang berpikir untuk mengakhiri hidup atau merasa tidak aman, segera hubungi <a href="{{ config('community.crisis.phone_href') }}">{{ config('community.crisis.phone_label') }}</a>. Kamu tidak harus menghadapinya sendirian.</p>
+            <p>{{ __('Kalau kamu sedang berpikir untuk mengakhiri hidup atau merasa tidak aman, segera hubungi') }} <a href="{{ config('community.crisis.phone_href') }}">{{ config('community.crisis.phone_label') }}</a>. {{ __('Kamu tidak harus menghadapinya sendirian.') }}</p>
         </div>
     </div>
     <div class="container footer__bottom">

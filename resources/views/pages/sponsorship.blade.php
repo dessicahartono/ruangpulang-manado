@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
 @section('title', 'Sponsorship')
-@section('description', 'Para sponsor yang mendukung kegiatan komunitas Ruang Pulang.')
+@section('description', __('Para sponsor yang mendukung kegiatan komunitas Ruang Pulang.'))
 
 @section('content')
-    <x-page-hero>Sponsorship <em>Ruang Pulang</em></x-page-hero>
+    <x-page-hero>{!! __('Sponsorship <em>Ruang Pulang</em>') !!}</x-page-hero>
 
     <section class="section section--sand">
         <div class="container">
-            <p class="sponsor-intro">Terima kasih kepada para sponsor yang sudah mendukung kegiatan Ruang Pulang.</p>
+            <p class="sponsor-intro">{{ __('Terima kasih kepada para sponsor yang sudah mendukung kegiatan Ruang Pulang.') }}</p>
 
             @if ($sponsors->isEmpty())
-                <p class="sponsor-intro">Belum ada sponsor yang ditampilkan.</p>
+                <p class="sponsor-intro">{{ __('Belum ada sponsor yang ditampilkan.') }}</p>
             @else
                 <div class="grid grid--3">
                     @foreach ($sponsors as $sponsor)

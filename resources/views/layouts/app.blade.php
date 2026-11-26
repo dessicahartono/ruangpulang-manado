@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@hasSection('title')@yield('title') | {{ config('community.name') }}@else{{ config('community.name') }}@endif</title>
-    <meta name="description" content="@yield('description', config('community.description'))">
+    <meta name="description" content="@yield('description', __(config('community.description')))">
     <meta property="og:title" content="@yield('title', config('community.name'))">
-    <meta property="og:description" content="@yield('description', config('community.description'))">
+    <meta property="og:description" content="@yield('description', __(config('community.description')))">
     <meta property="og:type" content="website">
     <meta name="theme-color" content="#04060f">
     {{-- Penanda JavaScript aktif, dipasang sedini mungkin supaya animasi muncul-media tidak berkedip. Tanpa JavaScript, foto tampil biasa. --}}
@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
-    <a class="skip-link" href="#konten">Langsung ke Konten</a>
+    <a class="skip-link" href="#konten">{{ __('Langsung ke Konten') }}</a>
 
     <div id="top" @class(['is-home', 'is-sub' => ! request()->routeIs('home')])>
         <x-navbar />

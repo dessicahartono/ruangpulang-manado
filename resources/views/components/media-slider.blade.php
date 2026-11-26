@@ -2,7 +2,7 @@
 
 {{-- Geser ke samping untuk melihat media berikutnya. Tombol panah ditambahkan site.js. --}}
 <div class="media-slider" data-media-slider>
-    <div class="media-slider__track" data-media-track tabindex="0" aria-label="Media kegiatan">
+    <div class="media-slider__track" data-media-track tabindex="0" aria-label="{{ __('Media kegiatan') }}">
         @foreach ($media as $item)
             <div class="media-slider__item">
                 @if ($item->isVideo())
@@ -20,10 +20,10 @@
     </div>
 
     @if ($media->count() > 1)
-        <button class="media-slider__nav media-slider__nav--prev" type="button" data-media-prev aria-label="Media sebelumnya" hidden>
+        <button class="media-slider__nav media-slider__nav--prev" type="button" data-media-prev aria-label="{{ __('Media sebelumnya') }}" hidden>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
         </button>
-        <button class="media-slider__nav media-slider__nav--next" type="button" data-media-next aria-label="Media berikutnya" hidden>
+        <button class="media-slider__nav media-slider__nav--next" type="button" data-media-next aria-label="{{ __('Media berikutnya') }}" hidden>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
         </button>
         <span class="media-slider__count" data-media-count aria-hidden="true">1/{{ $media->count() }}</span>

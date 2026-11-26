@@ -298,3 +298,24 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
     .wa-dock__button:hover, .wa-dock__join:hover { transform: none; }
     .wa-dock__card { animation: none; }
 }
+
+/* Pilihan bahasa di navbar. Memakai dropdown .navdrop, hanya ditambah bendera dan tanda centang. */
+.flag { width: 18px; height: 18px; flex: none; border-radius: 50%; box-shadow: 0 0 0 1px rgba(27, 35, 64, .2); }
+.lang-menu summary { gap: 8px; font-variant-numeric: tabular-nums; }
+.lang-menu .navdrop__list { left: auto; right: 0; min-width: 200px; }
+.navdrop__list .lang-menu__option { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.lang-menu__option.is-current { font-weight: 600; }
+.lang-menu__option.is-current::after { content: ""; width: 5px; height: 10px; margin-left: auto; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translateY(-2px); }
+
+/*
+ * Di HP dan iPad, pilihan bahasa ada di samping tombol menu, bukan di dalam menu.
+ * Daftarnya tetap melayang seperti di desktop, karena .navdrop__list di layar kecil dibuat menempel di menu.
+ */
+@media (max-width: 960px) {
+    .lang-menu { order: 1; margin-left: auto; }
+    .navbar__toggle { order: 2; }
+    .lang-menu summary { padding: 8px 10px; }
+    .lang-menu .navdrop__list { position: absolute; top: calc(100% + 6px); right: 0; padding: 6px; background: var(--cream); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 14px 34px rgba(15, 45, 51, .22); }
+    .is-home .lang-menu .navdrop__list a { color: var(--ink); }
+    .is-home .lang-menu .navdrop__list a:hover { background: var(--sand); }
+}
