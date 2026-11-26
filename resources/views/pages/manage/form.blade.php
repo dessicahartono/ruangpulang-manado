@@ -27,6 +27,13 @@
                         @error('body')
                             <p class="form__error">{{ $message }}</p>
                         @enderror
+                        @isset($isPublicForm)
+                            {{-- Tersembunyi tanpa JavaScript, karena draf hanya bisa disimpan lewat JavaScript. --}}
+                            <p class="form__hint" data-draft-status hidden>
+                                <span data-draft-text>{{ __('Tulisanmu tersimpan otomatis di perangkat ini sampai dikirim. Draf tidak akan muncul kalau kamu lanjut menulis di perangkat yang berbeda.') }}</span>
+                                <button class="text-link draft-clear" type="button" data-draft-clear hidden>{{ __('Hapus draf') }}</button>
+                            </p>
+                        @endisset
                     </div>
 
                     {{-- Versi Inggris hanya untuk admin. Kiriman pengunjung diterjemahkan saat disetujui. --}}
@@ -86,7 +93,68 @@
                 link_default_target: '_blank',
                 link_assume_external_targets: 'https',
                 content_style: "body { font-family: Inter, system-ui, sans-serif; font-size: 17px; line-height: 1.7; color: #1b2340; } h2 { font-size: 1.5em; } h3 { font-size: 1.2em; } blockquote { margin-left: 0; padding-left: 16px; border-left: 3px solid #d9cdb8; color: #555; }",
+                @isset($isPublicForm)
+                    setup: (editor) => editor.on('init', () => startDraft(editor)),
+                @endisset
             });
+
+            @isset($isPublicForm)
+                // Draf pengunjung disimpan di browser ini saja (localStorage), tidak dikirim ke server sebelum Kirim Karya ditekan.
+                // Dihapus otomatis setelah kiriman berhasil, atau lewat tombol Hapus draf.
+                function startDraft(editor) {
+                    const KEY = 'ruang-pulang-draft';
+                    const status = document.querySelector('[data-draft-status]');
+                    const text = status.querySelector('[data-draft-text]');
+                    const clear = status.querySelector('[data-draft-clear]');
+                    const fields = ['title', 'author'].map((id) => document.getElementById(id));
+                    const store = {
+                        get: () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; } },
+                        set: (draft) => { try { localStorage.setItem(KEY, JSON.stringify(draft)); } catch {} },
+                        remove: () => { try { localStorage.removeItem(KEY); } catch {} },
+                    };
+
+                    @if (session('notice'))
+                        store.remove();
+                    @endif
+
+                    // Isian lama dari server (misalnya setelah error validasi) didahulukan daripada draf.
+                    const draft = store.get();
+                    const formIsEmpty = fields.every((field) => field.value === '') && editor.getContent({ format: 'text' }).trim() === '';
+                    if (draft && formIsEmpty) {
+                        fields[0].value = draft.title ?? '';
+                        fields[1].value = draft.author ?? '';
+                        editor.setContent(draft.body ?? '');
+                        text.textContent = @json(__('Drafmu yang belum terkirim sudah dipulihkan.'));
+                    }
+
+                    let timer;
+                    const save = () => {
+                        window.clearTimeout(timer);
+                        timer = window.setTimeout(() => {
+                            const body = editor.getContent();
+                            const empty = fields.every((field) => field.value.trim() === '') && editor.getContent({ format: 'text' }).trim() === '';
+                            empty ? store.remove() : store.set({ title: fields[0].value, author: fields[1].value, body });
+                            clear.hidden = empty;
+                        }, 800);
+                    };
+
+                    fields.forEach((field) => field.addEventListener('input', save));
+                    editor.on('input change undo redo', save);
+
+                    clear.addEventListener('click', () => {
+                        if (!window.confirm(@json(__('Hapus draf ini? Isi form akan dikosongkan.')))) {
+                            return;
+                        }
+                        store.remove();
+                        fields.forEach((field) => { field.value = ''; });
+                        editor.setContent('');
+                        clear.hidden = true;
+                    });
+
+                    clear.hidden = !store.get();
+                    status.hidden = false;
+                }
+            @endisset
         </script>
     @endpush
 @endif
