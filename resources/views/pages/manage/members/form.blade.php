@@ -33,13 +33,13 @@
                     @if ($member?->photo)
                         <img class="member-preview" src="{{ asset($member->photo) }}" alt="Foto saat ini">
                     @endif
-                    <input class="field" id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" @required($member === null)>
+                    <input class="field" id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" data-shrink-photos="2048" @required($member === null)>
                     @error('photo')
                         <p class="form__error">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <p class="form__hint">Foto berformat JPG, PNG, atau WEBP, maksimal 2 MB.{{ $member ? ' Biarkan kosong kalau foto tidak diganti.' : '' }}</p>
+                <p class="form__hint">Foto berformat JPG, PNG, atau WEBP, maksimal 2 MB. Foto JPG yang lebih besar dikecilkan otomatis.{{ $member ? ' Biarkan kosong kalau foto tidak diganti.' : '' }}</p>
 
                 <div class="form__actions">
                     <x-button variant="accent" type="submit">{{ $submitLabel }}</x-button>

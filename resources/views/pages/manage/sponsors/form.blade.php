@@ -18,13 +18,13 @@
                     @if ($sponsor?->photo)
                         <img class="member-preview sponsor-preview" src="{{ asset($sponsor->photo) }}" alt="Foto saat ini">
                     @endif
-                    <input class="field" id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" @required($sponsor === null)>
+                    <input class="field" id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" data-shrink-photos="2048" @required($sponsor === null)>
                     @error('photo')
                         <p class="form__error">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <p class="form__hint">Foto atau logo berformat JPG, PNG, atau WEBP, maksimal 2 MB.{{ $sponsor?->photo ? ' Biarkan kosong kalau foto tidak diganti.' : '' }}</p>
+                <p class="form__hint">Foto atau logo berformat JPG, PNG, atau WEBP, maksimal 2 MB. Foto JPG yang lebih besar dikecilkan otomatis.{{ $sponsor?->photo ? ' Biarkan kosong kalau foto tidak diganti.' : '' }}</p>
 
                 <x-form-field name="description" label="Deskripsi" placeholder="Tulis deskripsi singkat tentang sponsor" :value="$sponsor->description ?? ''" multiline />
                 <x-form-field name="description_en" label="Deskripsi (English)" placeholder="Kosongkan untuk diterjemahkan otomatis" :value="$sponsor->description_en ?? ''" multiline :required="false" />

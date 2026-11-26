@@ -68,7 +68,8 @@
                     <label for="media">{{ $activity ? 'Tambah Media' : 'Foto atau Video' }}</label>
                     <input class="field" id="media" name="media[]" type="file" multiple
                            accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" @required($activity === null)
-                           data-max-video-seconds="{{ App\Http\Requests\ActivityRequest::VIDEO_MAX_SECONDS }}">
+                           data-max-video-seconds="{{ App\Http\Requests\ActivityRequest::VIDEO_MAX_SECONDS }}"
+                           data-shrink-photos="{{ App\Http\Requests\ActivityRequest::IMAGE_MAX_KB }}">
                     <p class="form__error" data-media-error hidden></p>
                     @error('media')
                         <p class="form__error">{{ $message }}</p>
@@ -79,7 +80,7 @@
                 </div>
 
                 <p class="form__hint">
-                    Maksimal {{ App\Models\Activity::MAX_MEDIA }} media per kegiatan. Foto JPG, PNG, atau WEBP maksimal 2 MB. Video MP4 atau WEBM singkat, maksimal {{ App\Http\Requests\ActivityRequest::VIDEO_MAX_SECONDS }} detik dan 20 MB, sebaiknya 720p. Pilih beberapa file sekaligus dengan menahan Ctrl atau Cmd.
+                    Maksimal {{ App\Models\Activity::MAX_MEDIA }} media per kegiatan. Foto JPG, PNG, atau WEBP maksimal 2 MB, foto JPG yang lebih besar dikecilkan otomatis. Video MP4 atau WEBM singkat, maksimal {{ App\Http\Requests\ActivityRequest::VIDEO_MAX_SECONDS }} detik dan 20 MB, sebaiknya 720p. Pilih beberapa file sekaligus dengan menahan Ctrl atau Cmd.
                     @if ($activity)
                         Biarkan kosong kalau tidak ada media baru.
                     @endif

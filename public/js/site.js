@@ -101,6 +101,52 @@ document.querySelectorAll('[data-max-video-seconds]').forEach((input) => {
     });
 });
 
+// Form Kelola: foto JPG yang melebihi batas dikecilkan dulu di browser, karena foto dari HP sering lebih dari 2 MB.
+// Lebar atau tinggi maksimal 1920px. PNG dan WEBP tidak diubah supaya latar transparan logo tetap utuh.
+const PHOTO_MAX_SIDE = 1920;
+
+const shrinkPhoto = (file) => new Promise((resolve) => {
+    const image = new Image();
+    const url = URL.createObjectURL(file);
+
+    image.onload = () => {
+        URL.revokeObjectURL(url);
+        const scale = Math.min(1, PHOTO_MAX_SIDE / Math.max(image.naturalWidth, image.naturalHeight));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(image.naturalWidth * scale);
+        canvas.height = Math.round(image.naturalHeight * scale);
+        canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(
+            (blob) => resolve(blob && blob.size < file.size ? new File([blob], file.name, { type: 'image/jpeg' }) : file),
+            'image/jpeg',
+            0.85,
+        );
+    };
+    image.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+    image.src = url;
+});
+
+document.querySelectorAll('[data-shrink-photos]').forEach((input) => {
+    const maxBytes = Number(input.dataset.shrinkPhotos) * 1024;
+    const submit = input.form?.querySelector('[type="submit"]');
+
+    input.addEventListener('change', async () => {
+        const files = [...input.files];
+
+        if (!files.some((file) => file.type === 'image/jpeg' && file.size > maxBytes)) {
+            return;
+        }
+
+        // Tombol simpan dikunci sebentar supaya form tidak terkirim sebelum foto selesai dikecilkan.
+        if (submit) submit.disabled = true;
+        const shrunk = await Promise.all(files.map((file) => (file.type === 'image/jpeg' && file.size > maxBytes ? shrinkPhoto(file) : file)));
+        const transfer = new DataTransfer();
+        shrunk.forEach((file) => transfer.items.add(file));
+        input.files = transfer.files;
+        if (submit) submit.disabled = false;
+    });
+});
+
 // Video kegiatan diam saat halaman dimuat. Disorot kursor: berputar tanpa suara, berhenti saat kursor pergi.
 // Kalau pengunjung memutarnya sendiri lewat klik, video tidak dihentikan saat kursor pergi.
 const canHover = window.matchMedia('(hover: hover)').matches;
