@@ -318,6 +318,11 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
     .wa-dock__card { animation: none; }
 }
 
+/* Tombol Hapus draf di form Tulis Karyamu: tampil seperti tautan. */
+.draft-clear { margin-left: 4px; padding: 0; border: 0; background: none; font: inherit; font-weight: 600; cursor: pointer; }
+/* .text-link memakai display: inline-flex, yang mengalahkan atribut hidden. */
+.draft-clear[hidden] { display: none; }
+
 /* Pilihan bahasa di navbar. Memakai dropdown .navdrop, hanya ditambah bendera dan tanda centang. */
 .flag { width: 18px; height: 18px; flex: none; border-radius: 50%; box-shadow: 0 0 0 1px rgba(27, 35, 64, .2); }
 .lang-menu summary { gap: 8px; font-variant-numeric: tabular-nums; }
