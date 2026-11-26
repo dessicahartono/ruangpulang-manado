@@ -101,6 +101,31 @@ document.querySelectorAll('[data-max-video-seconds]').forEach((input) => {
     });
 });
 
+// Form POST hanya boleh terkirim sekali. Menyimpan bisa makan beberapa detik (terjemahan Gemini, upload foto),
+// dan tanpa ini tombol simpan yang ditekan dua kali membuat data ganda atau error.
+document.addEventListener('submit', (event) => {
+    const form = event.target;
+
+    if (event.defaultPrevented || form.method.toLowerCase() !== 'post') {
+        return;
+    }
+    if (form.dataset.sending) {
+        event.preventDefault();
+        return;
+    }
+
+    form.dataset.sending = '1';
+    form.querySelectorAll('[type="submit"]').forEach((button) => { button.disabled = true; });
+});
+
+// Kembali ke halaman lewat tombol Back: browser bisa memakai salinan lama yang tombolnya masih terkunci.
+window.addEventListener('pageshow', () => {
+    document.querySelectorAll('form[data-sending]').forEach((form) => {
+        delete form.dataset.sending;
+        form.querySelectorAll('[type="submit"]').forEach((button) => { button.disabled = false; });
+    });
+});
+
 // Form Kelola: foto JPG yang melebihi batas dikecilkan dulu di browser, karena foto dari HP sering lebih dari 2 MB.
 // Lebar atau tinggi maksimal 1920px. PNG dan WEBP tidak diubah supaya latar transparan logo tetap utuh.
 const PHOTO_MAX_SIDE = 1920;
