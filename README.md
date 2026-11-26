@@ -17,6 +17,52 @@ Website yang dibangun untuk komunitas sosial di Manado bernama **Ruang Pulang**
 | `/tulis-artikel` | Kiriman artikel dari pengunjung, tampil setelah disetujui admin |
 | `/kelola` | Menu admin, berisi Kelola Profil Pengurus (`/kelola/pengurus`), Kelola Blog (`/kelola/blog`), Kelola Sponsorship (`/kelola/sponsorship`), Kelola Kegiatan (`/kelola/kegiatan`) |
 
+Semua halaman pengunjung tersedia dalam Bahasa Indonesia dan English lewat pilihan bahasa di navbar. Halaman Kelola tetap berbahasa Indonesia.
+
+## Tampilan
+
+Screenshot diambil dari data demo (`DemoSeeder`), bukan data asli komunitas.
+
+**Beranda**
+
+![Beranda](screenshots/01-beranda.jpg)
+
+**Kegiatan:** setiap kegiatan punya satu sampai tiga foto atau video yang bisa digeser, beserta sponsor pendukungnya.
+
+![Halaman Kegiatan](screenshots/02-kegiatan.jpg)
+
+**Pengurus (Portfolio)**
+
+![Halaman Pengurus](screenshots/03-pengurus.png)
+
+**Blog:** pencarian, pengurutan, dan pagination.
+
+![Halaman Blog](screenshots/04-blog.png)
+
+**Detail artikel**
+
+![Detail artikel](screenshots/05-artikel.png)
+
+**Menu Kelola**
+
+![Menu Kelola](screenshots/06-kelola.png)
+
+**Validasi form:** form Tambah Kegiatan yang dikirim kosong.
+
+![Validasi form Tambah Kegiatan](screenshots/07-kelola-kegiatan-validasi.png)
+
+**Kelola Blog:** kiriman pengunjung menunggu persetujuan sebelum tampil.
+
+![Kelola Blog](screenshots/08-kelola-blog.png)
+
+**Tampilan HP**
+
+<img src="screenshots/09-hp.jpg" alt="Beranda di HP" width="360">
+
+**Versi English**
+
+![Halaman About Us dalam bahasa Inggris](screenshots/10-english.png)
+
 ## Cara menjalankan
 
 Syarat: PHP 8.4.1 atau lebih baru dengan ekstensi `pdo_mysql` (dibutuhkan Symfony 8 pada `composer.lock`), Composer, dan XAMPP untuk MySQL.
@@ -37,6 +83,8 @@ Buka <http://localhost:8000>. Perintah setup menyalin `.env.example` ke `.env` (
 Kalau port 3306 sudah dipakai MySQL lain, misalnya dari Homebrew, matikan dulu dengan `brew services stop mysql`.
 
 Untuk menjalankan pengujian, gunakan `php artisan test`. Secara bawaan tes memakai SQLite di memori supaya cepat. Untuk menguji di MySQL, buat database `ruangpulang_test`, lalu jalankan `DB_CONNECTION=mysql DB_DATABASE=ruangpulang_test php artisan test`.
+
+**Versi English:** isi `GEMINI_API_KEY` di `.env` dengan API key gratis dari [Google AI Studio](https://aistudio.google.com/apikey). Artikel, kegiatan, dan sponsor diterjemahkan otomatis saat disimpan di halaman Kelola. Untuk data yang sudah ada, misalnya hasil seeder, jalankan `php artisan konten:terjemahkan`. Tanpa API key, halaman English tetap jalan dan konten database tampil dalam bahasa Indonesia.
 
 **Halaman Kelola:** jalankan `php artisan admin:password` untuk mengatur username dan kata sandi admin. Keduanya disimpan di `.env` sebagai `ADMIN_USERNAME` dan `ADMIN_PASSWORD_HASH`, dan kata sandinya hanya disimpan sebagai hash. Saat login, username boleh diketik dengan atau tanpa `@`, dan huruf besar-kecil tidak dibedakan.
 
@@ -143,4 +191,4 @@ Profil, kegiatan, pengurus, dan sponsor memakai data asli komunitas. Artikel awa
 
 ## Penggunaan AI
 
-Proyek ini dikembangkan dengan bantuan AI untuk mengefisienkan waktu pengerjaan. Ide dan konsep desain berasal dari pemilik proyek, dan pengerjaannya dibantu Claude. Claude Code membantu membuat struktur awal Laravel, menerapkan desain ke Blade, menulis artikel contoh, dan pengujian. Hasilnya ditinjau, dipelajari, dan dijalankan sendiri oleh pemilik proyek.
+Saya menggunakan AI (Claude Chat) sebagai asisten dalam merevisi desain interface website Ruang Pulang yang saya rancang. Proses ini mencakup penyesuaian tata letak, tipografi, dan komponen berdasarkan arahan yang saya berikan. Adapun kontribusi saya meliputi penyusunan ide awal UI/UX, perancangan alur halaman admin (input, kelola, tinjau, dan edit), serta review terhadap hasil desain yang dihasilkan oleh AI agent. Keputusan dan persetujuan terhadap hasil akhir tetap berada di tangan saya. Dalam IDE, saya mengerjakan penulisan kode bersama AI. Namun, saya tetap memiliki kendali penuh atas kode dengan meninjau dan mengontrol setiap proses yang dilakukan AI agar tidak terjadi overengineering. Saya juga mereview seluruh baris kode sebelum dieksekusi serta memanfaatkan AI untuk membantu penulisan pesan commit. Setiap hasil dan perubahan yang diusulkan AI tetap saya tinjau terlebih dahulu, dan keputusan untuk mengeksekusinya sepenuhnya berada di tangan saya.
