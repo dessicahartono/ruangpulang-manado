@@ -23,45 +23,20 @@ Semua halaman pengunjung tersedia dalam Bahasa Indonesia dan English lewat pilih
 
 Screenshot diambil dari data demo (`DemoSeeder`), bukan data asli komunitas.
 
-**Beranda**
+**Beranda (Bahasa Indonesia)**
 
-![Beranda](screenshots/01-beranda.jpg)
+![Beranda dalam Bahasa Indonesia](screenshots/beranda-id.jpg)
 
-**Kegiatan:** setiap kegiatan punya satu sampai tiga foto atau video yang bisa digeser, beserta sponsor pendukungnya.
+**Beranda (English)**
 
-![Halaman Kegiatan](screenshots/02-kegiatan.jpg)
+![Beranda dalam bahasa Inggris](screenshots/beranda-en.jpg)
 
-**Pengurus (Portfolio)**
+**Tampilan HP: Beranda dan Blog**
 
-![Halaman Pengurus](screenshots/03-pengurus.png)
-
-**Blog:** pencarian, pengurutan, dan pagination.
-
-![Halaman Blog](screenshots/04-blog.png)
-
-**Detail artikel**
-
-![Detail artikel](screenshots/05-artikel.png)
-
-**Menu Kelola**
-
-![Menu Kelola](screenshots/06-kelola.png)
-
-**Validasi form:** form Tambah Kegiatan yang dikirim kosong.
-
-![Validasi form Tambah Kegiatan](screenshots/07-kelola-kegiatan-validasi.png)
-
-**Kelola Blog:** kiriman pengunjung menunggu persetujuan sebelum tampil.
-
-![Kelola Blog](screenshots/08-kelola-blog.png)
-
-**Tampilan HP**
-
-<img src="screenshots/09-hp.jpg" alt="Beranda di HP" width="360">
-
-**Versi English**
-
-![Halaman About Us dalam bahasa Inggris](screenshots/10-english.png)
+<p>
+  <img src="screenshots/hp-beranda.jpg" alt="Beranda di HP" width="49%">
+  <img src="screenshots/hp-blog.jpg" alt="Blog di HP" width="49%">
+</p>
 
 ## Cara menjalankan
 
