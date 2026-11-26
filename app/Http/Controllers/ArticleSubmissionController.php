@@ -9,7 +9,7 @@ use Illuminate\View\View;
 
 class ArticleSubmissionController extends Controller
 {
-    private const THANKS = 'Terima kasih, artikelmu sudah kami terima dan akan tampil setelah disetujui admin.';
+    private const THANKS = 'Terima kasih, karyamu sudah kami terima dan akan tampil setelah disetujui admin.';
 
     public function create(): View
     {
@@ -18,8 +18,8 @@ class ArticleSubmissionController extends Controller
             'action' => route('articles.store'),
             'method' => 'POST',
             'cancelUrl' => route('blog.index'),
-            'submitLabel' => 'Kirim Artikel',
-            'hint' => 'Artikelmu akan tampil setelah disetujui admin. Jangan tulis data pribadi orang lain.',
+            'submitLabel' => 'Kirim Karya',
+            'hint' => 'Karyamu akan tampil setelah disetujui admin. Jangan tulis data pribadi orang lain.',
             'isPublicForm' => true,
             'richEditor' => true,
         ]);

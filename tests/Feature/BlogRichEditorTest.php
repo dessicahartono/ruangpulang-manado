@@ -98,7 +98,7 @@ class BlogRichEditorTest extends TestCase
     public function test_an_empty_editor_is_rejected(): void
     {
         $this->asAdmin()->post('/kelola/blog', ['title' => 'Kosong', 'author' => 'Admin', 'body' => '<p>&nbsp;</p>'])
-            ->assertSessionHasErrors(['body' => 'Isi Artikel wajib diisi.']);
+            ->assertSessionHasErrors(['body' => 'Isi Karya wajib diisi.']);
         $this->asAdmin()->post('/kelola/blog', ['title' => 'Kosong', 'author' => 'Admin', 'body' => '<script>alert(1)</script>'])
             ->assertSessionHasErrors('body');
 
@@ -133,7 +133,7 @@ class BlogRichEditorTest extends TestCase
         $body = fn (int $words) => '<p>'.implode(' ', array_fill(0, $words, 'kata')).'</p>';
 
         $this->post('/tulis-artikel', ['title' => 'Terlalu Panjang', 'author' => 'Tamu', 'body' => $body(5001)])
-            ->assertSessionHasErrors(['body' => 'Isi Artikel maksimal 5000 kata. Sekarang 5001 kata.']);
+            ->assertSessionHasErrors(['body' => 'Isi Karya maksimal 5000 kata. Sekarang 5001 kata.']);
         $this->asAdmin()->post('/kelola/blog', ['title' => 'Terlalu Panjang', 'author' => 'Admin', 'body' => $body(5001)])
             ->assertSessionHasErrors('body');
         $this->assertDatabaseMissing('posts', ['title' => 'Terlalu Panjang']);

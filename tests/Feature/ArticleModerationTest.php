@@ -53,7 +53,7 @@ class ArticleModerationTest extends TestCase
     public function test_article_form_validates_input(): void
     {
         $this->post('/tulis-artikel', [])
-            ->assertSessionHasErrors(['title' => 'Judul Artikel wajib diisi.', 'author', 'body']);
+            ->assertSessionHasErrors(['title' => 'Judul Karya wajib diisi.', 'author', 'body']);
 
         $this->assertDatabaseMissing('posts', ['status' => Post::STATUS_PENDING]);
     }
@@ -133,7 +133,7 @@ class ArticleModerationTest extends TestCase
         $this->assertNull(session('is_admin'));
 
         $this->post('/kelola/masuk', ['username' => 'dessicahartono', 'password' => 'kata-sandi-benar'])->assertRedirect('/kelola/blog');
-        $this->get('/kelola/blog')->assertOk()->assertSee('Tulis Artikel');
+        $this->get('/kelola/blog')->assertOk()->assertSee('Tulis Karya');
 
         $this->post('/kelola/keluar')->assertRedirect('/');
         $this->get('/kelola/blog')->assertRedirect('/kelola/masuk');

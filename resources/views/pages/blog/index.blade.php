@@ -10,7 +10,7 @@
         {{-- Tombol tulis, pencarian, dan hasil berada di satu kolom supaya tepinya lurus. --}}
         <div class="container blog-column">
             <div class="tool-link tool-link--center">
-                <x-button variant="accent" :href="route('articles.create')">{{ __('Tulis Artikelmu di Sini') }}</x-button>
+                <x-button variant="accent" :href="route('articles.create')">{{ __('Mulai Menulis') }}</x-button>
             </div>
 
             <x-post-toolbar :action="route('blog.index')" :search="$search" :sort="$sort" compact-sort />

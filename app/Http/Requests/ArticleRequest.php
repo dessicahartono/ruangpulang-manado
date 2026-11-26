@@ -39,9 +39,9 @@ class ArticleRequest extends FormRequest
             $body = ArticleHtml::clean($this->input('body'));
 
             if (ArticleHtml::isEmpty($body)) {
-                $validator->errors()->add('body', __('Isi Artikel wajib diisi.'));
+                $validator->errors()->add('body', __('Isi Karya wajib diisi.'));
             } elseif (ArticleHtml::wordCount($body) > self::MAX_WORDS) {
-                $validator->errors()->add('body', __('Isi Artikel maksimal :max kata. Sekarang :count kata.', [
+                $validator->errors()->add('body', __('Isi Karya maksimal :max kata. Sekarang :count kata.', [
                     'max' => self::MAX_WORDS,
                     'count' => ArticleHtml::wordCount($body),
                 ]));
@@ -49,7 +49,7 @@ class ArticleRequest extends FormRequest
         }];
     }
 
-    /** Form Tulis dan Ubah di Kelola Blog dan form Tulis Artikel untuk pengunjung memakai TinyMCE. */
+    /** Form Tulis dan Ubah di Kelola Blog dan form Tulis Karyamu untuk pengunjung memakai TinyMCE. */
     public function fromRichEditor(): bool
     {
         return $this->routeIs('manage.blog.*', 'articles.*');
@@ -58,11 +58,11 @@ class ArticleRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'title' => __('Judul Artikel'),
+            'title' => __('Judul Karya'),
             'author' => __('Nama Penulis'),
-            'body' => __('Isi Artikel'),
-            'title_en' => 'Judul Artikel (English)',
-            'body_en' => 'Isi Artikel (English)',
+            'body' => __('Isi Karya'),
+            'title_en' => 'Judul Karya (English)',
+            'body_en' => 'Isi Karya (English)',
         ];
     }
 

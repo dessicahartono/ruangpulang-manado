@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', $post ? 'Ubah Artikel' : __('Tulis Artikel'))
+@section('title', $post ? 'Ubah Karya' : (isset($isPublicForm) ? __('Tulis Karyamu') : 'Tulis Karya'))
 
 @section('content')
-    <x-page-hero>{!! $post ? __('Ubah&nbsp;<em>Artikel</em>') : __('Tulis&nbsp;<em>Artikel</em>') !!}</x-page-hero>
+    <x-page-hero>{!! $post ? 'Ubah&nbsp;<em>Karya</em>' : (isset($isPublicForm) ? __('Tulis&nbsp;<em>Karyamu</em>') : 'Tulis&nbsp;<em>Karya</em>') !!}</x-page-hero>
 
     <section class="section">
         <div class="container">
@@ -15,16 +15,15 @@
                 @csrf
                 @method($method)
 
-                <x-form-field name="title" :label="__('Judul Artikel')" :placeholder="__('Tulis judul artikel')" :value="$post->title ?? ''" />
+                <x-form-field name="title" :label="__('Judul Karya')" :placeholder="__('Tulis judul karya')" :value="$post->title ?? ''" />
                 <x-form-field name="author" :label="__('Nama Penulis')" :placeholder="__('Tulis namamu')" :value="$post->author ?? ''" />
 
 
                 @if ($richEditor ?? false)
                     {{-- TinyMCE menggantikan kotak ini. Isinya HTML, dan dibersihkan lagi di server sebelum disimpan. --}}
                     <div class="form__row">
-                        <label for="body">{{ __('Isi Artikel') }}</label>
-                        <textarea class="textarea" id="body" name="body" placeholder="{{ __('Tulis isi artikel di sini') }}" data-rich-editor>{{ old('body', $post?->editorHtml() ?? '') }}</textarea>
-                        <p class="form__hint">{{ __('Maksimal :max kata. Jumlah kata terlihat di pojok kanan bawah editor.', ['max' => App\Http\Requests\ArticleRequest::MAX_WORDS]) }}</p>
+                        <label for="body">{{ __('Isi Karya') }}</label>
+                        <textarea class="textarea" id="body" name="body" placeholder="{{ __('Mulai Menulis') }}" data-rich-editor>{{ old('body', $post?->editorHtml() ?? '') }}</textarea>
                         @error('body')
                             <p class="form__error">{{ $message }}</p>
                         @enderror
@@ -32,10 +31,10 @@
 
                     {{-- Versi Inggris hanya untuk admin. Kiriman pengunjung diterjemahkan saat disetujui. --}}
                     @unless (isset($isPublicForm))
-                    <x-form-field name="title_en" label="Judul Artikel (English)" placeholder="Kosongkan untuk diterjemahkan otomatis" :value="$post->title_en ?? ''" :required="false" />
+                    <x-form-field name="title_en" label="Judul Karya (English)" placeholder="Kosongkan untuk diterjemahkan otomatis" :value="$post->title_en ?? ''" :required="false" />
 
                     <div class="form__row">
-                        <label for="body_en">Isi Artikel (English)</label>
+                        <label for="body_en">Isi Karya (English)</label>
                         <textarea class="textarea" id="body_en" name="body_en" data-rich-editor>{{ old('body_en', $post?->body_en ? $post->editorHtml('body_en') : '') }}</textarea>
                         @error('body_en')
                             <p class="form__error">{{ $message }}</p>
@@ -45,7 +44,7 @@
                     <p class="form__hint">Kolom English boleh dikosongkan, nanti diterjemahkan otomatis oleh Gemini saat disimpan. Kalau teks Indonesia diubah tetapi kolom English tidak, versi Inggrisnya diterjemahkan ulang.</p>
                     @endunless
                 @else
-                    <x-form-field name="body" :label="__('Isi Artikel')" :placeholder="__('Tulis isi artikel di sini')" multiline :value="$post->body ?? ''" />
+                    <x-form-field name="body" :label="__('Isi Karya')" :placeholder="__('Mulai Menulis')" multiline :value="$post->body ?? ''" />
                 @endif
 
                 @isset($isPublicForm)

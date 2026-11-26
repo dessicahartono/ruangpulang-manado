@@ -33,10 +33,10 @@ class PagesTest extends TestCase
             'kegiatan' => ['/kegiatan', 'Pertemuan Mingguan'],
             'pengurus' => ['/pengurus', 'Para Pendiri'],
             'bergabung' => ['/bergabung', 'Gabung Grup WhatsApp'],
-            'blog' => ['/blog', 'Tulis Artikelmu di Sini'],
+            'blog' => ['/blog', 'Mulai Menulis'],
             'detail blog' => ['/blog/kapan-sebaiknya-mencari-bantuan-profesional', 'Baca Artikel Lainnya'],
             'kontak' => ['/kontak', 'Butuh Bantuan Segera?'],
-            'tulis artikel' => ['/tulis-artikel', 'Kirim Artikel'],
+            'tulis artikel' => ['/tulis-artikel', 'Kirim Karya'],
             'masuk admin' => ['/kelola/masuk', 'Kata Sandi'],
         ];
     }

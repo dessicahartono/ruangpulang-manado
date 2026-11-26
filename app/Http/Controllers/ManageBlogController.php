@@ -43,8 +43,8 @@ class ManageBlogController extends Controller
             'action' => route('manage.blog.store'),
             'method' => 'POST',
             'cancelUrl' => route('manage.blog.index'),
-            'submitLabel' => 'Terbitkan Artikel',
-            'hint' => 'Slug dan tanggal publikasi dibuat otomatis oleh sistem saat artikel diterbitkan.',
+            'submitLabel' => 'Terbitkan Karya',
+            'hint' => 'Slug dan tanggal publikasi dibuat otomatis oleh sistem saat karya diterbitkan.',
             'richEditor' => true,
         ]);
     }
@@ -53,7 +53,7 @@ class ManageBlogController extends Controller
     {
         $post = $this->community->publishPost($request->validated());
 
-        return to_route('manage.blog.show', $post->slug)->with('notice', 'Artikel sudah diterbitkan.');
+        return to_route('manage.blog.show', $post->slug)->with('notice', 'Karya sudah diterbitkan.');
     }
 
     public function show(string $slug): View
@@ -71,7 +71,7 @@ class ManageBlogController extends Controller
             'method' => 'PUT',
             'cancelUrl' => route('manage.blog.index'),
             'submitLabel' => 'Simpan Perubahan',
-            'hint' => 'Slug dan tanggal publikasi tidak berubah saat artikel disimpan.',
+            'hint' => 'Slug dan tanggal publikasi tidak berubah saat karya disimpan.',
             'richEditor' => true,
         ]);
     }
