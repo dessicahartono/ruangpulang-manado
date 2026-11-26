@@ -56,7 +56,7 @@
             @php($languages = ['id' => 'Bahasa Indonesia', 'en' => 'English'])
             <details class="navdrop lang-menu" data-navdrop>
                 <summary class="navbar__link">
-                    <x-flag :code="app()->getLocale()" />{{ strtoupper(app()->getLocale()) }}<span class="sr-only">, {{ __('Pilih bahasa') }}</span>
+                    <x-flag :code="app()->getLocale()" /><span class="lang-menu__code">{{ strtoupper(app()->getLocale()) }}</span><span class="sr-only">, {{ __('Pilih bahasa') }}</span>
                 </summary>
                 <div class="navdrop__list">
                     @foreach ($languages as $code => $name)

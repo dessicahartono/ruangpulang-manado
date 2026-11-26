@@ -254,11 +254,25 @@ main .page-hero { background: #04060f url(../images/hero-langit.jpg) center top 
 /* Kode verifikasi dua langkah: angka besar dan berjarak supaya mudah dicocokkan dengan aplikasi */
 .field--code { max-width: 220px; font: 600 1.4rem/1.2 'JetBrains Mono', monospace; letter-spacing: .3em; text-align: center; }
 
-/* Header desktop yang sempit (961 sampai 1100px): delapan menu tetap satu baris dan nama situs tidak terlipat */
-@media (min-width: 961px) and (max-width: 1100px) {
+/* Nama situs dan menu tidak pernah terlipat jadi dua baris. Di desktop, pilihan bahasa didorong ke ujung kanan,
+   dan jarak antarbagian di halaman selain beranda dirapatkan supaya delapan menu dan pilihan bahasa muat. */
+.navbar .brand span, .navbar__link { white-space: nowrap; }
+@media (min-width: 961px) {
+    .is-sub .navbar__inner { gap: 20px; }
+    .lang-menu { margin-left: auto; }
+}
+
+/* Header desktop yang sempit (961 sampai 1200px): delapan menu dan pilihan bahasa tetap satu baris.
+   Pilihan bahasa hanya menampilkan bendera, kodenya tetap dibacakan pembaca layar. */
+@media (min-width: 961px) and (max-width: 1200px) {
     .navbar__menu { gap: 2px; }
     .navbar__link { padding: 8px 9px; }
-    .navbar .brand span { white-space: nowrap; }
+    .is-sub .navbar__inner { gap: 12px; }
+    .lang-menu summary { gap: 6px; padding-inline: 8px; }
+    .lang-menu__code { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+}
+@media (min-width: 961px) and (max-width: 1060px) {
+    .navbar__link { padding: 8px 6px; font-size: .95rem; }
 }
 
 /* Artikel dari TinyMCE: daftar, kutipan, subjudul kecil, dan tautan */
