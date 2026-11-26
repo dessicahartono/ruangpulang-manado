@@ -119,11 +119,12 @@ class ActivityManagementTest extends TestCase
 
     public function test_admin_can_add_an_activity_with_photos_and_a_video(): void
     {
-        $this->asAdmin()->post('/kelola/kegiatan', $this->payload([
+        $response = $this->asAdmin()->post('/kelola/kegiatan', $this->payload([
             'media' => [$this->photo('a.jpg'), $this->video(), $this->photo('b.png')],
-        ]))->assertRedirect('/kelola/kegiatan')->assertSessionHasNoErrors();
+        ]))->assertSessionHasNoErrors();
 
         $activity = Activity::firstWhere('title', 'Kegiatan Uji');
+        $response->assertRedirect(route('manage.activities.show', $activity));
         $this->assertSame(Activity::count() - 1, $activity->position);
         $this->assertSame(['image', 'video', 'image'], $activity->media->pluck('type')->all());
         $this->assertSame('2 foto dan 1 video', $activity->mediaSummary());

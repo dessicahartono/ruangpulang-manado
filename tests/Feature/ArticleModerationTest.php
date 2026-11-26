@@ -352,7 +352,7 @@ class ArticleModerationTest extends TestCase
 
     public function test_admin_can_publish_directly(): void
     {
-        $this->asAdmin()->post('/kelola/blog', self::ARTICLE)->assertRedirect('/kelola/blog');
+        $this->asAdmin()->post('/kelola/blog', self::ARTICLE)->assertRedirect(route('manage.blog.show', 'judul-baru'));
 
         $this->assertFalse(Post::firstWhere('slug', 'judul-baru')->isPending());
         $this->get('/blog/judul-baru')->assertOk();

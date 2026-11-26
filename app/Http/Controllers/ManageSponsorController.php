@@ -31,9 +31,9 @@ class ManageSponsorController extends Controller
 
     public function store(SponsorRequest $request): RedirectResponse
     {
-        $this->community->createSponsor($request->validated());
+        $sponsor = $this->community->createSponsor($request->validated());
 
-        return to_route('manage.sponsors.index')->with('notice', 'Sponsor baru sudah ditambahkan.');
+        return to_route('manage.sponsors.show', $sponsor)->with('notice', 'Sponsor baru sudah ditambahkan.');
     }
 
     public function show(Sponsor $sponsor): View

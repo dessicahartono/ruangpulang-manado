@@ -41,9 +41,9 @@ class ManageMemberController extends Controller
 
     public function store(MemberRequest $request): RedirectResponse
     {
-        $this->community->createMember($request->validated());
+        $member = $this->community->createMember($request->validated());
 
-        return to_route('manage.members.index')->with('notice', 'Pengurus baru sudah ditambahkan.');
+        return to_route('manage.members.show', $member)->with('notice', 'Pengurus baru sudah ditambahkan.');
     }
 
     public function show(Member $member): View

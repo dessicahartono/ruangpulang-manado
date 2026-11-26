@@ -51,9 +51,9 @@ class ManageBlogController extends Controller
 
     public function store(ArticleRequest $request): RedirectResponse
     {
-        $this->community->publishPost($request->validated());
+        $post = $this->community->publishPost($request->validated());
 
-        return to_route('manage.blog.index')->with('notice', 'Artikel sudah diterbitkan.');
+        return to_route('manage.blog.show', $post->slug)->with('notice', 'Artikel sudah diterbitkan.');
     }
 
     public function show(string $slug): View

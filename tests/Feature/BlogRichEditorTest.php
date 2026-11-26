@@ -33,7 +33,7 @@ class BlogRichEditorTest extends TestCase
             'author' => 'Admin',
             'body' => '<h2>Subjudul</h2><p onclick="alert(1)">Halo <strong>teman</strong> <a href="javascript:alert(1)">bahaya</a></p>'
                 .'<script>alert(1)</script><img src="x" onerror="alert(1)"><ul><li>satu</li></ul><blockquote>kutipan</blockquote>',
-        ])->assertRedirect('/kelola/blog');
+        ])->assertRedirect(route('manage.blog.show', 'artikel-format'));
 
         $post = Post::firstWhere('title', 'Artikel Format');
         $this->assertTrue($post->isHtml());

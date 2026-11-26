@@ -201,11 +201,10 @@ class MemberManagementTest extends TestCase
 
     public function test_admin_can_add_a_member_who_appears_on_the_team_page(): void
     {
-        $this->asAdmin()->post('/kelola/pengurus', $this->payload())
-            ->assertRedirect('/kelola/pengurus')
-            ->assertSessionHas('notice');
+        $response = $this->asAdmin()->post('/kelola/pengurus', $this->payload())->assertSessionHas('notice');
 
         $member = Member::firstWhere('full_name', 'Nama Uji Coba');
+        $response->assertRedirect(route('manage.members.show', $member));
 
         $this->assertStringStartsWith('uploads/pengurus/', $member->photo);
         Storage::disk('members')->assertExists(basename($member->photo));

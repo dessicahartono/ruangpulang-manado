@@ -108,11 +108,10 @@ class SponsorManagementTest extends TestCase
 
     public function test_admin_can_add_a_sponsor_with_photo(): void
     {
-        $this->asAdmin()->post('/kelola/sponsorship', $this->payload())
-            ->assertRedirect('/kelola/sponsorship')
-            ->assertSessionHas('notice');
+        $response = $this->asAdmin()->post('/kelola/sponsorship', $this->payload())->assertSessionHas('notice');
 
         $sponsor = Sponsor::firstWhere('name', 'Sponsor Uji');
+        $response->assertRedirect(route('manage.sponsors.show', $sponsor));
         $this->assertSame(3, $sponsor->position);
         $this->assertStringStartsWith('uploads/sponsor/', $sponsor->photo);
         Storage::disk('sponsors')->assertExists(basename($sponsor->photo));

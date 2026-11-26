@@ -32,9 +32,9 @@ class ManageActivityController extends Controller
 
     public function store(ActivityRequest $request): RedirectResponse
     {
-        $this->community->createActivity($request->validated(), $request->newMedia());
+        $activity = $this->community->createActivity($request->validated(), $request->newMedia());
 
-        return to_route('manage.activities.index')->with('notice', 'Kegiatan baru sudah ditambahkan.');
+        return to_route('manage.activities.show', $activity)->with('notice', 'Kegiatan baru sudah ditambahkan.');
     }
 
     public function show(Activity $activity): View
